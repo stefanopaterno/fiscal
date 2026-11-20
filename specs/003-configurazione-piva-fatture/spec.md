@@ -8,6 +8,16 @@
 
 **Input**: User description: "Dobbiamo fare le fatture: serve tutta la configurazione della partita IVA e i dati essenziali del professionista, poi la creazione delle fatture per lo psicologo (prestazioni sanitarie esenti IVA e attività non sanitarie con IVA), con contributo integrativo ENPAP, bollo e ritenuta d'acconto, pronte per Sistema Tessera Sanitaria e SDI."
 
+## Clarifications
+
+### Session 2026-11-20
+
+- Q: Per le fatture verso enti e aziende l'app produce il file XML conforme o solo un riepilogo dei dati? → A: Nella prima versione solo un riepilogo dei dati da ricopiare in un programma o portale esterno; il file XML conforme è rinviato a una versione successiva.
+- Q: Per una seduta a un minore pagata da un genitore, a chi si intesta la fattura? → A: Sempre al paziente, anche se minorenne, con il suo codice fiscale; nessun ruolo separato di intestatario e beneficiario. Facoltativa un'annotazione "pagato da" per documentare chi ha sostenuto la spesa.
+- Q: Fattura e incasso in un solo passaggio? → A: Sì, in fattura c'è l'opzione "già incassata" (data, importo, modalità). Se sia attiva per impostazione predefinita si decide più avanti: per ora è un'impostazione modificabile. L'utente prevede di far pagare subito dopo la seduta con un lettore di carte (SumUp); l'integrazione con il lettore è fuori dalla prima versione e l'incasso si registra a mano.
+- Q: Il bollo da 2 € è addebitato al paziente o a carico del professionista? → A: Parametro configurabile, con valore predefinito "a carico del paziente" (voce separata in fattura).
+- Q: Numerazione unica per anno o separata per tipo o attività? → A: Una sola numerazione progressiva per anno, uguale per tutte le fatture (esenti, con IVA, di ogni attività).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Configurare la mia partita IVA una volta sola (Priority: P1)
@@ -77,17 +87,17 @@ L'utente segna quando una fattura è stata incassata (data e modalità). Il sist
 
 ### User Story 5 - Preparare i dati per Sistema Tessera Sanitaria e fatturazione elettronica (Priority: P2)
 
-Per le prestazioni sanitarie verso persone fisiche, il sistema prepara l'elenco dei dati da inviare al Sistema Tessera Sanitaria, tenendo conto dell'eventuale opposizione del paziente. Per le fatture verso enti e aziende prepara il file di fattura elettronica da inviare tramite SDI. L'invio vero e proprio è fatto dall'utente fuori dall'app.
+Per le prestazioni sanitarie verso persone fisiche, il sistema prepara l'elenco dei dati da inviare al Sistema Tessera Sanitaria, tenendo conto dell'eventuale opposizione del paziente. Per le fatture verso enti e aziende prepara un riepilogo completo dei dati da riportare nel programma o nel portale usato per la fattura elettronica da inviare tramite SDI (il file XML conforme è rinviato a una versione successiva). L'invio vero e proprio è fatto dall'utente fuori dall'app.
 
 **Why this priority**: sono adempimenti obbligatori, ma si possono sviluppare dopo la fattura base.
 
-**Independent Test**: da un insieme di fatture di prova, il sistema genera un elenco di spese sanitarie e un file di fattura elettronica con i dati corretti, e segnala quelle già inviate.
+**Independent Test**: da un insieme di fatture di prova, il sistema genera un elenco di spese sanitarie e un riepilogo per la fattura elettronica con i dati corretti, e segnala quelle già inviate.
 
 **Acceptance Scenarios**:
 
 1. **Given** fatture sanitarie a persone fisiche, **When** l'utente apre la preparazione per il Sistema Tessera Sanitaria, **Then** vede l'elenco delle spese da trasmettere con stato "da inviare" o "inviata".
 2. **Given** un paziente che si è opposto alla trasmissione, **When** viene emessa la fattura, **Then** compare la dicitura prevista e la spesa è esclusa dall'invio.
-3. **Given** una fattura verso un'azienda, **When** l'utente richiede la fattura elettronica, **Then** ottiene un file con i dati del cedente, del cliente, delle righe, del bollo e della ritenuta.
+3. **Given** una fattura verso un'azienda, **When** l'utente richiede i dati per la fattura elettronica, **Then** ottiene un riepilogo con i dati del cedente, del cliente, delle righe, del bollo e della ritenuta, pronto da copiare.
 
 ---
 
@@ -132,7 +142,8 @@ L'utente può emettere fatture per attività che non sono quella di psicologo (p
 - Prima fattura del 2027: la numerazione parte da 1 e la data non può precedere l'inizio attività.
 - Fattura con righe sia esenti sia imponibili e applicazione del bollo solo alla parte esente oltre soglia.
 - Importo esente di poco sotto o sopra la soglia di 77,47 €.
-- Paziente minorenne o con codice fiscale diverso dal pagante (chi paga e chi riceve la prestazione).
+- Paziente minorenne o altra persona che paga al posto del paziente: la fattura resta intestata al paziente con il suo codice fiscale; chi ha pagato può essere annotato nel campo facoltativo "pagato da" (nome, senza altri dati).
+- Paziente privo di codice fiscale italiano o con codice fiscale non disponibile.
 - Cliente estero o privo di codice fiscale italiano.
 - Cliente persona fisica che non è sostituto d'imposta (nessuna ritenuta).
 - Cambio dell'aliquota del contributo integrativo da un anno all'altro (2% fino al 2026, 4% dal 2027).
@@ -147,21 +158,21 @@ L'utente può emettere fatture per attività che non sono quella di psicologo (p
 
 - **FR-001**: Il sistema MUST permettere di inserire e modificare la configurazione dell'attività: anagrafica e codice fiscale, partita IVA, data inizio attività, codice ATECO, regime fiscale, sede o domicilio fiscale, PEC, codice destinatario, IBAN, iscrizione all'Albo e all'ENPAP, regime IVA predefinito, trattamento di contributo integrativo, bollo e ritenuta.
 - **FR-002**: Il sistema MUST validare la forma del codice fiscale e della partita IVA e segnalare i dati obbligatori mancanti, impedendo l'emissione finché la configurazione non è completa.
-- **FR-003**: Il sistema MUST numerare le fatture in modo progressivo per anno, senza salti né duplicati, e MUST NOT consumare numeri per le bozze.
+- **FR-003**: Il sistema MUST numerare le fatture con un'unica sequenza progressiva per anno, uguale per tutte le fatture (esenti, con IVA e di ogni attività), senza salti né duplicati, e MUST NOT consumare numeri per le bozze. Le note di credito seguono la stessa sequenza.
 - **FR-004**: Il sistema MUST impedire di emettere fatture con data anteriore alla data di inizio attività.
 - **FR-005**: Il sistema MUST calcolare automaticamente per ogni fattura: compenso, contributo integrativo, imponibile, IVA o esenzione, bollo, ritenuta d'acconto, totale documento e netto a pagare, in centesimi e con arrotondamenti documentati.
 - **FR-006**: Il contributo integrativo MUST seguire l'aliquota dell'anno prevista dalle regole (2% fino al 2026, 4% dal 2027) e MUST NOT essere scritto nella logica di calcolo (principio I della costituzione).
 - **FR-007**: Il sistema MUST classificare ogni riga come prestazione sanitaria esente (art. 10 n. 18 DPR 633/72) o attività imponibile con IVA al 22%, riportando la dicitura corretta.
-- **FR-008**: Il sistema MUST applicare l'imposta di bollo da 2,00 € alle fatture con importi esenti superiori a 77,47 € e MUST indicarlo nel documento.
+- **FR-008**: Il sistema MUST applicare l'imposta di bollo da 2,00 € alle fatture con importi esenti superiori a 77,47 € e MUST indicarlo nel documento. Chi sostiene il bollo MUST essere un parametro configurabile nella configurazione dell'attività (FR-001), con valore predefinito "a carico del paziente": in tal caso il bollo è una voce separata che aumenta il totale della fattura; se impostato "a carico del professionista", il totale non aumenta e il bollo è registrato come spesa dell'attività (specifica 008). Il valore usato MUST essere memorizzato su ogni fattura emessa, così che un cambio successivo del parametro non modifichi le fatture già emesse.
 - **FR-009**: Il sistema MUST applicare la ritenuta d'acconto del 20% solo quando il cliente è un sostituto d'imposta, calcolandola sul compenso e non sul contributo integrativo.
-- **FR-010**: Il sistema MUST registrare l'incasso (data, importo, modalità, anche parziale) e usare la data di incasso per il reddito per cassa.
+- **FR-010**: Il sistema MUST registrare l'incasso (data, importo, modalità, anche parziale) e usare la data di incasso per il reddito per cassa. Il sistema MUST permettere di registrare l'incasso nello stesso passaggio dell'emissione ("già incassata"), con un'impostazione modificabile che stabilisce se l'opzione è attiva per impostazione predefinita (valore da decidere; per ora disattivata). La modalità di incasso MUST distinguere almeno contanti, carta o POS, bonifico e altro, e MUST indicare se il pagamento è tracciabile, perché serve al paziente per detrarre la spesa.
 - **FR-011**: Il sistema MUST distinguere fatture emesse, incassate e da incassare nei riepiloghi dell'anno.
 - **FR-012**: Il sistema MUST permettere di annullare una fattura con una nota di credito collegata, mantenendo consultabile l'originale.
 - **FR-013**: Le fatture emesse MUST essere immutabili; le correzioni passano da nota di credito e nuova fattura.
 - **FR-014**: Il sistema MUST preparare i dati delle prestazioni sanitarie verso persone fisiche per il Sistema Tessera Sanitaria, con stato di invio e gestione dell'opposizione del paziente, senza inviarli direttamente.
-- **FR-015**: Il sistema MUST preparare un file di fattura elettronica per le fatture verso enti e aziende e MUST NOT predisporlo per le fatture verso pazienti persone fisiche.
+- **FR-015**: Il sistema MUST preparare un riepilogo dei dati della fattura elettronica (cedente, cliente, righe, natura IVA, bollo, ritenuta, dicitura) per le fatture verso enti e aziende e MUST NOT predisporlo per le fatture verso pazienti persone fisiche. La generazione del file XML conforme al tracciato ufficiale è fuori dalla prima versione.
 - **FR-016**: Il sistema MUST generare un documento stampabile o in PDF per ogni fattura, con tutti i dati obbligatori e le diciture richieste.
-- **FR-017**: Il sistema MUST tenere un'anagrafica di clienti e pazienti con i soli dati necessari alla fattura e MUST NOT conservare alcun dato clinico.
+- **FR-017**: Il sistema MUST tenere un'anagrafica di clienti e pazienti con i soli dati necessari alla fattura e MUST NOT conservare alcun dato clinico. Le fatture per prestazioni sanitarie a persone fisiche MUST essere intestate al paziente (anche minorenne) con il suo codice fiscale, che è quello usato per il Sistema Tessera Sanitaria; il sistema MUST permettere un'annotazione facoltativa "pagato da" (solo nome) e MUST NOT richiedere i dati di chi paga.
 - **FR-018**: Il sistema MUST permettere di filtrare e cercare le fatture per anno, cliente, stato e tipo, mostrando i totali.
 - **FR-019**: Il sistema MUST fornire alla specifica 001 il reddito professionale per cassa dell'anno derivato dagli incassi e dalle spese registrate.
 - **FR-020**: Il sistema MUST mantenere separate le prestazioni esenti e quelle imponibili nei totali, per i calcoli IVA e del pro-rata.
@@ -175,12 +186,12 @@ L'utente può emettere fatture per attività che non sono quella di psicologo (p
 ### Key Entities *(include if feature involves data)*
 
 - **Profilo professionale (partita IVA)**: anagrafica, codice fiscale, partita IVA, inizio attività, ATECO, regime, sede, PEC, codice destinatario, IBAN, Albo, ENPAP, impostazioni predefinite.
-- **Cliente o paziente**: persona fisica o ente, con i soli dati necessari alla fattura, tipo (sostituto d'imposta o no) e opposizione al Sistema Tessera Sanitaria; nessun dato clinico.
+- **Cliente o paziente**: persona fisica o ente, con i soli dati necessari alla fattura, tipo (sostituto d'imposta o no), opposizione al Sistema Tessera Sanitaria e annotazione facoltativa "pagato da"; nessun dato clinico.
 - **Fattura**: numero, anno, data, cliente, righe, importi calcolati, stato (bozza, emessa, annullata), dicitura.
 - **Riga di fattura**: descrizione, compenso, natura (esente sanitaria o imponibile), importi.
 - **Incasso**: data, importo, modalità, fattura collegata.
 - **Nota di credito**: documento che annulla in tutto o in parte una fattura.
-- **Preparazione STS / fattura elettronica**: elenco o file derivato dalle fatture, con stato di invio.
+- **Preparazione STS / fattura elettronica**: elenco o riepilogo derivato dalle fatture, con stato di invio.
 
 ## Success Criteria *(mandatory)*
 
@@ -201,8 +212,10 @@ L'utente può emettere fatture per attività che non sono quella di psicologo (p
 - Il contributo integrativo è del 4% dal 2027, soggetto a IVA solo nelle fatture imponibili; il trattamento ai fini della ritenuta è quello descritto (escluso dalla base); questi aspetti sono da confermare con ENPAP e commercialista.
 - La modalità di invio al Sistema Tessera Sanitaria e allo SDI è esterna all'app: l'app prepara i dati; le credenziali del Sistema Tessera Sanitaria non vengono conservate.
 - La scadenza di trasmissione al Sistema Tessera Sanitaria è da verificare (specifica 004, scadenzario).
+- **Incassi con lettore di carte**: l'utente prevede di far pagare subito dopo la seduta con un lettore di carte (SumUp). L'app non si collega al lettore né importa i movimenti: l'incasso si registra a mano. Eventuali commissioni del lettore sono spese dell'attività (specifica 008); l'importazione dei movimenti è un'evoluzione futura.
+- **Intestazione delle fatture ai pazienti** (verifica del 2026-11-20 su fonti di settore e Ordini degli psicologi, non sulle specifiche ufficiali): la fattura può essere intestata al paziente o a chi paga; nel Sistema Tessera Sanitaria la spesa è riferita al codice fiscale del paziente. La detrazione al 19% per un figlio a carico spetta al genitore, e con più genitori la ripartizione è tra loro. Da confermare su sistemats.it e col commercialista.
 - **Dati dei pazienti**: sono dati relativi alla salute e quindi di categoria particolare ai sensi del GDPR. Il sistema ne conserva il minimo indispensabile (identificativi della fattura), nessun dato clinico, e li oscura con la modalità "occhio". Valutare nel piano: cifratura dei soli campi identificativi dei pazienti, accordo sul trattamento dei dati con il fornitore del database, informativa ai pazienti. Rischio residuo accettato dall'utente per i dati in chiaro (specifica 002).
 - La fattura è un documento di emissione immutabile: le correzioni avvengono con nota di credito.
 - **IVA e "attività prevalente"** (verifica del 2026-11-20): nel testo del DPR 633/72 (artt. 19, 19-bis, 36), letto su fonte divulgativa da riscontrare, **non risulta una soglia di prevalenza** che cambi il trattamento IVA. Con operazioni esenti e imponibili vale il **pro-rata** (imponibili diviso totale, arrotondato) sull'IVA degli acquisti, oppure l'opzione di separazione delle attività (art. 36 c. 3, contabilità separata, almeno un triennio). La prevalenza può comunque incidere su altro (codice ATECO, previdenza, indici di affidabilità): da verificare col commercialista (TODO(IVA_PREVALENZA) nella costituzione).
 - Le attività non riconducibili alla professione di psicologo potrebbero non essere coperte dall'ENPAP e andare in Gestione Separata INPS: da verificare (TODO(ATTIVITA_DIVERSE) nella costituzione e specifica 001).
-- **Fuori ambito**: invio diretto al Sistema Tessera Sanitaria e allo SDI, registro costi e deducibilità delle spese (specifica 008), calcolo e scadenze di F24, IVA periodica (liquidazioni, registri) e dichiarazione IVA, da trattare in una specifica dedicata se emergono operazioni imponibili, calcolo IRPEF (specifica 001), dati per la dichiarazione dei redditi e scadenzario (specifica 004), autenticazione (specifica 002), grafica.
+- **Fuori ambito**: invio diretto al Sistema Tessera Sanitaria e allo SDI, file XML conforme della fattura elettronica (rinviato), registro costi e deducibilità delle spese (specifica 008), calcolo e scadenze di F24, IVA periodica (liquidazioni, registri) e dichiarazione IVA, da trattare in una specifica dedicata se emergono operazioni imponibili, calcolo IRPEF (specifica 001), dati per la dichiarazione dei redditi e scadenzario (specifica 004), autenticazione (specifica 002), grafica.
