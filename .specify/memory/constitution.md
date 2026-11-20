@@ -50,7 +50,10 @@ maggiorazione 1%), percentuali di deducibilità e detraibilità IVA per categori
 
 ### VI. Interfaccia Minimalista, Data-Driven e Responsive
 La UI MUST essere moderna, ordinata e priva di elementi superflui: card con KPI chiari, grafici
-a barre/ciambella per il breakdown fiscale, in linea con lo stile di My Gym e My Money. Ogni
+a barre/ciambella per il breakdown fiscale. I componenti dell'interfaccia MUST essere quelli di
+Fluent UI 9 (`@fluentui/react-components`), con un tema chiaro e scuro coerente; il layout
+(navigazione, disposizione delle schermate) sarà definito più avanti. TODO(LAYOUT): scegliere
+layout e tema nel piano; lo stile iOS di My Money non è più il riferimento. Ogni
 schermata MUST rispondere a una decisione concreta dell'utente (es. "quanto posso spendere
 oggi?", "quanto pagherò a giugno?"). Il testo dell'interfaccia MUST essere in italiano, chiaro
 e privo di legalese inutile. Ogni schermata, campo, importo calcolato e termine tecnico MUST
@@ -98,13 +101,16 @@ rischio residuo (dati leggibili dal gestore del progetto) accettato dall'utente.
 - **Riferimento normativo**: normativa fiscale italiana vigente per gli anni 2026/2027.
 - **Privacy dei dati**: vedi principio VII. I dati fiscali e personali sono conservati solo nel
   progetto Supabase dell'utente; nessun altro servizio di terzi li riceve.
-- **Stack tecnologico**: TypeScript, Preact, Vite e PWA (vite-plugin-pwa), come My Gym, con il
-  client JavaScript di Supabase per accesso ai dati e autenticazione. Il motore fiscale MUST
+- **Stack tecnologico**: TypeScript, React (richiesto da Fluent UI 9, che è una libreria per
+  React; sostituisce l'ipotesi Preact, non supportata ufficialmente da Fluent UI 9), Vite e PWA
+  (vite-plugin-pwa), con il client JavaScript di Supabase per accesso ai dati e autenticazione.
+  TODO(STACK_UI): confermare nel piano React e la versione di Fluent UI 9. Il motore fiscale MUST
   essere un modulo TypeScript puro, senza dipendenze da UI, browser o rete, eseguibile e
   testabile da riga di comando. Versioni esatte e libreria di test: da fissare nel piano.
-- **Hosting**: l'app (file statici) MUST essere pubblicata su GitHub Pages in HTTPS, come My Gym
-  e My Money. Il repository è pubblico e MUST NOT contenere dati personali né chiavi segrete
-  (principio VII).
+- **Hosting**: l'app (file statici) MUST essere pubblicata su Vercel in HTTPS, collegato al
+  repository GitHub `stefanopaterno/fiscal` (pubblicazione a ogni push su `main`). Il repository
+  è pubblico e MUST NOT contenere dati personali né chiavi segrete (principio VII). Le variabili
+  di ambiente di Vercel MUST contenere solo l'indirizzo del progetto e la chiave pubblica.
 - **Database**: Supabase, progetto `https://aldiyymgvngvdrroluus.supabase.co`. L'indirizzo è
   pubblico per natura, ma l'accesso ai dati MUST dipendere solo da login, 2FA e Row Level
   Security. TODO(REGIONE): verificare la regione del progetto, preferibilmente UE.
@@ -202,4 +208,4 @@ principi o sezioni, PATCH per chiarimenti. Ogni piano e ogni revisione MUST veri
 conformità ai principi; le deroghe MUST essere giustificate per iscritto nel piano. Il file
 `CLAUDE.md` resta la guida di ruolo e contesto per lo sviluppo quotidiano.
 
-**Version**: 2.3.0 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-20
+**Version**: 2.4.0 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-20
