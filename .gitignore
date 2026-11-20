@@ -1,0 +1,18 @@
+# Sistema
+.DS_Store
+
+# Segreti e configurazioni locali (MAI nel repository: vedi principio VII della costituzione)
+.env
+.env.*
+!.env.example
+.claude/settings.local.json
+
+# Dipendenze e build
+node_modules/
+dist/
+.vite/
+coverage/
+
+# Esportazioni e dati personali
+*.backup.json
+exports/
