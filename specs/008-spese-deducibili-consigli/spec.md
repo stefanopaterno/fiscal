@@ -229,7 +229,7 @@ Quando l'attività cresce, il sistema suggerisce **quanto si può destinare all'
 - Con prestazioni sanitarie esenti da IVA, l'IVA sugli acquisti dell'attività è di norma indetraibile e fa parte del costo; con attività imponibili in parte vale il pro-rata (da verificare).
 - Le regole dei consigli sono fornite come dati: le voci iniziali (formazione, supervisione, assicurazione, previdenza complementare, contributi volontari ENPAP, spese sanitarie, liberalità) sono da confermare con il commercialista.
 - I **bonus edilizi** e le detrazioni pluriennali sono fuori dalla prima versione.
-- Le spese sono registrate a mano: l'importazione dai movimenti bancari o da fatture elettroniche passive è rinviata.
+- Le spese sono registrate a mano, con una sola eccezione: dai file XML delle fatture elettroniche ricevute e caricati nell'archivio (specifica 010) l'app può precompilare fornitore, data, importo e IVA, e l'utente conferma categoria e deducibilità. L'importazione dai movimenti bancari e dal sistema di interscambio è rinviata.
 - I giustificativi sono dati personali (e talvolta sanitari): valgono la riservatezza della specifica 002 e l'attenzione GDPR della costituzione.
 - Le spese personali e quelle dell'attività restano distinte; nessuna spesa viene considerata in entrambe le categorie.
 - Le stime del risparmio dipendono dalla previsione dell'anno (specifica 006) e dal motore (specifica 001).
@@ -237,4 +237,4 @@ Quando l'attività cresce, il sistema suggerisce **quanto si può destinare all'
 - L'attività parte online: le categorie di studio fisico restano disattivate nella prima fase; le regole sull'uso promiscuo di locali (percentuali e condizioni) sono da verificare col commercialista.
 - **Previdenza**: l'utente ha già previdenza obbligatoria da lavoro dipendente (e TFR) e l'ENPAP; il TFR non entra nei calcoli e i contributi a forme complementari già versati risultano dalla CU e riducono il residuo del limite di deducibilità. I contributi ENPAP volontari (aumento dell'aliquota del contributo soggettivo, nei limiti previsti) sono una leva fiscale con vincolo di liquidità, da verificare con ENPAP e commercialista.
 - **Magazzino**: non previsto. Il registro dei beni durevoli (cespiti) sostituisce ciò che serve a un professionista; i materiali di consumo non si inventariano. La rivendita di merce non è prevista (vedi specifica 003, attività diverse).
-- **Fuori ambito**: gestione di magazzino e scorte, importazione bancaria, fatture passive elettroniche, bonus edilizi, compilazione di modelli e F24, accantonamento (specifica 007), previsione mensile (specifica 006), autenticazione (specifica 002).
+- **Fuori ambito**: gestione di magazzino e scorte, importazione bancaria, importazione automatica delle fatture passive dal sistema di interscambio, bonus edilizi, compilazione di modelli e F24, accantonamento (specifica 007), previsione mensile (specifica 006), autenticazione (specifica 002).

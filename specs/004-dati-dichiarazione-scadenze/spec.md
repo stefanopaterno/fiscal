@@ -219,6 +219,7 @@ Al primo avvio l'utente inserisce l'**anno di partenza** (2026, ultimo anno solo
 - **FR-031**: Il calendario dell'app MUST contenere tutte le scadenze delle regole dell'anno; il sistema MUST suggerire quali esportare in base ai dati e alle attività dell'utente (per esempio scadenze IVA solo se esistono operazioni imponibili) e MUST lasciare all'utente la modifica della selezione.
 - **FR-032**: L'utente MUST poter segnare ogni scadenza come "fatta" con un flag, con data di completamento e nota facoltativa, e togliere il flag; le scadenze fatte MUST uscire dai promemoria e restare consultabili.
 - **FR-033**: Il sistema MUST permettere all'utente di creare, modificare e cancellare scadenze personalizzate nel calendario (per esempio la data di consegna dei documenti al commercialista), con descrizione, data, nota e promemoria, distinte dalle scadenze delle regole dell'anno e senza dati sensibili nell'eventuale esportazione nel calendario del telefono.
+- **FR-034**: La checklist annuale MUST includere una voce di verifica della conservazione a norma delle fatture elettroniche emesse e ricevute (per esempio l'adesione al servizio gratuito dell'Agenzia delle Entrate o a un conservatore), con spiegazione e stato, collegata all'archivio della specifica 010.
 
 ### Key Entities *(include if feature involves data)*
 

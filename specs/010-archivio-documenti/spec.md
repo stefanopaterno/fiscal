@@ -8,6 +8,16 @@
 
 **Input**: User description: "La documentazione digitale ricevuta da archiviare."
 
+## Clarifications
+
+### Session 2026-11-20
+
+- Q: Quali formati accetta l'archivio? → A: PDF, immagini (comprese le foto del telefono) e file XML delle fatture elettroniche ricevute, conservati come originali.
+- Q: L'app legge i dati dei file XML ricevuti? → A: Sì: da un file XML di fattura elettronica l'app precompila fornitore, data, importo e IVA della spesa (specifica 008), mentre categoria e deducibilità le conferma sempre l'utente. Nessuna lettura automatica di PDF e foto.
+- Q: Le foto dei documenti si riducono automaticamente? → A: Sì, a una qualità sempre leggibile (testo nitido), con un interruttore per conservare l'originale quando serve.
+- Q: Si avvisa quali documenti vanno conservati a norma altrove? → A: Sì: per i tipi con obbligo di conservazione digitale (per esempio le fatture elettroniche) compare un avviso con la spiegazione di cosa va conservato a norma e come (servizio gratuito dell'Agenzia delle Entrate o altro conservatore), e la checklist annuale della specifica 004 ha una voce di verifica. L'app non fa la conservazione.
+- Q: Cosa succede quando si elimina un documento? → A: Finisce in un cestino per 30 giorni, da cui si può ripristinare; dopo 30 giorni è eliminato per sempre; si può svuotare il cestino subito con conferma esplicita; per i documenti da conservare per legge compare comunque un avviso prima dell'eliminazione.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Archiviare un documento ricevuto (Priority: P1)
@@ -103,20 +113,21 @@ L'utente seleziona documenti o un'intera annualità e li esporta in un archivio 
 
 ### Functional Requirements
 
-- **FR-001**: Il sistema MUST permettere di caricare documenti (PDF e immagini, e fattura elettronica XML se il piano lo prevede) da telefono e da PC con tipo, anno, data, emittente, importo e note.
-- **FR-002**: Il sistema MUST segnalare possibili duplicati e formati o dimensioni non supportati.
+- **FR-001**: Il sistema MUST permettere di caricare documenti in formato PDF, immagine (comprese le foto del telefono) e file XML di fatture elettroniche ricevute, da telefono e da PC, con tipo, anno, data, emittente, importo e note; il file XML MUST essere conservato come originale.
+- **FR-002**: Il sistema MUST segnalare possibili duplicati e formati o dimensioni non supportati. Le foto MUST essere ridotte automaticamente a una qualità sempre leggibile, con un interruttore per conservare l'originale; PDF e XML MUST NOT essere modificati.
 - **FR-003**: Il sistema MUST permettere di cercare e filtrare per anno, tipo, emittente, parola chiave e stato.
 - **FR-004**: Il sistema MUST permettere di collegare ogni documento a una o più voci (fatture, spese, checklist, scadenze, crediti, versamenti) e MUST mostrare dalle voci i documenti collegati.
 - **FR-005**: Il sistema MUST evidenziare i documenti non collegati e le voci che richiedono un documento senza averlo.
 - **FR-006**: I documenti MUST essere riservati al solo proprietario (specifica 002), con accesso per riga e a livello di file, senza indirizzi pubblici.
-- **FR-007**: Il sistema MUST non cancellare né sovrascrivere documenti senza conferma esplicita e MUST conservare le versioni precedenti di un documento sostituito.
+- **FR-007**: Il sistema MUST non cancellare né sovrascrivere documenti senza conferma esplicita e MUST conservare le versioni precedenti di un documento sostituito. L'eliminazione MUST mandare il documento in un cestino per 30 giorni, da cui è ripristinabile; trascorsi 30 giorni MUST essere eliminato per sempre, e l'utente MUST poter svuotare il cestino subito con una conferma esplicita; per i documenti da conservare per legge MUST comparire un avviso prima dell'eliminazione.
 - **FR-008**: Il sistema MUST indicare per ogni tipo di documento il periodo di conservazione previsto dalle regole dell'anno con fonte e stato di verifica.
 - **FR-009**: Il sistema MUST avvisare dei documenti con scadenza propria (polizze, certificati) con anticipo configurabile.
 - **FR-010**: Il sistema MUST permettere di esportare documenti selezionati o un anno intero in un file protetto con indice.
 - **FR-011**: Il sistema MUST oscurare i documenti con la modalità "occhio" e non includere nomi di pazienti nei nomi dei file.
 - **FR-012**: Il sistema MUST NOT archiviare dati clinici e MUST avvisare se un documento sembra contenerli.
 - **FR-013**: Il sistema MUST registrare in un registro delle modifiche caricamento, collegamento, sostituzione ed eliminazione, senza contenuti.
-- **FR-014**: Il sistema MUST mostrare che l'archivio dell'app non è una conservazione a norma dei documenti fiscali.
+- **FR-014**: Il sistema MUST mostrare che l'archivio dell'app non è una conservazione a norma dei documenti fiscali e, per i tipi di documento con obbligo di conservazione digitale (per esempio le fatture elettroniche emesse e ricevute), MUST mostrare un avviso che spiega cosa va conservato a norma e come (servizio gratuito dell'Agenzia delle Entrate o altro conservatore); le regole di conservazione MUST stare nel set di regole dell'anno con fonte e stato di verifica.
+- **FR-015**: Quando l'utente carica un file XML di fattura elettronica ricevuta, il sistema MUST leggerne i dati strutturati (fornitore, data, numero, importo, IVA) e proporre la precompilazione della spesa nella specifica 008, MUST richiedere all'utente la conferma di categoria e deducibilità, MUST segnalare un file XML non valido o dati incoerenti e MUST NOT leggere automaticamente il contenuto di PDF e foto.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -141,6 +152,6 @@ L'utente seleziona documenti o un'intera annualità e li esporta in un archivio 
 - Il servizio dati scelto (specifica 002) offre un'area di conservazione file riservata; limiti di spazio, formati e dimensioni sono da definire nel piano.
 - L'archivio dell'app **non** è conservazione sostitutiva a norma: le fatture elettroniche e i documenti con obbligo di conservazione digitale vanno conservati con i canali previsti (per esempio quelli dell'Agenzia delle Entrate o di un conservatore). Obblighi e durate sono da verificare col commercialista.
 - I consensi informati dei pazienti (specifica 005) restano gestiti nella loro specifica e non vanno in questo archivio generale.
-- Il riconoscimento automatico del testo (lettura del contenuto dei documenti) è rinviato.
+- Il riconoscimento automatico del testo (lettura del contenuto di PDF e foto) è rinviato; fa eccezione la lettura dei dati strutturati dei file XML delle fatture elettroniche ricevute.
 - Per i documenti con dati personali valgono le regole di riservatezza della costituzione e il rischio residuo dei dati in chiaro accettato dall'utente; cifratura dei file da valutare nel piano.
 - **Fuori ambito**: conservazione sostitutiva a norma, riconoscimento automatico del testo, importazione automatica da posta o da cassetto fiscale, firma digitale, consensi dei pazienti (005), pacchetto per il commercialista (009).
