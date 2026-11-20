@@ -142,7 +142,7 @@ L'utente confronta il mese e l'anno con l'anno precedente e con un obiettivo di 
 ## Assumptions
 
 - Il prospetto non fa calcoli fiscali: usa il motore della specifica 001, i dati di incasso e spesa delle specifiche 003 e 008 e la CU della specifica 004.
-- Il salvataggio mensile avviene alla prima apertura dell'app dopo la fine del mese o a richiesta dell'utente; non ci sono operazioni automatiche lato server in questa versione (da rivedere nel piano).
+- Il salvataggio mensile avviene alla prima apertura dell'app dopo la fine del mese o a richiesta dell'utente; non ci sono operazioni automatiche lato server in questa versione. Dalla release successiva (job schedulati, vedi specifica 004) il salvataggio mensile potrà essere automatico e inviare una notifica.
 - Il primo anno (2027) non ha storico professionale: stagionalità non disponibile e acconti calcolati sul solo reddito da lavoro dipendente (specifica 001); il versamento di giugno 2028 sarà il più pesante.
 - Le previsioni sono stime e non consulenza fiscale; i metodi sono ipotesi dichiarate.
 - **Fuori ambito**: raccomandazioni su quanto accantonare (specifica 007), consigli di risparmio fiscale (specifica 008), compilazione degli F24, notifiche esterne, autenticazione (specifica 002).

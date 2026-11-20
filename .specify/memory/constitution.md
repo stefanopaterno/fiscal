@@ -107,6 +107,10 @@ rischio residuo (dati leggibili dal gestore del progetto) accettato dall'utente.
   TODO(STACK_UI): confermare nel piano React e la versione di Fluent UI 9. Il motore fiscale MUST
   essere un modulo TypeScript puro, senza dipendenze da UI, browser o rete, eseguibile e
   testabile da riga di comando. Versioni esatte e libreria di test: da fissare nel piano.
+  Roadmap: la release successiva alla prima prevede job schedulati lato server (notifiche e
+  salvataggi automatici); il piano della prima versione MUST non precluderli.
+  TODO(NOTIFICHE_JOB): scegliere nel piano della release successiva il meccanismo di job e
+  notifiche (per esempio funzioni pianificate di Supabase).
 - **Hosting**: l'app (file statici) MUST essere pubblicata su Vercel in HTTPS, collegato al
   repository GitHub `stefanopaterno/fiscal` (pubblicazione a ogni push su `main`). Il repository
   è pubblico e MUST NOT contenere dati personali né chiavi segrete (principio VII). Le variabili
@@ -209,4 +213,4 @@ principi o sezioni, PATCH per chiarimenti. Ogni piano e ogni revisione MUST veri
 conformità ai principi; le deroghe MUST essere giustificate per iscritto nel piano. Il file
 `CLAUDE.md` resta la guida di ruolo e contesto per lo sviluppo quotidiano.
 
-**Version**: 2.4.1 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-20
+**Version**: 2.4.2 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-20

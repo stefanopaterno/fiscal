@@ -10,6 +10,16 @@
 
 **Nota**: con partita IVA in regime ordinario la dichiarazione è il **Modello Redditi Persone Fisiche** (ex Unico), non il 730 né il vecchio 740. Il termine "dichiarazione" in questa specifica indica quel modello.
 
+## Clarifications
+
+### Session 2026-11-20
+
+- Q: La dichiarazione la compila l'utente o il commercialista? → A: Nella prima versione l'app prepara un prospetto completo per il commercialista (collegato alla specifica 009); la guida quadro per quadro ai righi del Modello Redditi è rinviata a una versione successiva, se l'utente deciderà di compilare da solo.
+- Q: Per gli acconti 2027 serve l'imposta del 730 dell'anno 2026: come si parte? → A: L'utente inserisce a mano solo i pochi dati del 730 2026 necessari (imposta netta, acconti versati, credito o debito) come "anno di partenza", con una guida che dice dove trovarli nel 730.
+- Q: La CU si inserisce a mano o con lettura automatica del PDF? → A: Inserimento guidato a mano, con indicazione per ogni dato della casella della CU da cui prenderlo; il PDF si allega nell'archivio (specifica 010) come prova. La lettura automatica del PDF è fuori dalla prima versione.
+- Q: Come si ricevono i promemoria? → A: Prima versione: dentro l'app, più un file di calendario da importare nel calendario del telefono o del PC. Prossima release (decisione dell'utente): job schedulati lato server che inviano notifiche; nella prima versione non ci sono servizi in background.
+- Q: Il calendario mostra solo le scadenze pertinenti o tutte? → A: Il calendario dell'app contiene tutte le scadenze delle regole dell'anno; il sistema suggerisce quali conviene portare nel calendario del telefono (quelle pertinenti ai dati dell'utente) e l'utente le segna come fatte con un flag man mano che le completa.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Sapere ogni anno cosa mi serve per la dichiarazione (Priority: P1)
@@ -77,6 +87,8 @@ Il sistema mantiene un **calendario delle scadenze fiscali e previdenziali** del
 3. **Given** una scadenza passata non segnata come fatta, **When** l'utente apre il calendario, **Then** compare come "scaduta" con un avviso.
 4. **Given** una scadenza di versamento con importo stimato dai calcoli, **When** l'utente la apre, **Then** vede l'importo stimato e da quali voci deriva.
 5. **Given** un nuovo anno, **When** le sue regole sono disponibili, **Then** il calendario dell'anno viene creato senza che l'utente debba reinserire le scadenze.
+6. **Given** il calendario con tutte le scadenze dell'anno, **When** l'utente apre la funzione di esportazione, **Then** il sistema suggerisce quali portare nel calendario del telefono (per esempio quelle che riguardano i dati e le attività dell'utente) e l'utente può modificare la selezione prima di esportare.
+7. **Given** una scadenza completata, **When** l'utente la segna con il flag "fatta", **Then** lo stato cambia, compaiono data e nota facoltativa, sparisce dai promemoria e il flag si può togliere.
 
 ---
 
@@ -129,8 +141,29 @@ Con il 730 i rimborsi (per esempio quelli delle spese sanitarie detraibili o del
 
 ---
 
+### User Story 8 - Partire dai dati dell'ultimo 730 (Priority: P1)
+
+Al primo avvio l'utente inserisce l'**anno di partenza** (2026, ultimo anno solo da dipendente): pochi dati presi dal suo 730, cioè l'imposta netta dell'anno, gli acconti versati, il credito o debito emerso e se è stato applicato un rimborso o un conguaglio in busta paga. Per ciascun dato una **guida passo passo** spiega in quale parte del 730 trovarlo (e in quale punto della CU), con un esempio. Questi dati servono al motore per calcolare gli acconti 2027 con il metodo storico.
+
+**Why this priority**: senza questo storico minimo gli acconti del 2027 e le strategie di versamento della specifica 001 partono da una base sbagliata; l'utente non ha mai usato il Modello Redditi e ha bisogno di sapere dove cercare.
+
+**Independent Test**: con i dati di un 730 di prova inseriti seguendo la guida, il motore calcola gli acconti 2027 coerenti con il calcolo manuale e segnala i dati mancanti.
+
+**Acceptance Scenarios**:
+
+1. **Given** un nuovo utente senza storico, **When** apre la sezione "anno di partenza", **Then** vede l'elenco dei dati richiesti dal 730 con la guida su dove trovarli.
+2. **Given** i dati inseriti, **When** il motore calcola gli acconti 2027, **Then** usa l'imposta dell'anno di partenza e mostra da dove deriva l'importo.
+3. **Given** un dato non trovato, **When** l'utente lo salta, **Then** il sistema avvisa che gli acconti sono provvisori e indica quale dato manca.
+4. **Given** il 730 allegato come documento (specifica 010), **When** l'utente apre la guida, **Then** può consultarlo mentre compila.
+
+---
+
 ### Edge Cases
 
+- 730 dell'anno di partenza presentato con modifiche o integrativo: quale versione usare.
+- 730 congiunto o presentato da altro soggetto.
+- CU e 730 con importi diversi (conguagli, rimborsi applicati dal datore di lavoro).
+- Utente che non ha più il 730 e deve recuperarlo dal cassetto fiscale.
 - CU in ritardo o non ancora disponibile alla scadenza prevista.
 - Più CU nello stesso anno, oppure una CU rettificata dopo l'inserimento.
 - Anno senza reddito da lavoro dipendente o senza compensi professionali.
@@ -155,7 +188,7 @@ Con il 730 i rimborsi (per esempio quelli delle spese sanitarie detraibili o del
 
 - **FR-001**: Il sistema MUST creare per ogni anno d'imposta una checklist degli elementi necessari alla dichiarazione, con stato (disponibile, da fornire, completato, non applicabile) e percentuale di completamento.
 - **FR-002**: Il sistema MUST segnare automaticamente come disponibili gli elementi derivabili dai dati già presenti (compensi incassati, fatture, spese registrate, contributi ENPAP versati).
-- **FR-003**: Il sistema MUST offrire una procedura guidata per inserire una o più Certificazioni Uniche per anno, con tutti i dati richiesti dalla specifica 001, e controllarne la coerenza.
+- **FR-003**: Il sistema MUST offrire una procedura guidata per inserire una o più Certificazioni Uniche per anno, con tutti i dati richiesti dalla specifica 001, e controllarne la coerenza. Per ogni dato la procedura MUST indicare la casella della CU da cui prenderlo, con esempio; il PDF della CU MUST poter essere allegato all'archivio (specifica 010) come prova. La lettura automatica del PDF è fuori dalla prima versione.
 - **FR-004**: Il sistema MUST rendere i dati della CU e degli altri dati dichiarativi disponibili al motore di calcolo della specifica 001, distinguendo dati definitivi e stime provvisorie.
 - **FR-005**: Il sistema MUST permettere di inserire oneri deducibili, spese e oneri detraibili, familiari a carico, dati essenziali di abitazione e immobili, acconti e ritenute versati, crediti e debiti dell'anno precedente, comune e regione di residenza.
 - **FR-006**: Il sistema MUST proporre precompilati, da confermare, i dati stabili degli anni precedenti.
@@ -166,7 +199,7 @@ Con il 730 i rimborsi (per esempio quelli delle spese sanitarie detraibili o del
 - **FR-011**: Il sistema MUST gestire lo slittamento di scadenze festive al primo giorno lavorativo utile e MUST permettere di registrare proroghe.
 - **FR-012**: Il sistema MUST mostrare, per le scadenze di versamento, l'importo stimato dai calcoli della specifica 001 e le voci da cui deriva, segnalando quando è una stima.
 - **FR-013**: Il sistema MUST creare automaticamente il calendario e la checklist di un nuovo anno quando sono disponibili le sue regole.
-- **FR-014**: Il sistema MUST generare un riepilogo dell'anno, stampabile o in PDF, organizzato per le sezioni del Modello Redditi Persone Fisiche, con la data di generazione e l'indicazione delle sezioni incomplete.
+- **FR-014**: Il sistema MUST generare un riepilogo dell'anno, stampabile o in PDF, organizzato per le sezioni del Modello Redditi Persone Fisiche, con la data di generazione e l'indicazione delle sezioni incomplete. Nella prima versione il riepilogo è pensato per essere consegnato al commercialista e MUST poter essere incluso nel pacchetto della specifica 009; la guida alla compilazione dei singoli quadri e righi è fuori dalla prima versione.
 - **FR-015**: Il sistema MUST permettere di chiudere e riaprire un anno, richiedendo conferma per modificare dati di un anno chiuso e registrando la modifica.
 - **FR-016**: Il sistema MUST usare i dati degli anni chiusi come storico per il calcolo degli acconti dell'anno successivo.
 - **FR-017**: Il sistema MUST ridurre al minimo i dati personali di terzi (familiari a carico) e oscurarli con la modalità che nasconde gli importi e i dati sensibili.
@@ -179,6 +212,12 @@ Con il 730 i rimborsi (per esempio quelli delle spese sanitarie detraibili o del
 - **FR-024**: Il sistema MUST escludere dalla liquidità disponibile e dagli accantonamenti i crediti non ancora incassati né compensati.
 - **FR-025**: Soglie, vincoli e tempi tipici della compensazione e del rimborso MUST stare nel set di regole per anno con fonte e stato di verifica (principio I), e MUST essere segnalati quando non verificati.
 - **FR-026**: Il sistema MUST mostrare che i tempi di rimborso dell'Agenzia delle Entrate non sono garantiti e non dipendono dall'app.
+- **FR-027**: Il sistema MUST permettere di inserire un anno di partenza con i soli dati dell'ultimo 730 necessari al calcolo degli acconti (imposta netta, acconti versati, credito o debito, rimborsi o conguagli applicati in busta paga) e di segnarlo come dato di partenza, distinto dagli anni completi.
+- **FR-028**: Per ogni dato dell'anno di partenza il sistema MUST fornire una guida che indichi in quale parte del 730 (e della CU) trovarlo, con esempio; i riferimenti a quadri e righi MUST stare nelle regole dell'anno con stato di verifica e MUST NOT essere scritti nel codice.
+- **FR-029**: Il sistema MUST usare l'anno di partenza come storico per gli acconti del primo anno (specifica 001) e MUST avvisare che il risultato è provvisorio se mancano dei dati.
+- **FR-030**: Il sistema MUST permettere di esportare le scadenze scelte in un file di calendario da importare nel calendario del telefono o del PC (descrizione, data e promemoria), senza dati sensibili nel testo degli eventi (nessun nome di paziente né importi). Le notifiche inviate da job schedulati sono previste per la release successiva (non in questa versione).
+- **FR-031**: Il calendario dell'app MUST contenere tutte le scadenze delle regole dell'anno; il sistema MUST suggerire quali esportare in base ai dati e alle attività dell'utente (per esempio scadenze IVA solo se esistono operazioni imponibili) e MUST lasciare all'utente la modifica della selezione.
+- **FR-032**: L'utente MUST poter segnare ogni scadenza come "fatta" con un flag, con data di completamento e nota facoltativa, e togliere il flag; le scadenze fatte MUST uscire dai promemoria e restare consultabili.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -191,6 +230,7 @@ Con il 730 i rimborsi (per esempio quelli delle spese sanitarie detraibili o del
 - **Riepilogo dichiarativo**: documento generato in una data con le sezioni e i totali dell'anno.
 - **Esito della dichiarazione**: saldo finale dell'anno con le voci che lo compongono.
 - **Credito d'imposta**: importo residuo dopo gli assorbimenti, con scelta (compensazione o rimborso), stato e movimenti.
+- **Anno di partenza**: dati minimi dell'ultimo 730 (imposta netta, acconti, credito o debito, conguagli) usati come storico, con stato di completezza.
 
 ## Success Criteria *(mandatory)*
 
@@ -205,13 +245,14 @@ Con il 730 i rimborsi (per esempio quelli delle spese sanitarie detraibili o del
 - **SC-007**: L'utente individua in meno di 30 secondi cosa gli manca per completare la dichiarazione dell'anno.
 - **SC-008**: In tutti i casi di prova l'esito della dichiarazione coincide al centesimo con il saldo calcolato a mano e la somma delle voci è uguale al saldo.
 - **SC-009**: Un credito non ancora incassato non compare mai nella liquidità disponibile (0 casi nelle prove).
+- **SC-010**: Un utente senza esperienza trova ogni dato dell'anno di partenza nel proprio 730 seguendo la guida, e completa l'inserimento in meno di 10 minuti.
 
 ## Assumptions
 
 - La dichiarazione da preparare è il Modello Redditi Persone Fisiche, perché con partita IVA in regime ordinario il 730 non è utilizzabile. Dichiarazione e invio sono fatti dall'utente o dal commercialista fuori dall'app: l'app non compila né trasmette il modello.
 - Le **date delle scadenze** (invio dichiarazione, saldo e acconti, ENPAP, Sistema Tessera Sanitaria, dichiarazione IVA, rilascio CU) cambiano di anno in anno e vanno verificate su fonti ufficiali; sono tutte da verificare finché non confermate. In particolare restano aperte le scadenze ENPAP del primo anno e la scadenza di trasmissione al Sistema Tessera Sanitaria.
 - Il calcolo degli importi dei versamenti è fornito dal motore della specifica 001; la compilazione del modello F24 e i codici tributo non sono in questa specifica e sono rinviati a una specifica dedicata allo Scadenzario F24.
-- I **promemoria** compaiono nell'app all'apertura; notifiche esterne (messaggi, e-mail) e sincronizzazione con calendari sono rinviate.
+- I **promemoria** della prima versione compaiono nell'app all'apertura e, a richiesta, come file di calendario importabile (senza dati sensibili negli eventi). Le **notifiche** (push o e-mail) inviate da **job schedulati lato server** sono previste per la **release successiva**; il piano della prima versione deve lasciare il posto a questo sviluppo (per esempio con le preferenze di notifica e le scadenze già in forma consultabile da un job).
 - Gli **indici sintetici di affidabilità fiscale (ISA)** previsti per i professionisti in regime ordinario richiedono dati aggiuntivi sull'attività: sono da verificare con il commercialista e non fanno parte della prima versione. TODO nella raccolta dati.
 - La CU del datore di lavoro è rilasciata ogni anno nei primi mesi dell'anno successivo; la data esatta è nelle regole dell'anno.
 - Dati di familiari a carico e documenti allegati sono dati personali: valgono le regole di riservatezza della specifica 002 e il rischio residuo dei dati in chiaro accettato dall'utente.
