@@ -8,6 +8,16 @@
 
 **Input**: User description: "La gestione delle spese che posso scaricare e quali consigli di fare che hanno più impatto, con la lista fino a esaurimento."
 
+## Clarifications
+
+### Session 2026-11-20
+
+- Q: Dove si ricevono i pazienti e quali spese di studio servono? → A: L'attività parte online: nella prima fase le spese sono quelle di un'attività a distanza (connessione, telefono, computer, software, piattaforma di videochiamata, formazione, assicurazione, commissioni di incasso). Le categorie di studio fisico (affitto, uso promiscuo di locali) esistono ma sono disattivate finché l'utente non le attiva. Quando i ricavi lo permetteranno sarà il sistema a suggerire quanto si può spendere per l'affitto di un ufficio (storia 8).
+- Q: L'ammortamento dei beni durevoli è nella prima versione? → A: Sì, già nella prima versione: sotto la soglia deduzione immediata, sopra la soglia quote annuali con le aliquote del set di regole, con un registro dei beni durevoli.
+- Q: Serve un magazzino (scorte)? → A: No. Per un professionista che determina il reddito per cassa le rimanenze non entrano nel calcolo: i materiali di consumo si deducono quando si pagano e i beni durevoli stanno nel registro dei beni con l'ammortamento. Nessuna gestione di scorte con quantità nella prima versione; la rivendita di prodotti ai pazienti sarebbe un'attività diversa (con IVA al 22%) e sarebbe trattata a parte.
+- Q: Una spesa senza documento si può salvare? → A: Sì: si salva comunque con l'etichetta "senza giustificativo" e un promemoria; nei prospetti, nei controlli e nei consigli la spesa è segnata come incompleta finché non ha il documento.
+- Q: Previdenza complementare e contributi ENPAP volontari compaiono nei consigli? → A: Sì, ben distinti dalle spese, con avvertenza sul vincolo del denaro, vantaggio fiscale e costo di liquidità, e solo se l'accantonamento delle tasse (specifica 007) è già coperto. Il TFR non è considerato; il sistema non valuta l'adeguatezza della pensione (l'utente ha già previdenza obbligatoria da dipendente e dall'ENPAP).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Registrare le spese professionali con la loro deducibilità (Priority: P1)
@@ -56,6 +66,7 @@ Il sistema mostra una **lista di azioni consigliate per ridurre le tasse dell'an
 1. **Given** una previsione dell'anno, **When** l'utente apre i consigli, **Then** vede la lista ordinata per impatto con risparmio per euro, residuo, costo netto e scadenza.
 2. **Given** una voce che raggiunge il limite, **When** l'utente la apre, **Then** risulta esaurita e il risparmio totale ancora ottenibile scende.
 3. **Given** una voce che serve solo a ridurre le tasse, **When** l'utente la vede, **Then** il sistema ricorda che "deducibile non significa gratis" e mostra il costo netto reale.
+4. **Given** una voce di previdenza complementare o di contributi ENPAP volontari, **When** compare tra i consigli, **Then** è distinta dalle spese, avverte che il denaro è vincolato, mostra vantaggio fiscale e costo di liquidità e compare solo se l'accantonamento delle tasse è coperto.
 
 ---
 
@@ -122,6 +133,23 @@ Dopo l'accesso, la schermata iniziale mostra un **box "Come abbassare le tasse"*
 
 ---
 
+### User Story 8 - Quanto posso permettermi per un ufficio (Priority: P3)
+
+Quando l'attività cresce, il sistema suggerisce **quanto si può destinare all'affitto di un ufficio** in base agli incassi professionali: da una previsione degli incassi (specifica 006) e da un margine di sicurezza che l'utente imposta, calcola un **canone mensile massimo sostenibile**, il suo **costo netto** dopo il risparmio d'imposta (il canone riduce il reddito all'aliquota marginale), il **numero di sedute al mese** necessarie a coprirlo e il confronto con alternative più leggere (stanza a ore o studio condiviso). Mostra le ipotesi e ricorda che è una stima.
+
+**Why this priority**: aiuta una decisione importante e rischiosa (un costo fisso) usando i dati reali dell'app; non serve alla prima versione, in cui l'attività è online.
+
+**Independent Test**: con incassi e margine di prova, il canone massimo suggerito coincide con il calcolo manuale e il costo netto coincide con il risparmio d'imposta calcolato dal motore.
+
+**Acceptance Scenarios**:
+
+1. **Given** una previsione di incassi e un margine di sicurezza, **When** l'utente apre la funzione, **Then** vede il canone mensile massimo suggerito e come è stato calcolato.
+2. **Given** un canone ipotetico inserito dall'utente, **When** lo simula, **Then** vede costo netto, sedute necessarie per coprirlo e impatto su imposte e accantonamento.
+3. **Given** incassi ancora bassi o troppo variabili, **When** l'utente apre la funzione, **Then** il sistema avvisa che il suggerimento non è affidabile e mostra la soglia di incassi sotto cui sconsiglia un affitto fisso.
+4. **Given** più opzioni (ufficio, stanza a ore, studio condiviso), **When** l'utente le confronta, **Then** vede per ciascuna costo mensile, costo netto e sedute di pareggio.
+
+---
+
 ### Edge Cases
 
 - Spesa mista personale e professionale (uso promiscuo) con percentuale diversa dal predefinito.
@@ -144,7 +172,7 @@ Dopo l'accesso, la schermata iniziale mostra un **box "Come abbassare le tasse"*
 
 - **FR-001**: Il sistema MUST registrare le spese professionali con data di pagamento, importo, fornitore, categoria, modalità di pagamento e allegato, e MUST applicare il principio di cassa.
 - **FR-002**: Il sistema MUST proporre per ogni categoria la percentuale di deducibilità e la detraibilità dell'IVA dal set di regole per anno, permettere di modificarle con motivazione e mostrare l'importo deducibile.
-- **FR-003**: Il sistema MUST gestire i beni durevoli con soglia di deduzione immediata e piano di ammortamento, secondo le regole dell'anno.
+- **FR-003**: Il sistema MUST gestire i beni durevoli con soglia di deduzione immediata e piano di ammortamento, secondo le regole dell'anno (soglia e aliquote per categoria nel set di regole, con fonte e stato di verifica). Il sistema MUST tenere un registro dei beni durevoli con data e costo di acquisto, categoria, aliquota, quota di ammortamento di ogni anno, valore residuo, eventuale dismissione o vendita, e MUST fornire la quota dell'anno al reddito professionale (specifica 001). Nel primo anno di un bene la quota segue le regole dell'anno (per esempio riduzione per frazione d'anno, da verificare).
 - **FR-004**: Il sistema MUST registrare gli oneri personali deducibili e detraibili con categoria, importo, data, modalità di pagamento tracciabile e giustificativo.
 - **FR-005**: Il sistema MUST conoscere per ogni voce il limite annuo, la percentuale, le franchigie e le condizioni (dal set di regole per anno con fonte e stato di verifica) e MUST mostrare il residuo disponibile e le voci esaurite.
 - **FR-006**: Il sistema MUST calcolare il risparmio d'imposta di ogni voce con il motore della specifica 001 (deduzioni e detrazioni, incapienza compresa).
@@ -155,7 +183,7 @@ Dopo l'accesso, la schermata iniziale mostra un **box "Come abbassare le tasse"*
 - **FR-011**: Il sistema MUST mostrare dal 1° ottobre i promemoria di fine anno con le voci a più alto impatto e la scadenza del 31 dicembre.
 - **FR-012**: Il sistema MUST NOT consigliare di spostare o ritardare date di incasso o di fatturazione per ridurre le imposte; i consigli sul tempo riguardano solo il pagamento delle spese.
 - **FR-013**: Il sistema MUST fornire alle specifiche 001 e 004 le spese professionali (reddito per cassa) e gli oneri personali (deduzioni e detrazioni) registrati.
-- **FR-014**: Il sistema MUST segnalare le spese senza giustificativo, le spese pagate con metodi non tracciabili quando serve il tracciamento e quelle che superano i limiti.
+- **FR-014**: Il sistema MUST segnalare le spese senza giustificativo, le spese pagate con metodi non tracciabili quando serve il tracciamento e quelle che superano i limiti. Il sistema MUST permettere di salvare una spesa senza documento, marcandola come "senza giustificativo" con promemoria, e MUST segnarla come incompleta nei controlli, nei prospetti (specifica 009) e nei consigli.
 - **FR-015**: Il sistema MUST permettere di allegare giustificativi con accesso riservato al solo proprietario (specifica 002) e di produrre un riepilogo per categoria e anno.
 - **FR-016**: Aliquote, percentuali, limiti, soglie e scadenze dei consigli MUST essere nel set di regole per anno con fonte e stato di verifica; le regole non verificate MUST essere segnalate.
 - **FR-017**: Il sistema MUST presentare i consigli come supporto e non come consulenza personalizzata, mostrare le ipotesi e raccomandare la verifica con il commercialista per le spese di importo rilevante.
@@ -163,6 +191,12 @@ Dopo l'accesso, la schermata iniziale mostra un **box "Come abbassare le tasse"*
 - **FR-019**: Il sistema MUST mostrare nella schermata iniziale, dopo l'accesso, un box con le prime azioni consigliate per impatto, ciascuna con importo residuo, risparmio stimato, costo netto e scadenza, e un accesso alla lista completa.
 - **FR-020**: Il box MUST aggiornarsi quando cambiano spese, previsioni o limiti, MUST spiegare quando non ci sono azioni utili e MUST NOT mostrare voci esaurite o scadute.
 - **FR-021**: Il box MUST rispettare le stesse avvertenze della lista (costo netto, stima) e MUST essere comprensibile senza aprire altre schermate.
+- **FR-022**: Il sistema MUST calcolare un canone mensile massimo sostenibile per un ufficio partendo dagli incassi professionali previsti (specifica 006) e da un margine di sicurezza e un rapporto massimo tra canone e incassi impostabili dall'utente, mostrando formula e ipotesi.
+- **FR-023**: Il sistema MUST mostrare per un canone suggerito o ipotizzato il costo netto dopo il risparmio d'imposta (calcolato con il motore della specifica 001), il numero di sedute mensili necessarie a coprirlo e l'effetto sull'accantonamento (specifica 007).
+- **FR-024**: Il sistema MUST avvisare quando gli incassi sono insufficienti o troppo variabili per un costo fisso e indicare la soglia di incassi sotto cui sconsiglia l'affitto.
+- **FR-025**: Il sistema MUST permettere di confrontare più alternative di spazio (ufficio, stanza a ore, studio condiviso) per costo mensile, costo netto e sedute di pareggio.
+- **FR-026**: Il sistema MUST mantenere disattivate di default le categorie di spese di uno studio fisico (affitto, utenze, uso promiscuo di locali) e permettere di attivarle quando servono; per l'uso promiscuo di locali la percentuale di deducibilità e le condizioni MUST venire dal set di regole dell'anno con stato di verifica.
+- **FR-027**: Il sistema MUST includere nei consigli la previdenza complementare e i contributi ENPAP volontari come voci distinte dalle spese, con avvertenza sul vincolo del denaro, vantaggio fiscale e costo di liquidità, e MUST mostrarle solo se l'accantonamento delle tasse della specifica 007 è coperto; MUST calcolare il residuo del limite annuo al netto dei contributi già versati e risultanti dalla CU, MUST NOT considerare il TFR nel limite e MUST NOT valutare l'adeguatezza della pensione dell'utente.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -172,6 +206,7 @@ Dopo l'accesso, la schermata iniziale mostra un **box "Come abbassare le tasse"*
 - **Voce con limite**: regola dell'anno con limite, percentuale, franchigia, condizioni, fonte e verifica.
 - **Consiglio**: voce, residuo, risparmio per euro e massimo, costo netto, scadenza, natura, stato (attivo, esaurito).
 - **Simulazione di spesa**: ipotesi di importo e relativo effetto, non salvata nei dati reali.
+- **Ipotesi di studio**: tipo di spazio, canone, rapporto massimo tra canone e incassi, margine di sicurezza, esito (canone massimo, costo netto, sedute di pareggio).
 
 ## Success Criteria *(mandatory)*
 
@@ -186,6 +221,7 @@ Dopo l'accesso, la schermata iniziale mostra un **box "Come abbassare le tasse"*
 - **SC-007**: Nessun consiglio suggerisce di spostare date di incasso o fatturazione (0 casi nelle prove).
 - **SC-008**: Dopo l'accesso il box della home è visibile senza scorrere e mostra la prima azione per impatto entro 3 secondi dal caricamento dei dati.
 - **SC-009**: Il box non mostra mai voci esaurite o scadute (0 casi nelle prove).
+- **SC-010**: Il canone massimo suggerito e il costo netto coincidono al centesimo con il calcolo manuale in tutti i casi di prova e ogni suggerimento mostra le ipotesi usate.
 
 ## Assumptions
 
@@ -197,4 +233,8 @@ Dopo l'accesso, la schermata iniziale mostra un **box "Come abbassare le tasse"*
 - I giustificativi sono dati personali (e talvolta sanitari): valgono la riservatezza della specifica 002 e l'attenzione GDPR della costituzione.
 - Le spese personali e quelle dell'attività restano distinte; nessuna spesa viene considerata in entrambe le categorie.
 - Le stime del risparmio dipendono dalla previsione dell'anno (specifica 006) e dal motore (specifica 001).
-- **Fuori ambito**: importazione bancaria, fatture passive elettroniche, bonus edilizi, compilazione di modelli e F24, accantonamento (specifica 007), previsione mensile (specifica 006), autenticazione (specifica 002).
+- Il **rapporto massimo tra canone e incassi** e il margine di sicurezza sono regole pratiche scelte dall'utente, non regole fiscali: il valore iniziale è da stabilire e non è nelle regole fiscali dell'anno. Il suggerimento per l'ufficio non è una consulenza e non tiene conto di fattori non presenti nell'app (contratti, spese accessorie, rischio di vuoti).
+- L'attività parte online: le categorie di studio fisico restano disattivate nella prima fase; le regole sull'uso promiscuo di locali (percentuali e condizioni) sono da verificare col commercialista.
+- **Previdenza**: l'utente ha già previdenza obbligatoria da lavoro dipendente (e TFR) e l'ENPAP; il TFR non entra nei calcoli e i contributi a forme complementari già versati risultano dalla CU e riducono il residuo del limite di deducibilità. I contributi ENPAP volontari (aumento dell'aliquota del contributo soggettivo, nei limiti previsti) sono una leva fiscale con vincolo di liquidità, da verificare con ENPAP e commercialista.
+- **Magazzino**: non previsto. Il registro dei beni durevoli (cespiti) sostituisce ciò che serve a un professionista; i materiali di consumo non si inventariano. La rivendita di merce non è prevista (vedi specifica 003, attività diverse).
+- **Fuori ambito**: gestione di magazzino e scorte, importazione bancaria, fatture passive elettroniche, bonus edilizi, compilazione di modelli e F24, accantonamento (specifica 007), previsione mensile (specifica 006), autenticazione (specifica 002).
