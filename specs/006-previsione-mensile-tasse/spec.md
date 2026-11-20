@@ -8,6 +8,16 @@
 
 **Input**: User description: "Un prospetto che man mano che passano i mesi mi mostri il forecast sulle tasse."
 
+## Clarifications
+
+### Session 2026-11-20
+
+- Q: Come si stimano i mesi futuri nel primo anno? → A: Si parte da un obiettivo annuo inserito dall'utente (distribuito sui mesi rimasti); dopo tre mesi di dati reali l'app passa alla media dei mesi passati (andamento), mostrando il confronto tra i due metodi. Gli impegni noti restano un'opzione aggiuntiva.
+- Q: Come si definiscono gli scenari prudente e ottimistico? → A: Prudente = incassi del 20% più bassi dell'atteso, ottimistico = 20% più alti; percentuali modificabili. Dopo almeno sei mesi di dati reali il sistema può proporre un intervallo basato sulla variabilità reale (da accettare dall'utente).
+- Q: Si possono indicare i mesi di minore attività? → A: Sì: ogni mese ha un peso da 0% a 100%, predefinito uguale per tutti; l'utente può ridurre o azzerare i mesi di pausa e l'obiettivo annuo viene redistribuito sugli altri mesi.
+- Q: Quale cifra della previsione compare in evidenza nella schermata iniziale? → A: Due numeri affiancati: le tasse totali previste per l'anno in corso e l'importo del prossimo grande versamento con la data, con lo scenario prudente indicato a parte.
+- Q: Quanto in avanti arriva il calendario dei pagamenti? → A: 18 mesi, così da inizio 2027 si vedono già giugno e novembre 2028.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Prospetto mese per mese delle tasse previste (Priority: P1)
@@ -59,7 +69,7 @@ A ogni fine mese il sistema salva la previsione di fine anno. L'utente vede un g
 
 ### User Story 4 - Quando uscirà il denaro: il calendario dei pagamenti per mese (Priority: P2)
 
-Il sistema mostra, mese per mese per i prossimi 12-18 mesi, quanto uscirà per tasse e contributi: ritenute eventuali, saldo e acconti di giugno e novembre, contributi ENPAP e le altre scadenze. Evidenzia i mesi più pesanti, in particolare **giugno 2028**, quando per il primo anno di partita IVA si sommano saldo 2027 e primo acconto 2028.
+Il sistema mostra, mese per mese per i prossimi 18 mesi, quanto uscirà per tasse e contributi: ritenute eventuali, saldo e acconti di giugno e novembre, contributi ENPAP e le altre scadenze. Evidenzia i mesi più pesanti, in particolare **giugno 2028**, quando per il primo anno di partita IVA si sommano saldo 2027 e primo acconto 2028.
 
 **Why this priority**: collega la previsione delle tasse alla liquidità e al calendario della specifica 004.
 
@@ -106,11 +116,11 @@ L'utente confronta il mese e l'anno con l'anno precedente e con un obiettivo di 
 
 - **FR-001**: Il sistema MUST mostrare, per ogni mese dell'anno, incassi e spese del mese e da inizio anno, reddito professionale cumulato e previsione di fine anno di imposte, contributi e conguaglio, distinguendo dati reali e previsti.
 - **FR-002**: Le imposte e i contributi previsti MUST essere calcolati con il motore della specifica 001, senza duplicare regole fiscali.
-- **FR-003**: Il sistema MUST offrire i metodi di previsione andamento, stagionalità, impegni noti e obiettivo annuo, indicando quelli non disponibili e perché.
-- **FR-004**: Il sistema MUST produrre tre scenari (prudente, atteso, ottimistico) con ipotesi visibili e MUST mostrare il campo di variazione delle tasse.
+- **FR-003**: Il sistema MUST offrire i metodi di previsione andamento, stagionalità, impegni noti e obiettivo annuo, indicando quelli non disponibili e perché. Nel primo anno il metodo iniziale MUST essere l'obiettivo annuo inserito dall'utente, distribuito sui mesi rimasti; dopo tre mesi di dati reali il sistema MUST passare per impostazione predefinita all'andamento e MUST mostrare il confronto tra i due metodi, lasciando all'utente la scelta.
+- **FR-004**: Il sistema MUST produrre tre scenari con ipotesi visibili e MUST mostrare il campo di variazione delle tasse: prudente con incassi inferiori del 20% all'atteso e ottimistico superiori del 20% (percentuali modificabili dall'utente). Dopo almeno sei mesi di dati reali il sistema MAY proporre un intervallo basato sulla variabilità reale, che l'utente può accettare o rifiutare.
 - **FR-005**: Il sistema MUST salvare la previsione di fine anno a ogni chiusura mensile e MUST permettere di salvarla a mano.
 - **FR-006**: Il sistema MUST spiegare ogni variazione di previsione tra due salvataggi indicando le cause (incassi, spese, metodo, scaglione).
-- **FR-007**: Il sistema MUST mostrare il calendario dei pagamenti per mese con importi stimati e tipo di versamento, evidenziando il mese più oneroso e, nel primo anno, il versamento di giugno con saldo e primo acconto.
+- **FR-007**: Il sistema MUST mostrare il calendario dei pagamenti per mese con importi stimati e tipo di versamento, evidenziando il mese più oneroso e, nel primo anno, il versamento di giugno con saldo e primo acconto. L'orizzonte del calendario dei pagamenti MUST essere di 18 mesi dalla data corrente.
 - **FR-008**: Il sistema MUST usare le date e i metodi di calcolo di saldo e acconti dal set di regole per anno e dalla specifica 001 (storico o previsionale).
 - **FR-009**: Il sistema MUST considerare le ritenute d'acconto subite, i crediti dell'anno precedente non ancora incassati o compensati (specifica 004) e gli acconti già versati nel calcolo del conguaglio e dei pagamenti previsti.
 - **FR-010**: Il sistema MUST segnalare ipotesi basate su pochi dati (per esempio meno di tre mesi) come poco affidabili.
@@ -119,6 +129,8 @@ L'utente confronta il mese e l'anno con l'anno precedente e con un obiettivo di 
 - **FR-013**: Il sistema MUST NOT alterare i dati reali; le ipotesi e gli scenari MUST essere modificabili e scartabili.
 - **FR-014**: Il sistema MUST presentare tutte le previsioni come stime e MUST segnalare i dati provvisori e le regole non verificate.
 - **FR-015**: Il prospetto MUST essere leggibile da telefono e da PC e MUST oscurare gli importi con la modalità "occhio".
+- **FR-016**: Il sistema MUST permettere di assegnare a ogni mese un peso da 0% a 100% (predefinito uguale per tutti) per indicare mesi di minore attività, e MUST redistribuire l'obiettivo annuo e le previsioni sui mesi rimasti in base ai pesi, mostrando i pesi usati.
+- **FR-017**: Il sistema MUST fornire alla schermata iniziale due cifre affiancate: le tasse totali previste per l'anno in corso e l'importo del prossimo grande versamento con la data (per esempio il versamento di giugno), indicando a parte il valore dello scenario prudente, con l'avvertenza che sono stime.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -126,6 +138,7 @@ L'utente confronta il mese e l'anno con l'anno precedente e con un obiettivo di 
 - **Previsione mensile**: istantanea a fine mese con incassi, spese, reddito, imposte, contributi, conguaglio finale previsti.
 - **Pagamento previsto**: mese, tipo (saldo, acconto, ENPAP, altro), importo stimato.
 - **Impegno noto**: compenso o fattura da incassare con data attesa.
+- **Peso del mese**: percentuale di attività prevista per ogni mese, usata per distribuire obiettivo e previsioni.
 - **Obiettivo**: fatturato o netto desiderato per anno o mese.
 
 ## Success Criteria *(mandatory)*
