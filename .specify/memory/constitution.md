@@ -141,9 +141,10 @@ rischio residuo (dati leggibili dal gestore del progetto) accettato dall'utente.
   essere oscurati dalla modalità che nasconde gli importi. Fa eccezione il consenso informato:
   l'app MAY conservare per ogni paziente il consenso (data, versione del testo, firmatario,
   eventuale copia firmata, revoca), che MUST restare separato da ogni contenuto clinico e MUST
-  seguire le stesse protezioni dei dati dei pazienti (specifica 005). TODO(GDPR): valutare nel
-  piano la cifratura dei soli campi identificativi dei pazienti e delle copie dei consensi,
-  l'accordo sul trattamento dei dati con il fornitore del database e l'informativa ai pazienti.
+  seguire le stesse protezioni dei dati dei pazienti (specifica 005). Le copie dei consensi restano in chiaro per scelta dell'utente (rischio
+  accettato). TODO(GDPR): definire l'accordo sul trattamento dei dati con il fornitore del
+  database, la regione UE del progetto, l'informativa ai pazienti e valutare nel piano la
+  cifratura dei soli campi identificativi dei pazienti.
 - **Profilo dell'utente**: psicologo libero professionista, regime ordinario, con reddito da lavoro
   dipendente (CU) in cumulo, che rimane dipendente in parallelo alla partita IVA (la modalità
   "solo partita IVA" è rinviata). Partita IVA con inizio attività nel 2027: il primo anno d'imposta
@@ -219,4 +220,4 @@ principi o sezioni, PATCH per chiarimenti. Ogni piano e ogni revisione MUST veri
 conformità ai principi; le deroghe MUST essere giustificate per iscritto nel piano. Il file
 `CLAUDE.md` resta la guida di ruolo e contesto per lo sviluppo quotidiano.
 
-**Version**: 2.4.5 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-20
+**Version**: 2.4.6 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-20

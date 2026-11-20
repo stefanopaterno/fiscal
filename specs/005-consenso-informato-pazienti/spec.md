@@ -8,6 +8,16 @@
 
 **Input**: User description: "Per i pazienti voglio conservare anche il consenso informato."
 
+## Clarifications
+
+### Session 2026-11-20
+
+- Q: Quali tipi di consenso sono già pronti nell'app? → A: Nessuno: i tipi di consenso li crea l'utente (nome e descrizione), perché i testi e la loro suddivisione sono scelte professionali dell'utente. L'app non propone tipi predefiniti.
+- Q: Cosa si conserva di un consenso acquisito (anche online)? → A: Sempre data di firma, tipo, versione del testo e modalità di acquisizione (firma su carta, e-mail di accettazione, altro); l'allegato (copia firmata o e-mail) è facoltativo, scelto caso per caso.
+- Q: Le copie dei consensi sono cifrate con una chiave dell'utente? → A: No: restano in chiaro, con la stessa protezione degli altri dati (login, 2FA, regole per riga, accesso al file riservato). Rischio residuo accettato dall'utente, titolare del trattamento: restano da fare l'accordo sul trattamento dei dati con il fornitore del database, la regione UE del progetto e l'informativa ai pazienti.
+- Q: Un consenso scade? → A: No: vale fino a fine percorso o revoca; il rinnovo è richiesto solo se cambia la versione del testo o il tipo di intervento; promemoria facoltativo a 12 mesi per rivedere i consensi. La durata esatta è da verificare con l'Ordine.
+- Q: Come compare il paziente per impostazione predefinita? → A: Con iniziali e anno di nascita (per esempio "M.R. 2008"); un'icona mostra il nome completo dopo una verifica con Face ID, impronta o PIN del dispositivo, e il nome torna nascosto dopo pochi secondi.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Registrare il consenso informato di un paziente (Priority: P1)
@@ -105,11 +115,11 @@ L'utente vede nel calendario e nella scheda del paziente i promemoria sui consen
 
 ### Functional Requirements
 
-- **FR-001**: Il sistema MUST permettere di registrare per ogni paziente uno o più consensi, ciascuno con tipo, data di firma, data di registrazione, versione del testo e firmatario (nome e ruolo).
-- **FR-002**: Il sistema MUST supportare almeno i tipi di consenso: consenso informato al trattamento psicologico e consenso al trattamento dei dati personali e sulla salute; l'utente MUST poter aggiungere altri tipi (per esempio teleconsulto o percorso di coppia).
-- **FR-003**: Il sistema MUST permettere di allegare a un consenso la copia firmata (PDF o immagine) e di riaprirla o scaricarla.
+- **FR-001**: Il sistema MUST permettere di registrare per ogni paziente uno o più consensi, ciascuno con tipo, data di firma, data di registrazione, versione del testo e firmatario (nome e ruolo). Il sistema MUST registrare sempre la modalità di acquisizione (per esempio firma su carta, e-mail di accettazione, altro) e MUST trattare l'allegato come facoltativo.
+- **FR-002**: Il sistema MUST permettere all'utente di creare e modificare i propri tipi di consenso (nome e descrizione) e MUST NOT imporre tipi predefiniti; ogni consenso registrato MUST essere collegato a un tipo scelto dall'utente.
+- **FR-003**: Il sistema MUST permettere di allegare a un consenso la copia firmata o l'e-mail di accettazione (PDF o immagine), facoltativa, e di riaprirla o scaricarla.
 - **FR-004**: Il sistema MUST gestire il consenso di minori e persone sotto tutela, registrando uno o più firmatari e indicando se il consenso è completo, incompleto o non richiesto con motivazione.
-- **FR-005**: Il sistema MUST mostrare per ogni paziente lo stato attuale del consenso (presente, mancante, incompleto, revocato, da rinnovare) e l'elenco dei pazienti per stato.
+- **FR-005**: Il sistema MUST mostrare per ogni paziente lo stato attuale del consenso (presente, mancante, incompleto, revocato, da rinnovare) e l'elenco dei pazienti per stato. Un consenso MUST valere fino a fine percorso o revoca; lo stato "da rinnovare" MUST comparire solo se cambia la versione del testo o il tipo di intervento, e il sistema MAY mostrare un promemoria facoltativo a 12 mesi per rivedere i consensi.
 - **FR-006**: Il sistema MUST permettere di registrare la revoca con data e MUST conservare lo storico completo senza sovrascrivere né cancellare i consensi precedenti.
 - **FR-007**: Il sistema MUST segnalare quando un paziente minorenne diventa maggiorenne e richiede un nuovo consenso.
 - **FR-008**: Il sistema MUST permettere di caricare modelli di consenso e informativa con numero di versione e data di entrata in vigore, di legare ogni consenso alla versione firmata e di elencare i pazienti con una versione precedente.
@@ -117,11 +127,12 @@ L'utente vede nel calendario e nella scheda del paziente i promemoria sui consen
 - **FR-010**: Il sistema MUST NOT conservare nel consenso né nei suoi allegati o note alcun dato clinico (diagnosi, motivi dell'invio, contenuti delle sedute) e MUST limitare il testo libero ai soli motivi amministrativi del consenso.
 - **FR-011**: Il sistema MUST segnalare con un avviso non bloccante l'emissione di una fattura per un paziente senza consenso valido (collegamento con la specifica 003).
 - **FR-012**: Il sistema MUST mostrare nel calendario (specifica 004) i promemoria sui consensi mancanti, incompleti, revocati o da rinnovare.
-- **FR-013**: Il sistema MUST trattare consensi e copie firmate con le stesse protezioni dei dati dei pazienti: accesso solo al proprietario, accesso per riga, oscuramento con la modalità "occhio" e inclusione nelle esportazioni cifrate.
+- **FR-013**: Il sistema MUST trattare consensi e copie firmate con le stesse protezioni dei dati dei pazienti: accesso solo al proprietario, accesso per riga, oscuramento con la modalità "occhio" e inclusione nelle esportazioni cifrate. Nell'elenco dei pazienti e nelle schermate dei consensi il paziente MUST comparire per impostazione predefinita con iniziali e anno di nascita; un'icona MUST mostrare il nome completo solo dopo una verifica del dispositivo (Face ID, impronta o PIN, come per lo sblocco rapido della specifica 002) e il nome MUST tornare nascosto dopo pochi secondi o alla chiusura della schermata.
 - **FR-014**: Le copie firmate MUST essere conservate con un accesso riservato al solo proprietario, mai tramite indirizzi pubblici o condivisibili.
 - **FR-015**: Il sistema MUST permettere di esportare tutti i dati e i consensi di un singolo paziente (richiesta di accesso) e di indicare quali dati vanno conservati per obbligo di legge e quali possono essere cancellati (richiesta di cancellazione).
 - **FR-016**: Il sistema MUST registrare in un registro delle modifiche chi e quando ha creato, modificato o revocato un consenso, senza contenuti sensibili.
 - **FR-017**: Il sistema MUST NOT cancellare i consensi quando viene eliminato un paziente senza un avviso esplicito e senza una conferma dell'utente.
+- **FR-018**: Se la verifica del dispositivo non è disponibile o fallisce, il sistema MUST NOT mostrare il nome completo e MUST offrire la verifica completa della specifica 002; ogni visualizzazione del nome completo MAY essere registrata nel registro delle modifiche senza contenuti.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -148,7 +159,7 @@ L'utente vede nel calendario e nella scheda del paziente i promemoria sui consen
 
 - Il consenso informato dello psicologo è richiesto dal Codice Deontologico degli psicologi italiani (art. 24, e art. 31 per i minori) e il trattamento dei dati sulla salute richiede informativa e, ove necessario, consenso (GDPR, art. 9). Gli obblighi esatti, i testi e la necessità del consenso di entrambi i genitori sono da verificare con l'Ordine degli Psicologi o con un consulente; l'app registra, non stabilisce, cosa sia dovuto.
 - L'app **non** fornisce né valida testi legali: i modelli sono caricati dall'utente.
-- Il consenso e il suo stato non sono dati clinici, ma confermano che una persona è paziente di uno psicologo e quindi sono dati sulla salute di categoria particolare (GDPR). Per questo seguono le protezioni della specifica 002 e della costituzione (principio VII e vincolo "Dati dei pazienti"). Il rischio residuo del dato in chiaro, già accettato dall'utente, qui è più alto per le **copie firmate**: nel piano si valuta la cifratura dei file e dei campi identificativi, e il rapporto con il fornitore (accordo sul trattamento dei dati).
+- Il consenso e il suo stato non sono dati clinici, ma confermano che una persona è paziente di uno psicologo e quindi sono dati sulla salute di categoria particolare (GDPR). Per questo seguono le protezioni della specifica 002 e della costituzione (principio VII e vincolo "Dati dei pazienti"). Il rischio residuo del dato in chiaro, già accettato dall'utente, qui è più alto per le **copie firmate**: l'utente ha deciso di NON cifrare le copie dei consensi (rischio residuo accettato); restano da definire il rapporto con il fornitore (accordo sul trattamento dei dati), la regione dei dati nell'Unione Europea e l'informativa ai pazienti.
 - Le copie firmate stanno nello storage riservato del database (specifica 002), con accesso solo al proprietario; formati, dimensioni massime e comportamento senza connessione sono da definire nel piano (TODO(OFFLINE) nella costituzione).
 - Il sistema usa la data di nascita del paziente solo per distinguere minori e maggiorenni; l'anagrafica resta minima (specifica 003).
 - I tempi di conservazione dei consensi, delle fatture e dei dati dei pazienti sono da verificare (obblighi di conservazione della documentazione professionale e diritto alla cancellazione del GDPR); finché non verificati, l'app non cancella nulla in automatico.
