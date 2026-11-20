@@ -8,6 +8,16 @@
 
 **Input**: User description: "Autenticazione a due fattori per My Fiscal. I dati fiscali sono centralizzati in un database Supabase (https://aldiyymgvngvdrroluus.supabase.co) usato da PC e telefono, conservati in chiaro lato server e protetti da login, 2FA e regole di accesso per riga."
 
+## Clarifications
+
+### Session 2026-11-20
+
+- Q: Quale secondo fattore si usa? → A: Solo un'app di autenticazione con codici temporanei (l'utente usa Google Authenticator; qualsiasi app compatibile funziona), più i codici di recupero. Nessun SMS. Impronta, Face ID e chiavi di sicurezza non sono secondo fattore di accesso: sono previsti al più per lo sblocco rapido o più avanti.
+- Q: Come si sblocca l'app dopo il blocco automatico? → A: Con sblocco rapido (Face ID, impronta o PIN del dispositivo) dopo il blocco per inattività; password e codice a 6 cifre solo dopo un periodo più lungo senza accesso completo, su un nuovo dispositivo o dopo operazioni sensibili. Lo sblocco rapido non sostituisce il login completo.
+- Q: Dopo quanto tempo si blocca l'app e quanto dura l'accesso completo? → A: Valori iniziali: blocco dopo 5 minuti di inattività e accesso completo valido 14 giorni; entrambi modificabili dalle impostazioni di sicurezza.
+- Q: L'app funziona offline nella prima versione? → A: No: serve la connessione, ma se la rete cade durante un inserimento il dato resta in una coda protetta sul dispositivo e parte al ritorno della rete. Nessuna copia completa dei dati sul dispositivo; l'uso offline completo è rinviato.
+- Q: Come si rientra se si perdono secondo fattore e codici di recupero? → A: Oltre ai codici di recupero monouso, l'utente ha una **frase di recupero personale** che conosce solo lui, da usare soltanto per il rientro di emergenza e mai per il login normale: non salta il secondo fattore ma avvia un ripristino con attesa e avviso (non è una "porta di servizio"). Ultima risorsa: ripristino manuale come amministratore del progetto, protetto dalla sua 2FA. Nessun reset via e-mail del secondo fattore.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Accedere con login e secondo fattore (Priority: P1)
@@ -73,6 +83,9 @@ Se l'utente perde il telefono con l'app di autenticazione, riprende l'accesso co
 2. **Given** un secondo fattore perso, **When** l'utente usa un codice di recupero, **Then** rientra e può configurare un nuovo secondo fattore.
 3. **Given** un codice di recupero già usato, **When** viene inserito di nuovo, **Then** viene rifiutato.
 4. **Given** credenziali, secondo fattore e codici di recupero tutti persi, **When** l'utente tenta di rientrare, **Then** l'app spiega quale procedura di ripristino dell'account è disponibile e quali sono i suoi limiti.
+5. **Given** secondo fattore e codici di recupero persi, **When** l'utente inserisce password e frase di recupero, **Then** il sistema non apre l'app ma avvia un ripristino: avvisa, impone un'attesa durante la quale il ripristino si può annullare e, trascorsa l'attesa, permette di configurare un nuovo secondo fattore.
+6. **Given** una frase di recupero errata più volte, **When** si supera il limite di tentativi, **Then** il sistema blocca temporaneamente il recupero e avvisa.
+7. **Given** un ripristino completato con la frase di recupero, **When** l'utente rientra, **Then** la frase usata non è più valida e ne viene impostata una nuova.
 
 ---
 
@@ -88,6 +101,9 @@ Quando l'app resta inattiva o va in background, si blocca e nasconde gli importi
 
 1. **Given** un tempo di blocco impostato, **When** l'app resta inattiva per quel tempo, **Then** si blocca e nasconde i dati.
 2. **Given** l'app che va in background, **When** l'utente torna, **Then** gli importi sono nascosti finché non li mostra o ripete la verifica.
+3. **Given** l'app bloccata per inattività, **When** l'utente usa lo sblocco rapido del dispositivo, **Then** rientra senza ripetere password e codice, purché sia entro il periodo consentito dall'ultimo accesso completo.
+4. **Given** un periodo più lungo dell'ultimo accesso completo, un nuovo dispositivo o un'operazione sensibile (cambio password, rigenerazione dei codici, esportazione dei dati), **When** l'utente tenta di rientrare, **Then** il sistema richiede password e codice a 6 cifre e non accetta lo sblocco rapido.
+5. **Given** un dispositivo senza sblocco rapido disponibile o rifiutato più volte, **When** l'app è bloccata, **Then** il sistema chiede password e codice completo.
 
 ---
 
@@ -110,7 +126,9 @@ L'utente può cambiare la password, riconfigurare il secondo fattore, rigenerare
 
 - Il telefono con l'app di autenticazione viene perso o sostituito.
 - L'orologio del dispositivo è sbagliato e il codice temporaneo viene rifiutato.
-- Nessuna connessione disponibile: l'accesso ai dati potrebbe non essere possibile (comportamento offline da definire).
+- Nessuna connessione disponibile: la consultazione dei dati non è possibile; gli inserimenti restano in coda e partono al ritorno della rete, senza perdite e senza duplicati.
+- Inserimento in coda mentre la sessione è scaduta o l'app è bloccata: la coda resta protetta e parte dopo il nuovo accesso.
+- Lo stesso dato inserito in coda da due dispositivi, o modificato nel frattempo: l'utente vede il conflitto e sceglie.
 - Il servizio del database è temporaneamente non disponibile.
 - La chiave pubblica nel codice viene copiata da terzi: non deve bastare per leggere dati.
 - Una tabella nuova viene creata senza regole di accesso per riga.
@@ -123,7 +141,7 @@ L'utente può cambiare la password, riconfigurare il secondo fattore, rigenerare
 
 ### Functional Requirements
 
-- **FR-001**: Il sistema MUST richiedere un login con credenziali e un secondo fattore per qualsiasi accesso ai dati fiscali, da PC e da telefono.
+- **FR-001**: Il sistema MUST richiedere un login con credenziali e un secondo fattore per qualsiasi accesso ai dati fiscali, da PC e da telefono. Il secondo fattore MUST essere un codice temporaneo di un'app di autenticazione; il sistema MUST NOT offrire SMS come alternativa.
 - **FR-002**: Il sistema MUST NOT mostrare dati fiscali, importi o riepiloghi prima del completamento di entrambe le verifiche.
 - **FR-003**: Il database MUST accettare letture e scritture solo da un utente autenticato e solo sulle righe di cui è proprietario; ogni tabella MUST avere queste regole attive.
 - **FR-004**: Il sistema MUST NOT permettere a un utente non autenticato o a un altro utente di leggere o modificare dati del proprietario, anche conoscendo l'indirizzo del database e la chiave pubblica.
@@ -132,7 +150,7 @@ L'utente può cambiare la password, riconfigurare il secondo fattore, rigenerare
 - **FR-007**: Il sistema MUST mostrare le sessioni attive e permettere di chiuderle.
 - **FR-008**: Il sistema MUST generare alla configurazione della 2FA dei codici di recupero monouso, mostrarli una sola volta, chiedere conferma di averli conservati e permettere di rigenerarli.
 - **FR-009**: Il sistema MUST permettere il rientro con un codice di recupero e la riconfigurazione del secondo fattore.
-- **FR-010**: Il sistema MUST bloccare l'app e nascondere gli importi dopo un periodo di inattività configurabile e quando l'app va in background.
+- **FR-010**: Il sistema MUST bloccare l'app e nascondere gli importi dopo un periodo di inattività configurabile e quando l'app va in background. Il valore iniziale del blocco è 5 minuti e quello dell'accesso completo (prima di richiedere di nuovo password e codice) è 14 giorni; entrambi MUST essere modificabili dall'utente nelle impostazioni di sicurezza entro limiti minimi e massimi stabiliti.
 - **FR-011**: Il sistema MUST offrire la modalità che nasconde gli importi a comando.
 - **FR-012**: Il sistema MUST limitare i tentativi di accesso errati con rallentamenti o blocchi temporanei.
 - **FR-013**: Il sistema MUST permettere di cambiare password, riconfigurare il secondo fattore e rigenerare i codici di recupero, dopo una nuova verifica.
@@ -141,6 +159,12 @@ L'utente può cambiare la password, riconfigurare il secondo fattore, rigenerare
 - **FR-016**: Il sistema MUST avvisare l'utente, con una dichiarazione chiara, che i dati sono conservati in chiaro nel database e che chi ha accesso amministrativo al progetto può leggerli; l'account di gestione del progetto del database MUST essere protetto con la 2FA.
 - **FR-017**: Il sistema MUST NOT inviare i dati a servizi diversi dal database dell'utente.
 - **FR-018**: Il sistema MUST avvisare quando l'utente sceglie un export o un backup non cifrato.
+- **FR-019**: Il sistema MUST offrire uno sblocco rapido con Face ID, impronta o PIN del dispositivo dopo il blocco automatico, entro un periodo massimo dall'ultimo accesso completo (impostabile), e MUST richiedere password e codice a 6 cifre dopo tale periodo, su un nuovo dispositivo e prima di operazioni sensibili (cambio password, nuovi codici di recupero, esportazione dei dati, disattivazione della 2FA).
+- **FR-020**: Lo sblocco rapido MUST NOT sostituire il login completo né creare una nuova sessione: serve solo a riaprire una sessione già valida sullo stesso dispositivo, e MUST poter essere disattivato in ogni momento.
+- **FR-021**: Quando la rete non è disponibile durante un inserimento, il sistema MUST conservare il dato in una coda protetta sul dispositivo, mostrarlo come "in attesa di invio", inviarlo al ritorno della rete (dopo il nuovo accesso se serve) senza perdite né duplicati, e segnalare i conflitti all'utente.
+- **FR-022**: Il sistema MUST NOT conservare sul dispositivo una copia completa dei dati fiscali per l'uso offline nella prima versione; la coda MUST contenere solo gli inserimenti non ancora inviati e MUST essere protetta e cancellata al logout o alla chiusura della sessione.
+- **FR-023**: Il sistema MUST permettere di impostare una frase di recupero personale, usabile solo per avviare il ripristino di emergenza (mai per il login normale, mai per saltare il secondo fattore): il sistema MUST conservarla solo come impronta non reversibile lato server, verificarla lato server con limiti di tentativi, richiedere una lunghezza minima, imporre un'attesa (valore da fissare nel piano) con avviso all'utente e possibilità di annullare, invalidarla dopo l'uso e chiedere di impostarne una nuova.
+- **FR-024**: La frase di recupero MUST NOT comparire nel codice, nel repository, nelle variabili di ambiente, nei log né nel browser, e MUST NOT essere una password fissa verificata dal client.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -148,6 +172,9 @@ L'utente può cambiare la password, riconfigurare il secondo fattore, rigenerare
 - **Secondo fattore**: verifica aggiuntiva associata all'account (es. app di autenticazione).
 - **Codici di recupero**: codici monouso generati alla configurazione.
 - **Sessione**: accesso attivo di un dispositivo, con scadenza e possibilità di chiusura.
+- **Coda di inserimenti**: dati inseriti senza rete e non ancora inviati, protetti sul dispositivo, con stato (in attesa, inviato, in conflitto).
+- **Frase di recupero**: segreto personale per il solo ripristino di emergenza, conservato come impronta lato server, con attesa e avviso.
+- **Sblocco rapido**: verifica locale del dispositivo (Face ID, impronta, PIN) che riapre una sessione già valida, con scadenza propria.
 - **Regola di accesso per riga**: criterio che lega ogni riga di dati al suo proprietario.
 - **Dato fiscale**: ogni riga di contabilità (CU, fatture, spese, parametri), sempre legata al proprietario.
 
@@ -169,9 +196,10 @@ L'utente può cambiare la password, riconfigurare il secondo fattore, rigenerare
 - **Decisione dell'utente (2026-11-20)**: i dati sono centralizzati nel database Supabase `https://aldiyymgvngvdrroluus.supabase.co`, usato da PC e telefono. Sostituisce la scelta precedente di nessun server e sincronizzazione manuale con un file.
 - **Riservatezza**: i dati sono conservati **in chiaro** lato server, per scelta esplicita dell'utente, protetti da login, 2FA e regole di accesso per riga. È stata scartata, per ora, la cifratura applicata dall'app prima dell'invio.
 - L'indirizzo del progetto e la chiave pubblica sono visibili nel codice pubblicato; la sicurezza dei dati NON dipende dalla loro segretezza.
-- Il secondo fattore predefinito è un codice temporaneo generato da un'app di autenticazione; altri metodi (chiave di sicurezza, biometria del dispositivo) sono da valutare nel piano in base a ciò che il servizio di autenticazione supporta.
+- Il secondo fattore è un codice temporaneo generato da un'app di autenticazione (l'utente usa Google Authenticator). Se l'app salva i codici nell'account del suo fornitore, la sicurezza dell'accesso dipende anche da quell'account, che deve avere a sua volta la verifica in due passaggi. Altri metodi (SMS, chiave di sicurezza, passkey) sono fuori dalla prima versione.
 - Un solo utente (il proprietario) usa l'app; la registrazione di nuovi utenti MUST essere disabilitata dopo la creazione dell'account.
-- Il comportamento senza connessione (consultazione e inserimento offline) è da definire nel piano; finché non è deciso, l'accesso ai dati richiede la connessione.
+- Il comportamento senza connessione della prima versione: l'accesso ai dati richiede la connessione; i nuovi inserimenti fatti quando la rete cade restano in una coda protetta sul dispositivo e vengono inviati al ritorno della rete. L'uso offline completo (consultazione senza rete) è fuori dalla prima versione. Protezione della coda e gestione dei conflitti sono da definire nel piano.
 - La regione del progetto è da verificare, preferibilmente nell'Unione Europea.
 - Il progetto del database è gestito da un account protetto con 2FA e senza altri membri.
+- **Frase di recupero** (proposta dell'utente, riformulata): un codice personale fisso che salta il secondo fattore ridurrebbe l'accesso a due elementi "che si sanno" e sarebbe una porta di servizio; per questo è un recupero con attesa e avviso, non un accesso. TODO(RECUPERO_ATTESA): durata dell'attesa e canale dell'avviso (per esempio e-mail di sicurezza, senza reset via e-mail del secondo fattore) da definire nel piano; l'invio automatico di notifiche è previsto con i job schedulati della release successiva.
 - **Fuori ambito**: nuovi utenti e condivisione dei dati, accessi con account di terzi (login social), cifratura dei dati lato app, calcoli fiscali, grafica dell'interfaccia (a parte le schermate di accesso e di sicurezza), schema delle tabelle fiscali (definito nei piani delle singole funzioni).

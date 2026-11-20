@@ -119,15 +119,21 @@ rischio residuo (dati leggibili dal gestore del progetto) accettato dall'utente.
   pubblico per natura, ma l'accesso ai dati MUST dipendere solo da login, 2FA e Row Level
   Security. TODO(REGIONE): verificare la regione del progetto, preferibilmente UE.
 - **Multi-dispositivo**: PC e telefono leggono e scrivono gli stessi dati dal database.
-- **Uso senza connessione**: TODO(OFFLINE): da decidere nel piano se e come consentire consultazione
-  e inserimento senza rete (copia locale, coda di scrittura). Finché non è deciso, l'accesso ai
-  dati richiede la connessione.
+- **Uso senza connessione**: nella prima versione l'accesso ai dati richiede la connessione. Se la
+  rete cade durante un inserimento, il dato MUST essere conservato in una coda protetta sul
+  dispositivo e inviato al ritorno della rete, senza mai perderlo; MUST NOT esistere una copia
+  completa dei dati sul dispositivo. L'uso offline completo (consultazione e inserimento) è
+  rinviato. TODO(OFFLINE_CODA): scegliere nel piano come proteggere la coda sul dispositivo e come
+  gestire i conflitti.
 - **Storage dati e backup**: database Supabase come fonte di verità, più export e backup in file
   cifrati. Struttura del file di backup e politica di ripristino: da definire nel piano.
 - **Autenticazione a due fattori**: login di Supabase Auth con secondo fattore obbligatorio per
   ogni accesso ai dati. Sono obbligatori codici di recupero e blocco automatico per inattività.
-  TODO(2FA_MECCANISMO): tipo di secondo fattore (es. app di autenticazione), gestione dei
-  dispositivi e recupero da definire nel piano (vedi specifica 002).
+  Secondo fattore deciso: app di autenticazione con codici temporanei (l'utente usa Google
+  Authenticator), senza SMS. Recupero: codici monouso, frase di recupero personale (solo per avviare un
+  ripristino con attesa e avviso, mai per saltare il secondo fattore) e ripristino da
+  amministratore; nessun reset via e-mail. TODO(RECUPERO_ATTESA): durata dell'attesa e canale
+  dell'avviso da definire nel piano (vedi specifica 002).
 - **Dati dei pazienti (categoria particolare GDPR)**: i dati di pazienti e clienti sono dati
   relativi alla salute. L'app MUST conservarne solo il minimo necessario a fatture e Sistema
   Tessera Sanitaria (identificativi) e MUST NOT conservare dati clinici (diagnosi, note di
@@ -213,4 +219,4 @@ principi o sezioni, PATCH per chiarimenti. Ogni piano e ogni revisione MUST veri
 conformità ai principi; le deroghe MUST essere giustificate per iscritto nel piano. Il file
 `CLAUDE.md` resta la guida di ruolo e contesto per lo sviluppo quotidiano.
 
-**Version**: 2.4.2 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-20
+**Version**: 2.4.5 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-20
