@@ -16,6 +16,7 @@
 - Q: Come si inseriscono le aliquote delle addizionali regionale e comunale? → A: Regionale a scaglioni (anche con un solo scaglione), comunale con percentuale e soglia di esenzione facoltativa. Regione e comune di residenza sono dati del profilo dell'utente nel database, non nel repository pubblico.
 - Q: Per le stime d'anno, quali contributi ENPAP conta il motore? → A: Quelli pagati più quelli previsti entro il 31 dicembre secondo il calendario ENPAP, mostrati a parte come "previsti"; a fine anno (anno concluso) contano solo i pagamenti reali.
 - Q: Le detrazioni per familiari a carico sono calcolate dal motore nella prima versione? → A: No: nella prima versione l'utente inserisce a mano un importo complessivo di altre detrazioni (anche zero). Presenza di familiari a carico e percentuale di carico (per esempio 50%) sono registrati nella specifica 004 per le spese detraibili; il calcolo automatico viene dopo. I dettagli familiari non sono scritti nel repository pubblico.
+- Precisazione dell'utente (2026-11-20): l'utente **resta dipendente in parallelo alla partita IVA** e quindi ogni anno ha una CU; una configurazione "solo partita IVA" senza CU è rinviata a una versione successiva. Le detrazioni per familiari applicate dal datore di lavoro risultano dalla CU e vanno confrontate con quelle spettanti sul reddito complessivo.
 - Q: Con regole dell'anno non verificate il motore calcola o si rifiuta? → A: Calcola sempre, con avviso evidente, elenco delle regole non verificate e risultato marcato "provvisorio"; senza alcuna regola per l'anno non calcola.
 
 ## User Scenarios & Testing *(mandatory)*
@@ -124,7 +125,7 @@ L'utente vede quanto dovrà versare nei prossimi mesi e confronta **piani di ver
 
 ### Functional Requirements
 
-- **FR-001**: Il sistema MUST accettare per un anno d'imposta i dati della Certificazione Unica: reddito imponibile da lavoro dipendente, ritenute IRPEF, addizionale regionale e comunale trattenute, detrazioni fruite, e permettere più CU nello stesso anno.
+- **FR-001**: Il sistema MUST accettare per un anno d'imposta i dati della Certificazione Unica: reddito imponibile da lavoro dipendente, ritenute IRPEF, addizionale regionale e comunale trattenute, detrazioni fruite (distinguendo quelle per lavoro dipendente da quelle per familiari a carico), e permettere più CU nello stesso anno.
 - **FR-002**: Il sistema MUST accettare il reddito professionale netto dell'anno determinato per cassa (incassi effettivi meno spese inerenti pagate nell'anno), anche negativo.
 - **FR-003**: Il sistema MUST calcolare il reddito complessivo come somma del reddito da lavoro dipendente e del reddito professionale netto, al netto dei contributi previdenziali obbligatori deducibili.
 - **FR-004**: Il sistema MUST calcolare i contributi ENPAP dell'anno: soggettivo con l'aliquota in vigore per l'anno, integrativo, maternità e i minimi previsti, secondo le regole dell'anno.
@@ -156,7 +157,7 @@ L'utente vede quanto dovrà versare nei prossimi mesi e confronta **piani di ver
 - **FR-029**: Il sistema MUST NOT proporre strategie che alterino date o importi di incassi e fatture, né pratiche elusive: ammette solo scelte sui tempi e sul metodo di versamento previste dalla normativa.
 - **FR-030**: Percentuali e ripartizione degli acconti, soglie minime, interessi di rateizzazione, maggiorazioni, date e ammissibilità del differimento MUST stare nel set di regole per anno con fonte e stato di verifica; le regole non verificate MUST essere segnalate.
 - **FR-031**: Il sistema MUST permettere di registrare gli acconti realmente versati e MUST usarli per saldo e confronti, trattando l'eventuale eccedenza come credito.
-- **FR-032**: Il sistema MUST permettere di inserire per ogni anno un importo complessivo di altre detrazioni d'imposta (anche zero), applicarlo nel calcolo dell'imposta netta e mostrarlo nella spiegazione come dato inserito dall'utente, non calcolato.
+- **FR-032**: Il sistema MUST permettere di inserire per ogni anno un importo complessivo di altre detrazioni d'imposta spettanti per familiari a carico e altre voci (anche zero), applicarlo nel calcolo dell'imposta netta e mostrarlo nella spiegazione come dato inserito dall'utente, non calcolato. Il sistema MUST confrontare tale importo con le detrazioni per familiari già fruite in CU e applicare solo la differenza (a debito se spettano meno di quanto fruito), come per le detrazioni da lavoro dipendente (FR-007).
 
 ### Key Entities *(include if feature involves data)*
 
@@ -185,7 +186,7 @@ L'utente vede quanto dovrà versare nei prossimi mesi e confronta **piani di ver
 
 ## Assumptions
 
-- L'utente è psicologo con partita IVA in regime ordinario dal 2027, iscritto all'ENPAP (non alla Gestione Separata INPS), con reddito da lavoro dipendente superiore a 35.000 €; il regime forfettario è escluso e non va proposto.
+- L'utente è psicologo con partita IVA in regime ordinario dal 2027, iscritto all'ENPAP (non alla Gestione Separata INPS), con reddito da lavoro dipendente superiore a 35.000 €; il regime forfettario è escluso e non va proposto. L'utente **rimane dipendente in parallelo** alla partita IVA: ogni anno c'è una CU e il reddito è sempre in cumulo; la modalità "solo partita IVA" è rinviata.
 - Gli **scaglioni e le aliquote IRPEF 2027, le detrazioni per lavoro dipendente 2027 e le soglie** non sono ancora verificati su fonte ufficiale: l'app li tratta come regole "da verificare" finché non vengono confermati. Per gli anni precedenti si usano le regole in vigore.
 - Aliquote ENPAP per anno: contributo soggettivo 10% fino al 2026, 11% nel 2027, poi +1 punto all'anno fino al 15% dal 2031 (salvo scelta volontaria di aliquota maggiore); contributo integrativo 4% dal 2027 (2% prima). Questi valori derivano dalla delibera ENPAP n. 02/26 del 23/04/2026; **minimi 2027, importo della maternità, agevolazioni per nuovi iscritti, scadenze del primo anno e decorrenza esatta dell'11%** sono da verificare con l'ENPAP prima della conferma.
 - Il contributo soggettivo e quello di maternità sono deducibili nell'anno di versamento (principio di cassa); l'integrativo non lo è.

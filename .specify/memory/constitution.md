@@ -135,7 +135,8 @@ rischio residuo (dati leggibili dal gestore del progetto) accettato dall'utente.
   piano la cifratura dei soli campi identificativi dei pazienti e delle copie dei consensi,
   l'accordo sul trattamento dei dati con il fornitore del database e l'informativa ai pazienti.
 - **Profilo dell'utente**: psicologo libero professionista, regime ordinario, con reddito da lavoro
-  dipendente (CU) in cumulo. Partita IVA con inizio attività nel 2027: il primo anno d'imposta
+  dipendente (CU) in cumulo, che rimane dipendente in parallelo alla partita IVA (la modalità
+  "solo partita IVA" è rinviata). Partita IVA con inizio attività nel 2027: il primo anno d'imposta
   della professione è il 2027 e MUST essere gestito come caso speciale (nessuno storico
   professionale per il calcolo degli acconti). Il regime forfettario è escluso perché il reddito
   da lavoro dipendente supera i 35.000 €: l'app MUST NOT proporlo né simularlo.
@@ -208,4 +209,4 @@ principi o sezioni, PATCH per chiarimenti. Ogni piano e ogni revisione MUST veri
 conformità ai principi; le deroghe MUST essere giustificate per iscritto nel piano. Il file
 `CLAUDE.md` resta la guida di ruolo e contesto per lo sviluppo quotidiano.
 
-**Version**: 2.4.0 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-20
+**Version**: 2.4.1 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-20
