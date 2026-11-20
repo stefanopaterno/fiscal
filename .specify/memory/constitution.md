@@ -195,8 +195,10 @@ rischio residuo (dati leggibili dal gestore del progetto) accettato dall'utente.
   TODO(ATTIVITA_DIVERSE): verificare con ENPAP e commercialista il trattamento previdenziale e
   fiscale caso per caso.
 - **Condivisione con il commercialista e documenti**: i prospetti per il commercialista MUST
-  nascondere per impostazione predefinita i nomi dei pazienti (codici) e MUST essere condivisi
-  solo come file protetti, mai come indirizzi pubblici. I documenti ricevuti archiviati nell'app
+  contenere solo dati legati alle fatture e alla contabilità (per esempio nome e codice fiscale
+  del cliente come in fattura), MUST NOT contenere dati clinici, consensi o note sui pazienti,
+  MUST offrire l'opzione di usare codici al posto dei nomi e MUST essere condivisi solo come
+  file protetti, mai come indirizzi pubblici. I documenti ricevuti archiviati nell'app
   MUST seguire le protezioni del principio VII e non sostituiscono la conservazione a norma.
 
 ## Flusso di Sviluppo e Quality Gates
@@ -220,4 +222,4 @@ principi o sezioni, PATCH per chiarimenti. Ogni piano e ogni revisione MUST veri
 conformità ai principi; le deroghe MUST essere giustificate per iscritto nel piano. Il file
 `CLAUDE.md` resta la guida di ruolo e contesto per lo sviluppo quotidiano.
 
-**Version**: 2.4.6 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-20
+**Version**: 2.4.7 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-20

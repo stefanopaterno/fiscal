@@ -8,6 +8,16 @@
 
 **Input**: User description: "Un prospetto da condividere con il commercialista."
 
+## Clarifications
+
+### Session 2026-11-20
+
+- Q: In che formato è il file di dati? → A: PDF leggibile più un file Excel con un foglio per sezione (fatture, incassi, spese, beni durevoli, contributi, scadenze) e un foglio di avvertenze; i totali coincidono con quelli del PDF.
+- Q: Come si imposta la password del pacchetto? → A: La genera l'app (lunga e casuale), la mostra una sola volta e non la conserva; ricorda di inviarla per un canale diverso da quello del file.
+- Q: Il commercialista accede all'app? → A: No: nessuno oltre l'utente accede all'app, né ora né come requisito; il commercialista riceve solo i pacchetti inviati dall'utente.
+- Q: Nei pacchetti i pazienti compaiono con un codice o con il nome? → A: Con il nome e i dati che già compaiono in fattura (nome e codice fiscale del cliente), perché il commercialista vede comunque le fatture. Restano esclusi in ogni caso dati clinici, cartelle cliniche, consensi, note e qualsiasi dato non legato alle fatture e alla contabilità. Resta un interruttore facoltativo "usa i codici" per i casi in cui l'utente voglia nascondere i nomi.
+- Q: Servono promemoria periodici per inviare il prospetto? → A: No: nessun promemoria automatico; l'utente crea a mano una scadenza personalizzata nel calendario (specifica 004) quando il commercialista gli comunica una data.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Preparare il pacchetto per il commercialista (Priority: P1)
@@ -43,16 +53,16 @@ Prima di generare il pacchetto il sistema controlla la completezza: spese senza 
 
 ### User Story 3 - Condividere in modo sicuro e riservato (Priority: P1)
 
-L'utente condivide il pacchetto come **file protetto da password** (o cifrato), da inviare con i propri mezzi. Per impostazione predefinita i **pazienti compaiono con un codice** e non con nome e cognome; l'utente può includere i nomi solo se necessario. Non sono creati indirizzi pubblici né link aperti. L'utente sceglie anche se includere i documenti allegati.
+L'utente condivide il pacchetto come **file protetto da password** (o cifrato), da inviare con i propri mezzi. Il pacchetto contiene solo dati legati alle fatture e alla contabilità: i clienti compaiono **con il nome e i dati che già sono in fattura**, e restano esclusi dati clinici, consensi e note. Un interruttore facoltativo "usa i codici" permette di nascondere i nomi. Non sono creati indirizzi pubblici né link aperti. L'utente sceglie anche se includere i documenti allegati.
 
 **Why this priority**: i dati dei pazienti sono dati sulla salute; il prospetto non deve diventare una falla di riservatezza.
 
-**Independent Test**: il pacchetto predefinito non contiene nomi di pazienti; senza password non si apre; nessun indirizzo pubblico esiste dopo la generazione.
+**Independent Test**: il pacchetto predefinito contiene solo i dati presenti in fattura e nella contabilità (nessun dato clinico né consenso); con l'interruttore "usa i codici" non contiene nomi; senza password non si apre; nessun indirizzo pubblico esiste dopo la generazione.
 
 **Acceptance Scenarios**:
 
-1. **Given** un pacchetto con fatture a pazienti, **When** l'utente lo genera con le impostazioni predefinite, **Then** i pazienti sono indicati con codici e il file è protetto.
-2. **Given** la necessità di includere i nomi, **When** l'utente lo sceglie, **Then** il sistema avvisa dei rischi e richiede conferma.
+1. **Given** un pacchetto con fatture a pazienti, **When** l'utente lo genera con le impostazioni predefinite, **Then** i clienti compaiono con i dati che sono in fattura, nessun dato clinico o consenso è incluso e il file è protetto.
+2. **Given** la necessità di nascondere i nomi, **When** l'utente attiva l'interruttore "usa i codici", **Then** i pazienti compaiono con un codice stabile e i nomi non sono nel pacchetto.
 3. **Given** un pacchetto generato, **When** l'utente lo apre senza password, **Then** non è leggibile.
 
 ---
@@ -101,12 +111,12 @@ L'utente sceglie quali sezioni includere (per esempio solo spese e documenti, op
 
 ### Functional Requirements
 
-- **FR-001**: Il sistema MUST generare, per un periodo scelto, un prospetto in PDF e un file di dati in formato foglio di calcolo con fatture, incassi, spese, ritenute, contributi, CU, oneri, acconti, crediti e scadenze.
+- **FR-001**: Il sistema MUST generare, per un periodo scelto, un prospetto in PDF e un file Excel con un foglio per sezione (fatture, incassi, spese, beni durevoli, contributi ENPAP, CU, oneri e detrazioni, acconti e crediti, scadenze) e un foglio di avvertenze, con totali uguali a quelli del PDF.
 - **FR-002**: I totali del pacchetto MUST coincidere con quelli dei moduli di origine (specifiche 001, 003, 004, 008).
 - **FR-003**: Il sistema MUST indicare nel pacchetto data di generazione, periodo, versione delle regole fiscali usate e stato di verifica delle regole.
 - **FR-004**: Il sistema MUST eseguire controlli di completezza e riportare gli avvisi nel pacchetto.
-- **FR-005**: Il sistema MUST proteggere il pacchetto con password o cifratura e MUST NOT creare indirizzi pubblici né link condivisibili senza autenticazione.
-- **FR-006**: Per impostazione predefinita il sistema MUST indicare i pazienti con un codice stabile e MUST richiedere conferma per includere nomi e cognomi.
+- **FR-005**: Il sistema MUST proteggere il pacchetto con una password generata dall'app (lunga e casuale), mostrarla una sola volta, non conservarla e ricordare all'utente di inviarla per un canale diverso da quello del file; MUST NOT creare indirizzi pubblici né link condivisibili senza autenticazione.
+- **FR-006**: Per impostazione predefinita il sistema MUST indicare i clienti con il nome e i dati che compaiono in fattura (nome e codice fiscale) e MUST NOT includere altri dati dei pazienti; MUST offrire un interruttore facoltativo "usa i codici" che sostituisce i nomi con un codice stabile.
 - **FR-007**: Il sistema MUST permettere di includere o escludere i documenti allegati (specifica 010).
 - **FR-008**: Il sistema MUST NOT includere nel pacchetto dati clinici né i consensi informati (specifica 005).
 - **FR-009**: Il sistema MUST registrare lo storico dei pacchetti generati e permettere di annotare e chiudere richieste del commercialista.
@@ -114,12 +124,13 @@ L'utente sceglie quali sezioni includere (per esempio solo spese e documenti, op
 - **FR-011**: Il sistema MUST segnalare testo libero che potrebbe contenere nomi di pazienti prima della generazione.
 - **FR-012**: Il sistema MUST mostrare che il prospetto è uno strumento di supporto e non sostituisce la consulenza del commercialista.
 - **FR-013**: Il sistema MUST oscurare importi e nomi con la modalità "occhio" nell'anteprima.
+- **FR-014**: Il sistema MUST NOT generare promemoria automatici per l'invio del pacchetto; MUST permettere di creare una scadenza personalizzata "invio al commercialista" nel calendario della specifica 004, con data e nota, quando l'utente riceve la richiesta dal commercialista.
 
 ### Key Entities *(include if feature involves data)*
 
 - **Pacchetto per il commercialista**: periodo, sezioni, data, stato dei controlli, protezione, destinatario.
 - **Avviso di completezza**: tipo, voce collegata, stato.
-- **Codice paziente**: identificativo stabile che sostituisce il nome nei pacchetti.
+- **Codice paziente**: identificativo stabile che sostituisce il nome nei pacchetti quando l'utente attiva "usa i codici".
 - **Richiesta del commercialista**: testo, data, stato.
 - **Modello di pacchetto**: sezioni e impostazioni salvate.
 
@@ -129,15 +140,15 @@ L'utente sceglie quali sezioni includere (per esempio solo spese e documenti, op
 
 - **SC-001**: Un pacchetto annuale completo si genera in meno di 2 minuti da telefono o PC.
 - **SC-002**: I totali del pacchetto coincidono al centesimo con quelli dei moduli di origine in tutti i casi di prova.
-- **SC-003**: Il pacchetto predefinito non contiene nomi di pazienti, né dati clinici, né consensi (0 ritrovamenti).
+- **SC-003**: Il pacchetto non contiene dati clinici, consensi né dati dei pazienti diversi da quelli presenti in fattura (0 ritrovamenti), e con l'interruttore "usa i codici" non contiene nomi (0 ritrovamenti).
 - **SC-004**: Senza password il pacchetto non è leggibile e non esiste alcun indirizzo pubblico (0 accessi riusciti nelle prove).
 - **SC-005**: Il 100% dei difetti noti nei casi di prova compare tra gli avvisi.
 
 ## Assumptions
 
 - La consegna del pacchetto avviene fuori dall'app (e-mail, messaggi, supporto): l'app produce il file protetto.
-- L'accesso diretto del commercialista all'app (account in sola lettura) è escluso dalla prima versione perché la specifica 002 prevede un solo utente; da rivalutare.
-- La password è scelta dall'utente e comunicata a parte; l'app non la conserva dopo la generazione (da confermare nel piano).
-- Il formato del file di dati dev'essere utilizzabile nei programmi di uso comune; il formato esatto è da definire nel piano.
-- I codici paziente restano stabili tra pacchetti ma non sono ricostruibili senza l'app.
+- **Nessun accesso di terzi**: decisione dell'utente, nessuno oltre l'utente accede all'app (coerente con la specifica 002, un solo utente); il commercialista riceve solo i pacchetti.
+- La password è generata dall'app e comunicata dall'utente a parte; l'app non la conserva dopo la generazione. Il file protetto MUST usare una cifratura riconosciuta e apribile con i programmi comuni (da definire nel piano).
+- Il file di dati è un file Excel utilizzabile nei programmi di uso comune; la versione esatta del formato è da definire nel piano.
+- I codici paziente (interruttore facoltativo) restano stabili tra pacchetti ma non sono ricostruibili senza l'app. Il commercialista riceve i dati delle fatture, come di consueto: come per ogni terzo che tratta dati dei pazienti per conto dell'utente, è opportuno che sia nominato responsabile del trattamento (adempimento dell'utente, fuori dall'app).
 - **Fuori ambito**: compilazione di dichiarazioni, F24 e invio telematico, firma digitale, accesso diretto del commercialista, specifica di archivio dei documenti (010), autenticazione (002).

@@ -218,6 +218,7 @@ Al primo avvio l'utente inserisce l'**anno di partenza** (2026, ultimo anno solo
 - **FR-030**: Il sistema MUST permettere di esportare le scadenze scelte in un file di calendario da importare nel calendario del telefono o del PC (descrizione, data e promemoria), senza dati sensibili nel testo degli eventi (nessun nome di paziente né importi). Le notifiche inviate da job schedulati sono previste per la release successiva (non in questa versione).
 - **FR-031**: Il calendario dell'app MUST contenere tutte le scadenze delle regole dell'anno; il sistema MUST suggerire quali esportare in base ai dati e alle attività dell'utente (per esempio scadenze IVA solo se esistono operazioni imponibili) e MUST lasciare all'utente la modifica della selezione.
 - **FR-032**: L'utente MUST poter segnare ogni scadenza come "fatta" con un flag, con data di completamento e nota facoltativa, e togliere il flag; le scadenze fatte MUST uscire dai promemoria e restare consultabili.
+- **FR-033**: Il sistema MUST permettere all'utente di creare, modificare e cancellare scadenze personalizzate nel calendario (per esempio la data di consegna dei documenti al commercialista), con descrizione, data, nota e promemoria, distinte dalle scadenze delle regole dell'anno e senza dati sensibili nell'eventuale esportazione nel calendario del telefono.
 
 ### Key Entities *(include if feature involves data)*
 
