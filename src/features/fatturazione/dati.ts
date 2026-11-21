@@ -284,3 +284,16 @@ export async function registraIncasso(incasso: Omit<Incasso, 'versione'>): Promi
 export async function eliminaIncasso(id: string): Promise<void> {
   controlla(await getSupabase().from('incassi').delete().eq('id', id));
 }
+
+export type RiepilogoIva = { anno: number; imponibile_iva: number; iva: number; importo_esente: number };
+
+/** Imponibili ed esenti delle fatture emesse nell'anno, note di credito sottratte (vista riepilogo_iva). */
+export async function leggiRiepilogoIva(anno: number): Promise<RiepilogoIva | null> {
+  return controlla(
+    await getSupabase()
+      .from('riepilogo_iva')
+      .select('anno, imponibile_iva, iva, importo_esente')
+      .eq('anno', anno)
+      .maybeSingle(),
+  ) as RiepilogoIva | null;
+}

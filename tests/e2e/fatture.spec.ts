@@ -102,4 +102,10 @@ test('emetto una fattura per una seduta, la stampo e la numerazione prosegue', a
   await page.getByLabel(/^Importo unitario/).fill('60');
   await page.getByRole('button', { name: 'Emetti la fattura' }).click();
   await expect(page.getByText(/precedente all'ultima fattura emessa/)).toBeVisible();
+
+  // Elenco: due fatture emesse e riepilogo IVA dell'anno (solo sanitarie)
+  await page.goto('/app/fatture/');
+  await expect(page.getByText('Fattura n. 2/2027')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'IVA 2027' })).toBeVisible();
+  await expect(page.getByText(/Solo prestazioni sanitarie/)).toBeVisible();
 });

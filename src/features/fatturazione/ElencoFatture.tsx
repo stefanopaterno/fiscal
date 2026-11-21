@@ -18,6 +18,7 @@ import { formattaEuro } from '@/engine/importi';
 import { nomeCliente } from '@/engine/validazioni/cliente';
 import { leggiClienti, leggiFatture, type Cliente, type Fattura } from '@/features/fatturazione/dati';
 import { dataItaliana, ETICHETTA_STATO, titoloDocumento } from '@/features/fatturazione/DettaglioFattura';
+import { SchedaIva } from '@/features/fatturazione/SchedaIva';
 import { ImportoNascosto } from '@/ui/ImportoNascosto';
 import { CampoScelta, Griglia } from '@/ui/Moduli';
 
@@ -112,6 +113,7 @@ export function ElencoFatture() {
           />
         </Griglia>
       ) : null}
+      {anni.length > 0 ? <SchedaIva anno={anno === 'tutti' ? anni[0]! : Number(anno)} /> : null}
       {fatture.length === 0 ? (
         <MessageBar intent="info">
           <MessageBarBody>Non hai ancora fatture. Crea la prima con «Nuova fattura».</MessageBarBody>

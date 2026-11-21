@@ -51,7 +51,7 @@ Storie: US1 configurazione, US2 fattura sanitaria, US3 fattura non sanitaria, US
 ## Phase 6: US3 + US7 attività non sanitarie e pro-rata (P2)
 
 - [x] T019 [US3] Righe imponibili e miste nella nuova fattura
-- [ ] T020 [US7] Riepilogo IVA con quota imponibile, pro-rata e avviso di soglia (`data-model.md` + `profilo_professionale.soglia_attenzione_imponibile`)
+- [x] T020 [US7] Riepilogo IVA con quota imponibile, pro-rata e avviso di soglia (`data-model.md` + `profilo_professionale.soglia_attenzione_imponibile`)
 
 ## Phase 7: US5 adempimenti (P2)
 
