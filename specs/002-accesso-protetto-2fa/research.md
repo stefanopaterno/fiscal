@@ -238,3 +238,8 @@ prova tecnica (spike) prima di scrivere il resto del codice, **D** = decisione d
   intestazioni stanno in `vercel.json`. Provato in un browser: nessuna violazione, l'app si avvia e
   reindirizza all'accesso.
 - **S4 (Vercel)**: da fare con l'anteprima del ramo `002-accesso-protetto-2fa` (vedi T018).
+- **S4 (Vercel), 2026-11-21**: build dell'anteprima del ramo riuscita (`vercel.json`: `npm run build`,
+  cartella `out`); anteprima protetta (senza login Vercel → reindirizzamento all'accesso Vercel); nessuna
+  variabile d'ambiente sul progetto, quindi l'anteprima non può collegarsi al database. Da completare: le
+  variabili Supabase vanno aggiunte **solo per Production** prima del merge su `main`. Nota: su Vercel
+  esistono due progetti collegati al repository (`fiscal` e `fiscal.soarlyai`), da ridurre a uno.
