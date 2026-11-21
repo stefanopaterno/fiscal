@@ -3,6 +3,7 @@
 import { Button, makeStyles, Text, tokens } from '@fluentui/react-components';
 import { Eye24Regular, EyeOff24Regular } from '@fluentui/react-icons';
 import { useOcchio } from '@/features/lock/useOcchio';
+import { StatoCoda } from '@/features/offline-queue/StatoCoda';
 import type { ReactNode } from 'react';
 
 /**
@@ -107,7 +108,10 @@ export function Shell({ children }: { children: ReactNode }) {
         <Marchio />
         <PulsanteOcchio />
       </div>
-      <main className={s.contenuto}>{children}</main>
+      <main className={s.contenuto}>
+        <StatoCoda />
+        {children}
+      </main>
     </div>
   );
 }

@@ -21,6 +21,11 @@ if (!url?.startsWith('http://127.0.0.1') || !chiave) {
 
 execSync('npm run build', {
   stdio: 'inherit',
-  env: { ...process.env, NEXT_PUBLIC_SUPABASE_URL: url, NEXT_PUBLIC_SUPABASE_ANON_KEY: chiave },
+  env: {
+    ...process.env,
+    NEXT_PUBLIC_SUPABASE_URL: url,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: chiave,
+    NEXT_PUBLIC_PROVE: '1', // agganci per i test (mai nella build pubblicata)
+  },
 });
 console.log('build:e2e: build collegata allo stack locale. Prima di pubblicare rifare `npm run build`.');

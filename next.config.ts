@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
   images: { unoptimized: true },
   reactStrictMode: true,
   poweredByHeader: false,
+  // Sempre definita ("0" di default) così la build pubblicata elimina il codice usato solo nei test
+  // end-to-end (AgganciProve); `npm run build:e2e` la imposta a "1".
+  env: { NEXT_PUBLIC_PROVE: process.env.NEXT_PUBLIC_PROVE === '1' ? '1' : '0' },
 };
 
 export default nextConfig;

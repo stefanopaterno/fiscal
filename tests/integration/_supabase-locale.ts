@@ -107,6 +107,12 @@ export function authenticator(segreto: string) {
     codiceAdesso: () => totp.generate(),
     /** Codice del prossimo intervallo di 30 secondi: utile per non riusare lo stesso codice due volte. */
     codiceTra: (secondi: number) => totp.generate({ timestamp: Date.now() + secondi * 1000 }),
+    /** Come una persona: se il codice sta per cambiare (meno di 4 secondi) aspetta quello nuovo. */
+    async codiceStabile() {
+      const restanti = 30 - (Math.floor(Date.now() / 1000) % 30);
+      if (restanti < 4) await new Promise((r) => setTimeout(r, restanti * 1000 + 250));
+      return totp.generate();
+    },
   };
 }
 

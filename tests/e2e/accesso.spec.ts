@@ -30,7 +30,7 @@ test('prima configurazione, uscita, accesso con password e codice', async ({ pag
   await expect(page.getByRole('img', { name: /Codice QR/ })).toBeVisible();
   const chiave = (await page.getByText(/^[A-Z2-7]{16,}$/).textContent())?.trim() ?? '';
   const app = authenticator(chiave);
-  await page.getByLabel(/Scrivi il codice a 6 cifre/).fill(app.codiceAdesso());
+  await page.getByLabel(/Scrivi il codice a 6 cifre/).fill(await app.codiceStabile());
   await page.getByRole('button', { name: 'Conferma e entra' }).click();
 
   // Subito dopo: codici di recupero (US4); la frase si può impostare dopo
@@ -58,7 +58,7 @@ test('prima configurazione, uscita, accesso con password e codice', async ({ pag
   await expect(page.getByText(/Sei entrato/)).toHaveCount(0);
 
   // Codice a 6 cifre: si entra
-  await page.getByLabel(/^Codice a 6 cifre/).fill(app.codiceAdesso());
+  await page.getByLabel(/^Codice a 6 cifre/).fill(await app.codiceStabile());
   await page.getByRole('button', { name: 'Verifica ed entra' }).click();
   await expect(page).toHaveURL(/\/app\/home\/$/);
   await expect(page.getByText(/Sei entrato con password e codice/)).toBeVisible();

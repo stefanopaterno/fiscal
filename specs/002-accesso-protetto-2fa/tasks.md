@@ -136,20 +136,20 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 
 ### Test per US3
 
-- [ ] T047 [US3] Tabella di prova `prove_sincronizzazione` in `supabase/seed.sql`, conforme al contratto RLS (`data-model.md` + `prove_sincronizzazione`): esiste solo nello stack locale (il seed non viene applicato con `supabase db push`)
-- [ ] T048 [P] [US3] Test di integrazione `tests/integration/sessioni.test.ts`: `mie_sessioni()` elenca solo le proprie; `chiudi_mia_sessione()` rifiuta l'id altrui e la sessione corrente; con `aal1` è rifiutata
-- [ ] T049 [P] [US3] Test unitari `tests/unit/offline-queue.test.ts`: accodamento, invio idempotente (stesso `id` due volte → una riga), conflitto per `versioneBase`, cancellazione al logout, nessuna copia completa dei dati (FR-022)
-- [ ] T050 [P] [US3] Test E2E `tests/e2e/rete-assente.spec.ts`: rete spenta durante un inserimento di prova nella tabella `prove_sincronizzazione` → "in attesa di invio"; riaccesa → inviato senza duplicati; sessione scaduta nel frattempo → la coda aspetta il nuovo accesso
-- [ ] T051 [P] [US3] Test E2E `tests/e2e/due-dispositivi.spec.ts` con due contesti di browser: un dato inserito in `prove_sincronizzazione` dal primo è visibile dal secondo entro pochi secondi dall'aggiornamento (SC-005)
+- [x] T047 [US3] Tabella di prova `prove_sincronizzazione` in `supabase/seed.sql`, conforme al contratto RLS (`data-model.md` + `prove_sincronizzazione`): esiste solo nello stack locale (il seed non viene applicato con `supabase db push`)
+- [x] T048 [P] [US3] Test di integrazione `tests/integration/sessioni.test.ts`: `mie_sessioni()` elenca solo le proprie; `chiudi_mia_sessione()` rifiuta l'id altrui e la sessione corrente; con `aal1` è rifiutata
+- [x] T049 [P] [US3] Test unitari `tests/unit/offline-queue.test.ts`: accodamento, invio idempotente (stesso `id` due volte → una riga), conflitto per `versioneBase`, cancellazione al logout, nessuna copia completa dei dati (FR-022)
+- [x] T050 [P] [US3] Test E2E `tests/e2e/rete-assente.spec.ts`: rete spenta durante un inserimento di prova nella tabella `prove_sincronizzazione` → "in attesa di invio"; riaccesa → inviato senza duplicati; sessione scaduta nel frattempo → la coda aspetta il nuovo accesso
+- [x] T051 [P] [US3] Test E2E `tests/e2e/due-dispositivi.spec.ts` con due contesti di browser: un dato inserito in `prove_sincronizzazione` dal primo è visibile dal secondo entro pochi secondi dall'aggiornamento (SC-005)
 
 ### Implementazione per US3
 
-- [ ] T052 [P] [US3] Modulo coda in `src/features/offline-queue/queue.ts` con IndexedDB (`idb`), AES-GCM e chiave `CryptoKey` non esportabile (research D-11); tipi `VoceCoda` come in [contracts/app-routes-and-lock.md](contracts/app-routes-and-lock.md)
-- [ ] T053 [US3] Invio e conflitti in `src/features/offline-queue/sync.ts`: `insert ... on conflict (id) do nothing`, modifiche con `versione = versioneBase`, `svuotaVersoServer()` e `risolviConflitto()`; parte solo con sessione `aal2` valida
-- [ ] T054 [US3] Componente `src/features/offline-queue/StatoCoda.tsx` con stati "in attesa di invio", "inviato", "in conflitto" e confronto delle due versioni
-- [ ] T055 [P] [US3] Elenco sessioni in `src/features/sessions/ElencoSessioni.tsx` (`rpc('mie_sessioni')`, etichetta del dispositivo, ultimo uso, pulsante "Chiudi" tranne per la corrente) montato in `app/impostazioni/sicurezza/page.tsx` con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
-- [ ] T056 [US3] Conservare il dato in corso quando la sessione scade durante un inserimento (FR-014): salvataggio della bozza nella coda prima del reindirizzamento al login in `src/features/auth/useSessione.ts`
-- [ ] T057 [US3] Regola di rete nel service worker (da T017): richieste a `*.supabase.co` sempre `NetworkOnly`, nessuna risposta con dati dell'utente in cache; test che lo verifica in `tests/unit/sw-regole.test.ts`
+- [x] T052 [P] [US3] (Realizzato in `coda.ts`, `archivio-indexeddb.ts`, `istanza.ts`) Modulo coda in `src/features/offline-queue/queue.ts` con IndexedDB (`idb`), AES-GCM e chiave `CryptoKey` non esportabile (research D-11); tipi `VoceCoda` come in [contracts/app-routes-and-lock.md](contracts/app-routes-and-lock.md)
+- [x] T053 [US3] Invio e conflitti in `src/features/offline-queue/sync.ts`: `insert ... on conflict (id) do nothing`, modifiche con `versione = versioneBase`, `svuotaVersoServer()` e `risolviConflitto()`; parte solo con sessione `aal2` valida
+- [x] T054 [US3] Componente `src/features/offline-queue/StatoCoda.tsx` con stati "in attesa di invio", "inviato", "in conflitto" e confronto delle due versioni
+- [x] T055 [P] [US3] Elenco sessioni in `src/features/sessions/ElencoSessioni.tsx` (`rpc('mie_sessioni')`, etichetta del dispositivo, ultimo uso, pulsante "Chiudi" tranne per la corrente) montato in `app/impostazioni/sicurezza/page.tsx` con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
+- [x] T056 [US3] (Coperto dalla coda: le voci restano cifrate anche da bloccato o con sessione scaduta e partono dopo il nuovo accesso, provato in `tests/e2e/rete-assente.spec.ts`; le maschere delle prossime funzioni useranno `accodaEInvia`) Conservare il dato in corso quando la sessione scade durante un inserimento (FR-014): salvataggio della bozza nella coda prima del reindirizzamento al login in `src/features/auth/useSessione.ts`
+- [x] T057 [US3] (Test in `tests/unit/service-worker.test.ts`) Regola di rete nel service worker (da T017): richieste a `*.supabase.co` sempre `NetworkOnly`, nessuna risposta con dati dell'utente in cache; test che lo verifica in `tests/unit/sw-regole.test.ts`
 
 **Checkpoint**: uso su più dispositivi e inserimenti senza rete affidabili.
 

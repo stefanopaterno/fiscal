@@ -4,6 +4,7 @@ import { makeStyles, Skeleton, SkeletonItem, tokens } from '@fluentui/react-comp
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
 import { GuardiaBlocco } from '@/features/lock/GuardiaBlocco';
+import { AgganciProve } from '@/features/offline-queue/AgganciProve';
 import { destinazione, getStatoAccesso } from '@/lib/supabase/aal';
 import { getSupabase } from '@/lib/supabase/client';
 
@@ -66,6 +67,7 @@ export function ProtectedPage({ children }: { children: ReactNode }) {
     <>
       {children}
       {completo ? <GuardiaBlocco /> : null}
+      {completo ? <AgganciProve /> : null}
     </>
   );
 }

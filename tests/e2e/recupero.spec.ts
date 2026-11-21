@@ -33,7 +33,7 @@ async function accediSoloPassword(page: Page) {
 async function collegaTelefono(page: Page) {
   await expect(page).toHaveURL(/\/app\/accesso\/configura\/$/);
   const chiave = (await page.getByText(/^[A-Z2-7]{16,}$/).textContent())?.trim() ?? '';
-  await page.getByLabel(/Scrivi il codice a 6 cifre/).fill(authenticator(chiave).codiceAdesso());
+  await page.getByLabel(/Scrivi il codice a 6 cifre/).fill(await authenticator(chiave).codiceStabile());
   await page.getByRole('button', { name: 'Conferma e entra' }).click();
 }
 

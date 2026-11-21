@@ -45,3 +45,17 @@ describe.skipIf(!existsSync(out))('segreti nella build', () => {
     }
   });
 });
+
+// La build pubblicata non contiene gli agganci usati solo nei test end-to-end (build:e2e).
+const buildDiProva = existsSync(path.join(out, 'app', 'index.html'))
+  ? readFileSync(path.join(out, 'app', 'index.html'), 'utf8').includes('http://127.0.0.1:54321')
+  : true;
+describe.skipIf(!existsSync(out) || buildDiProva)('build pubblicata senza codice di prova', () => {
+  it('nessun aggancio di prova né tabella di prova', () => {
+    for (const f of tuttiIFile(out).filter((x) => x.endsWith('.js'))) {
+      const t = readFileSync(f, 'utf8');
+      expect(t.includes('__fiscalProve'), f).toBe(false);
+      expect(t.includes('prove_sincronizzazione'), f).toBe(false);
+    }
+  });
+});

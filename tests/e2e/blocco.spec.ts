@@ -11,7 +11,7 @@ import {
 // Orologio simulato di Playwright; "Face ID" = autenticatore virtuale di Chrome con PRF.
 
 let utente: UtenteProva | undefined;
-let app: { codiceAdesso: () => string };
+let app: { codiceAdesso: () => string; codiceStabile: () => Promise<string> };
 
 test.beforeEach(async () => {
   utente = await creaUtente();
@@ -29,7 +29,7 @@ async function entra(page: Page) {
   await page.getByLabel(/^E-mail/).fill(utente!.email);
   await page.getByLabel(/^Password/).fill(utente!.password);
   await page.getByRole('button', { name: 'Accedi', exact: true }).click();
-  await page.getByLabel(/^Codice a 6 cifre/).fill(app.codiceAdesso());
+  await page.getByLabel(/^Codice a 6 cifre/).fill(await app.codiceStabile());
   await page.getByRole('button', { name: 'Verifica ed entra' }).click();
   await expect(page).toHaveURL(/\/app\/home\/$/);
 }
@@ -61,7 +61,7 @@ async function faceIdVirtuale(page: Page): Promise<{ cdp: CDPSession; id: string
   return { cdp, id: authenticatorId };
 }
 
-test('dopo 5 minuti senza attività l\'app si blocca e senza sblocco rapido servono password e codice', async ({
+test("dopo 5 minuti senza attività l'app si blocca e senza sblocco rapido servono password e codice", async ({
   page,
 }) => {
   await entra(page);
@@ -75,12 +75,17 @@ test('dopo 5 minuti senza attività l\'app si blocca e senza sblocco rapido serv
   await expect(page).toHaveURL(/\/app\/accesso\/$/);
 });
 
-test("occhio: all'avvio importi nascosti, si mostrano a comando e si richiudono in background", async ({ page }) => {
+test("occhio: all'avvio importi nascosti, si mostrano a comando e si richiudono in background", async ({
+  page,
+}) => {
   await entra(page);
   const mostra = page.getByRole('button', { name: 'Mostra gli importi' });
   await expect(mostra).toHaveAttribute('aria-pressed', 'false');
   await mostra.click();
-  await expect(page.getByRole('button', { name: 'Nascondi gli importi' })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('button', { name: 'Nascondi gli importi' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
 
   await page.evaluate(() => {
     Object.defineProperty(document, 'visibilityState', { value: 'hidden', configurable: true });

@@ -12,6 +12,7 @@ import {
 } from '@fluentui/react-components';
 import NextLink from 'next/link';
 import { SezioneSbloccoRapido } from '@/features/lock/SezioneSbloccoRapido';
+import { ElencoSessioni } from '@/features/sessions/ElencoSessioni';
 import { SezioneRecupero } from '@/features/recupero/SezioneRecupero';
 import { ConAiuto } from '@/ui/AiutoContestuale';
 import { ProtectedPage } from '@/ui/ProtectedPage';
@@ -101,8 +102,10 @@ export default function PaginaSicurezza() {
 
           <SezioneSbloccoRapido />
 
+          <ElencoSessioni />
+
           <Text size={200}>
-            Sessioni attive, tempi di blocco e cambio password arriveranno qui nei prossimi aggiornamenti.
+            Tempi di blocco e cambio password arriveranno qui nel prossimo aggiornamento.
           </Text>
         </div>
       </Shell>
