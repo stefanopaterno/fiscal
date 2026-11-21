@@ -33,6 +33,24 @@ export const nuovoClient = (): SupabaseClient => createClient(API_URL, CHIAVE_PU
 /** Client amministrativo dello stack LOCALE, solo per preparare e pulire i dati di prova. */
 export const admin = createClient(API_URL, CHIAVE_SERVIZIO_LOCALE, opzioni);
 
+export { CHIAVE_PUBBLICA };
+
+/** Elenco di tutte le tabelle esposte dall'API (dallo schema OpenAPI dello stack locale). */
+export async function tabellePubbliche(): Promise<string[]> {
+  const r = await fetch(`${API_URL}/rest/v1/`, {
+    headers: {
+      apikey: CHIAVE_SERVIZIO_LOCALE,
+      Authorization: `Bearer ${CHIAVE_SERVIZIO_LOCALE}`,
+      Accept: 'application/openapi+json',
+    },
+  });
+  const schema = (await r.json()) as { paths?: Record<string, unknown> };
+  return Object.keys(schema.paths ?? {})
+    .filter((p) => p !== '/' && !p.startsWith('/rpc/'))
+    .map((p) => p.slice(1))
+    .sort();
+}
+
 export type UtenteProva = { id: string; email: string; password: string };
 
 export async function creaUtente(): Promise<UtenteProva> {

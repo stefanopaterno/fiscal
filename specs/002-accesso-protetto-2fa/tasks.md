@@ -113,16 +113,16 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 
 ### Test per US2
 
-- [ ] T040 [P] [US2] Estendere `supabase/tests/database/001_rls_sicurezza.test.sql` (o nuovo `002_tabelle_future.test.sql`): crea una tabella di prova **senza** policy e verifica che il trigger `ensure_rls` attivi la RLS e che il test "ogni tabella conforme" la segnali come non conforme (scenario 3 della storia 2)
-- [ ] T041 [P] [US2] Test di integrazione `tests/integration/estraneo.test.ts` con la sola chiave pubblica: lettura, inserimento, modifica e cancellazione su ogni tabella di `public` rifiutati; `private` non esposto; registrazione rifiutata (`signup_disabled`) (SC-002, D-05)
-- [ ] T042 [P] [US2] Test `tests/unit/segreti-nel-bundle.test.ts`: dopo `npm run build`, `out/` non contiene `service_role`, pepper o dati personali (SC-003)
+- [x] T040 [P] [US2] Estendere `supabase/tests/database/001_rls_sicurezza.test.sql` (o nuovo `002_tabelle_future.test.sql`): crea una tabella di prova **senza** policy e verifica che il trigger `ensure_rls` attivi la RLS e che il test "ogni tabella conforme" la segnali come non conforme (scenario 3 della storia 2)
+- [x] T041 [P] [US2] Test di integrazione `tests/integration/estraneo.test.ts` con la sola chiave pubblica: lettura, inserimento, modifica e cancellazione su ogni tabella di `public` rifiutati; `private` non esposto; registrazione rifiutata (`signup_disabled`) (SC-002, D-05)
+- [x] T042 [P] [US2] Test `tests/unit/segreti-nel-bundle.test.ts`: dopo `npm run build`, `out/` non contiene `service_role`, pepper o dati personali (SC-003)
 
 ### Implementazione per US2
 
-- [ ] T043 [US2] Modello di migrazione per le tabelle future in `supabase/templates/nuova_tabella.sql` copiato da [contracts/rls-policy-contract.md](contracts/rls-policy-contract.md) (colonne `id`, `owner_id`, `versione`, `creato_il`, `aggiornato_il`, RLS, policy, revoca ad `anon`)
-- [ ] T044 [US2] Rendere esplicito nel test "ogni tabella conforme" l'elenco delle eccezioni (vuoto) in `supabase/tests/database/003_conformita.test.sql` e fallire se una tabella di `public` non ha le due policy
-- [ ] T045 [P] [US2] Flusso di integrazione continua in `.github/workflows/controlli.yml`: `typecheck`, `npm test`, `supabase test db` (stack locale), `scan:secrets`, build con verifica d'impronta della pagina di cortesia
-- [ ] T046 [US2] Dichiarazione chiara in `app/impostazioni/sicurezza/page.tsx` (sezione "Dove sono i tuoi dati") che i dati sono in chiaro nel database e che chi ha accesso amministrativo al progetto può leggerli; promemoria sulla 2FA dell'account Supabase (FR-016)
+- [x] T043 [US2] Modello di migrazione per le tabelle future in `supabase/templates/nuova_tabella.sql` copiato da [contracts/rls-policy-contract.md](contracts/rls-policy-contract.md) (colonne `id`, `owner_id`, `versione`, `creato_il`, `aggiornato_il`, RLS, policy, revoca ad `anon`)
+- [x] T044 [US2] Rendere esplicito nel test "ogni tabella conforme" l'elenco delle eccezioni (vuoto) in `supabase/tests/database/003_conformita.test.sql` e fallire se una tabella di `public` non ha le due policy
+- [x] T045 [P] [US2] Flusso di integrazione continua in `.github/workflows/controlli.yml`: `typecheck`, `npm test`, `supabase test db` (stack locale), `scan:secrets`, build con verifica d'impronta della pagina di cortesia
+- [x] T046 [US2] Dichiarazione chiara in `app/impostazioni/sicurezza/page.tsx` (sezione "Dove sono i tuoi dati") che i dati sono in chiaro nel database e che chi ha accesso amministrativo al progetto può leggerli; promemoria sulla 2FA dell'account Supabase (FR-016)
 
 **Checkpoint**: ogni tabella presente e futura è protetta e provata automaticamente.
 

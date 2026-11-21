@@ -9,6 +9,7 @@ import {
   Title1,
   tokens,
 } from '@fluentui/react-components';
+import NextLink from 'next/link';
 import { useEsci } from '@/features/auth/useSessione';
 import { ConAiuto } from '@/ui/AiutoContestuale';
 import { ProtectedPage } from '@/ui/ProtectedPage';
@@ -21,6 +22,12 @@ import { Shell } from '@/ui/Shell';
 const useStili = makeStyles({
   colonna: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL, maxWidth: '720px' },
   esci: { alignSelf: 'flex-start', minHeight: '44px' },
+  link: {
+    color: tokens.colorBrandForegroundLink,
+    minHeight: '44px',
+    display: 'inline-flex',
+    alignItems: 'center',
+  },
 });
 
 export default function PaginaHome() {
@@ -49,6 +56,9 @@ export default function PaginaHome() {
             Questa è la prima versione di Fiscal: per ora c&apos;è solo l&apos;accesso sicuro. Fatture, spese,
             netto reale e scadenze arriveranno nei prossimi aggiornamenti.
           </Text>
+          <NextLink href="/impostazioni/sicurezza/" className={s.link}>
+            Impostazioni di sicurezza
+          </NextLink>
           <Button className={s.esci} onClick={() => void esci()}>
             Esci
           </Button>

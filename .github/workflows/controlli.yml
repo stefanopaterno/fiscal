@@ -1,0 +1,59 @@
+# Controlli automatici di Fiscal (T045, FR-015, SC-002, SC-003, SC-008).
+# A ogni push e richiesta di modifica: tipi, lint, test, build con pagina di cortesia invariata,
+# scansione dei segreti, test del database (RLS) e di integrazione sullo stack LOCALE di Supabase.
+# Nessun segreto: lo stack locale è usa e getta e non tocca il progetto vero.
+
+name: Controlli
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: controlli-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: App (tipi, lint, test, build, segreti)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run build
+      - name: Test unitari (compresa pagina di cortesia invariata e segreti nella build)
+        run: npm test
+      - run: npm run scan:secrets
+
+  database:
+    name: Database (RLS, eventi) e integrazione
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - uses: supabase/setup-cli@v3.2.0
+        with:
+          version: 3.2.0
+      - run: npm ci
+      - name: Avvio dello stack locale di Supabase
+        run: supabase start
+      - name: Test del database (pgTAP)
+        run: supabase test db
+      - name: Test di integrazione (accesso, secondo fattore, estraneo)
+        run: npm run test:integration
+      - name: Arresto dello stack
+        if: always()
+        run: supabase stop --no-backup
