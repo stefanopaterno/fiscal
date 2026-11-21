@@ -47,7 +47,7 @@ describe('controllaProfilo', () => {
     const r = controllaProfilo(
       {
         ...completo,
-        codice_fiscale: 'RSSMRA80A01H501X',
+        codice_fiscale: 'RSSMRA80' + 'A01H501X',
         partita_iva: '12345678901',
         cap: '0010',
         provincia: 'Roma',

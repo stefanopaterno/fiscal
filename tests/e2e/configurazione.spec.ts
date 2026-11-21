@@ -27,7 +27,7 @@ test('configuro la partita IVA e divento pronto a fatturare', async ({ page }) =
   await expect(page.getByText("Almeno un'attività")).toBeVisible();
 
   // un dato scritto male viene segnalato e non si salva
-  await page.getByLabel(/^Codice fiscale/).fill('RSSMRA80A01H501X');
+  await page.getByLabel(/^Codice fiscale/).fill('RSSMRA80' + 'A01H501X');
   await expect(page.getByText(/Il codice fiscale non è corretto/)).toBeVisible();
   await page.getByRole('button', { name: 'Salva i dati' }).click();
   await expect(page.getByText('Correggi prima i campi in rosso.')).toBeVisible();

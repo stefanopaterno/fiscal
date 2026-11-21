@@ -90,7 +90,9 @@ export async function creaUtente(): Promise<UtenteProva> {
 }
 
 export async function eliminaUtente(u: UtenteProva | undefined) {
-  if (u) await admin.auth.admin.deleteUser(u.id);
+  if (!u) return;
+  const { error } = await admin.auth.admin.deleteUser(u.id);
+  if (error) throw new Error(`Utente di prova non cancellato: ${error.message}`);
 }
 
 export async function accediConPassword(u: UtenteProva): Promise<SupabaseClient> {

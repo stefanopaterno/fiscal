@@ -2,6 +2,8 @@
 -- Modello: specs/003-configurazione-piva-fatture/data-model.md
 -- Contratto: specs/003-configurazione-piva-fatture/contracts/database.md
 -- Ogni tabella segue supabase/templates/nuova_tabella.sql (RLS forzata, proprietario, aal2).
+-- Riferimenti tra tabelle senza "on delete restrict": il controllo predefinito (no action) avviene a fine
+-- istruzione, così la chiusura dell'account cancella tutto a cascata; per l'utente valgono i trigger.
 -- Importi in centesimi (bigint). I calcoli fiscali li fa il motore nel browser (src/engine/):
 -- il database controlla la coerenza dei totali, la numerazione e l'immutabilità.
 
@@ -160,9 +162,9 @@ create table public.fatture (
   data          date not null,
   anno          int generated always as (extract(year from data)::int) stored,
   numero        int check (numero > 0),
-  cliente_id    uuid not null references public.clienti (id) on delete restrict,
-  attivita_id   uuid not null references public.attivita (id) on delete restrict,
-  fattura_rif_id uuid references public.fatture (id) on delete restrict,
+  cliente_id    uuid not null references public.clienti (id),
+  attivita_id   uuid not null references public.attivita (id),
+  fattura_rif_id uuid references public.fatture (id),
   fotografia    jsonb not null default '{}'::jsonb,
   totale_compensi    bigint not null default 0 check (totale_compensi >= 0),
   totale_integrativo bigint not null default 0 check (totale_integrativo >= 0),
@@ -284,7 +286,7 @@ create table public.incassi (
   versione      int  not null default 1,
   creato_il     timestamptz not null default now(),
   aggiornato_il timestamptz not null default now(),
-  fattura_id    uuid not null references public.fatture (id) on delete restrict,
+  fattura_id    uuid not null references public.fatture (id),
   data          date not null,
   importo       bigint not null check (importo > 0),
   modalita      public.modalita_incasso not null,

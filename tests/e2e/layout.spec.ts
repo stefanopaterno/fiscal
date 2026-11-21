@@ -104,4 +104,15 @@ test('tutte le pagine: niente scorrimento laterale, aree da 44 px sul telefono, 
   await page.goto('/app/impostazioni/attivita/');
   await expect(page.getByRole('heading', { name: 'Pronto a fatturare?' })).toBeVisible();
   await controllaPagina(page, 'attivita', telefono);
+  for (const [percorso, titolo] of [
+    ['/app/clienti/', 'Clienti'],
+    ['/app/clienti/scheda/', 'Nuovo cliente'],
+    ['/app/fatture/', 'Fatture'],
+    ['/app/fatture/nuova/', 'Nuova fattura'],
+  ] as const) {
+    await page.goto(percorso);
+    await expect(page.getByRole('heading', { name: titolo, level: 1 })).toBeVisible();
+    await page.waitForLoadState('networkidle');
+    await controllaPagina(page, percorso, telefono);
+  }
 });

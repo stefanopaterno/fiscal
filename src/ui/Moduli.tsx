@@ -11,6 +11,7 @@ import {
   tokens,
   type InputProps,
 } from '@fluentui/react-components';
+import NextLink from 'next/link';
 import { useId, type ReactNode } from 'react';
 import { ConAiuto, type ContenutoAiuto } from '@/ui/AiutoContestuale';
 
@@ -157,5 +158,24 @@ export function CampoSiNo(
         />
       </Field>
     </ConAiuto>
+  );
+}
+
+const useStiliCollegamento = makeStyles({
+  collegamento: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    minHeight: '44px',
+    color: tokens.colorBrandForegroundLink,
+  },
+});
+
+/** Collegamento con area toccabile di 44 px (anche dentro i messaggi). */
+export function Collegamento({ href, children }: { href: string; children: ReactNode }) {
+  const s = useStiliCollegamento();
+  return (
+    <NextLink href={href} className={s.collegamento}>
+      {children}
+    </NextLink>
   );
 }

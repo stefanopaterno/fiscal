@@ -38,19 +38,19 @@ Storie: US1 configurazione, US2 fattura sanitaria, US3 fattura non sanitaria, US
 
 ## Phase 4: US2 fattura sanitaria (P1) 🎯
 
-- [ ] T013 [US2] Test di integrazione `tests/integration/fatture.test.ts` (emissione, numerazione, data anteriore rifiutata, immutabilità)
-- [ ] T014 [US2] Anagrafica minima clienti `app/clienti/` (`data-model.md` + `clienti.sostituto_imposta`, `clienti.opposizione_sts`, `clienti.pagato_da`)
-- [ ] T015 [US2] Nuova fattura `app/fatture/nuova/` con calcolo in tempo reale e spiegazioni, salva bozza ed emetti
-- [ ] T016 [US2] Dettaglio `app/fatture/dettaglio/?id=` e stampa/PDF `app/fatture/stampa/?id=` con diciture (SC-005)
-- [ ] T017 [US2] Test e2e `tests/e2e/fatture.spec.ts` (caso 1 da telefono, numerazione, stampa)
+- [x] T013 [US2] Test di integrazione `tests/integration/fatture.test.ts` (emissione, numerazione, data anteriore rifiutata, immutabilità)
+- [x] T014 [US2] Anagrafica minima clienti `app/clienti/` (`data-model.md` + `clienti.sostituto_imposta`, `clienti.opposizione_sts`, `clienti.pagato_da`)
+- [x] T015 [US2] Nuova fattura `app/fatture/nuova/` con calcolo in tempo reale e spiegazioni, salva bozza ed emetti
+- [x] T016 [US2] Dettaglio `app/fatture/dettaglio/?id=` e stampa/PDF `app/fatture/stampa/?id=` con diciture (SC-005)
+- [x] T017 [US2] Test e2e `tests/e2e/fatture.spec.ts` (caso 1 da telefono, numerazione, stampa)
 
 ## Phase 5: US4 incassi (P2)
 
-- [ ] T018 [US4] Incassi nel dettaglio e "già incassata" nella nuova fattura (`data-model.md` + `incassi.modalita`, `incassi.tracciabile`), reddito per cassa
+- [x] T018 [US4] Incassi nel dettaglio e "già incassata" nella nuova fattura (`data-model.md` + `incassi.modalita`, `incassi.tracciabile`), reddito per cassa
 
 ## Phase 6: US3 + US7 attività non sanitarie e pro-rata (P2)
 
-- [ ] T019 [US3] Righe imponibili e miste nella nuova fattura
+- [x] T019 [US3] Righe imponibili e miste nella nuova fattura
 - [ ] T020 [US7] Riepilogo IVA con quota imponibile, pro-rata e avviso di soglia (`data-model.md` + `profilo_professionale.soglia_attenzione_imponibile`)
 
 ## Phase 7: US5 adempimenti (P2)

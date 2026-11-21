@@ -37,7 +37,7 @@ test('dato inserito dal "telefono", visibile dal "PC" entro pochi secondi', asyn
   await expect(sessioni).toHaveCount(2);
   await expect(pc.getByText('Questo dispositivo')).toHaveCount(1);
   await pc.getByRole('button', { name: 'Chiudi' }).click();
-  await expect(pc.getByText(/Sessione chiusa/)).toBeVisible();
+  await expect(pc.getByText(/Sessione chiusa\. Su quel dispositivo/)).toBeVisible();
   await expect(sessioni).toHaveCount(1);
 
   await pcContesto.close();

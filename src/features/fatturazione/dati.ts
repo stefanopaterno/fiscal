@@ -254,3 +254,33 @@ export function spiegaErrore(e: unknown): string {
   }
   return 'Qualcosa non ha funzionato. Controlla la connessione e riprova.';
 }
+
+// --- Bozze (chiamate dirette: servono la rete come l'emissione) -----------
+
+export type BozzaDaSalvare = Omit<
+  Fattura,
+  'versione' | 'anno' | 'numero' | 'stato' | 'stato_sts' | 'creato_il'
+>;
+export type RigaDaSalvare = Omit<RigaFattura, 'versione' | 'fattura_id'>;
+
+/** Salva (o sostituisce) una bozza con le sue righe. Le fatture emesse sono protette dal database. */
+export async function salvaBozza(fattura: BozzaDaSalvare, righe: RigaDaSalvare[]): Promise<void> {
+  const sb = getSupabase();
+  controlla(await sb.from('fatture').upsert({ ...fattura, stato: 'bozza' }, { onConflict: 'id' }));
+  controlla(await sb.from('righe_fattura').delete().eq('fattura_id', fattura.id));
+  if (righe.length > 0)
+    controlla(await sb.from('righe_fattura').insert(righe.map((r) => ({ ...r, fattura_id: fattura.id }))));
+}
+
+export async function eliminaBozza(id: string): Promise<void> {
+  controlla(await getSupabase().from('fatture').delete().eq('id', id).eq('stato', 'bozza'));
+}
+
+/** Incasso (anche parziale). Diretto, così un rifiuto del database (oltre il netto) si vede subito. */
+export async function registraIncasso(incasso: Omit<Incasso, 'versione'>): Promise<void> {
+  controlla(await getSupabase().from('incassi').insert(incasso));
+}
+
+export async function eliminaIncasso(id: string): Promise<void> {
+  controlla(await getSupabase().from('incassi').delete().eq('id', id));
+}
