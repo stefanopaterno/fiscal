@@ -1,0 +1,154 @@
+import { regolePerAnno, type RegoleFatturazione } from '../regole';
+
+/**
+ * Calcolo della fattura (specifica 003, research R-02, contratto motore-fattura).
+ * Tutti gli importi sono in CENTESIMI interi. Arrotondamento commerciale al centesimo (0,5 per eccesso),
+ * fatto una sola volta per voce con aritmetica intera.
+ */
+export type Natura = 'esente_sanitaria' | 'imponibile';
+
+export type RigaInput = { compenso: number; quantita?: number; natura: Natura };
+
+export type InputFattura = {
+  anno: number;
+  righe: RigaInput[];
+  sostitutoImposta: boolean;
+  bolloACarico: 'paziente' | 'professionista';
+  opposizioneSts?: boolean;
+};
+
+export type RigaCalcolata = RigaInput & { totaleCompenso: number; integrativo: number };
+
+export type RisultatoFattura = {
+  righe: RigaCalcolata[];
+  totaleCompensi: number;
+  totaleIntegrativo: number;
+  imponibileIva: number;
+  iva: number;
+  importoEsente: number;
+  bollo: number;
+  bolloAddebitato: boolean;
+  ritenuta: number;
+  totale: number;
+  netto: number;
+  diciture: string[];
+  spiegazioni: string[];
+  regoleDaVerificare: string[];
+};
+
+/** Percentuale di un importo in centesimi, arrotondata al centesimo (0,5 per eccesso), senza errori di virgola. */
+export function percentuale(centesimi: number, aliquota: number): number {
+  const puntiBase = Math.round(aliquota * 10000); // es. 0,04 → 400
+  const prodotto = centesimi * puntiBase; // intero
+  const quoziente = Math.floor(prodotto / 10000);
+  const resto = prodotto - quoziente * 10000;
+  return resto * 2 >= 10000 ? quoziente + 1 : quoziente;
+}
+
+const euro = (centesimi: number) =>
+  (centesimi / 100).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+
+const percento = (aliquota: number) => `${Math.round(aliquota * 10000) / 100}%`;
+
+function regoleNonVerificate(r: RegoleFatturazione): string[] {
+  const voci: Array<[string, { stato: string }]> = [
+    ['aliquotaIntegrativo', r.aliquotaIntegrativo],
+    ['aliquotaIva', r.aliquotaIva],
+    ['sogliaBollo', r.sogliaBollo],
+    ['importoBollo', r.importoBollo],
+    ['aliquotaRitenuta', r.aliquotaRitenuta],
+    ['integrativoFuoriRitenuta', r.integrativoFuoriRitenuta],
+  ];
+  return voci.filter(([, v]) => v.stato === 'da_verificare').map(([nome]) => nome);
+}
+
+export function calcolaFattura(input: InputFattura): RisultatoFattura {
+  const regole = regolePerAnno(input.anno);
+  if (input.righe.length === 0) throw new Error('La fattura deve avere almeno una riga.');
+
+  const aliquotaIntegrativo = regole.aliquotaIntegrativo.valore;
+  const righe: RigaCalcolata[] = input.righe.map((riga) => {
+    const quantita = riga.quantita ?? 1;
+    if (!Number.isInteger(riga.compenso) || riga.compenso < 0) {
+      throw new Error('Il compenso deve essere un importo in centesimi non negativo.');
+    }
+    if (!Number.isInteger(quantita) || quantita < 1) throw new Error('La quantità deve essere almeno 1.');
+    const totaleCompenso = riga.compenso * quantita;
+    return {
+      ...riga,
+      quantita,
+      totaleCompenso,
+      integrativo: percentuale(totaleCompenso, aliquotaIntegrativo),
+    };
+  });
+
+  const somma = (f: (r: RigaCalcolata) => number) => righe.reduce((s, r) => s + f(r), 0);
+  const totaleCompensi = somma((r) => r.totaleCompenso);
+  const totaleIntegrativo = somma((r) => r.integrativo);
+  const imponibileIva = somma((r) => (r.natura === 'imponibile' ? r.totaleCompenso + r.integrativo : 0));
+  const importoEsente = somma((r) =>
+    r.natura === 'esente_sanitaria' ? r.totaleCompenso + r.integrativo : 0,
+  );
+  const iva = percentuale(imponibileIva, regole.aliquotaIva.valore);
+
+  const bollo = importoEsente > regole.sogliaBollo.valore ? regole.importoBollo.valore : 0;
+  const bolloAddebitato = bollo > 0 && input.bolloACarico === 'paziente';
+
+  const baseRitenuta = regole.integrativoFuoriRitenuta.valore
+    ? totaleCompensi
+    : totaleCompensi + totaleIntegrativo;
+  const ritenuta = input.sostitutoImposta ? percentuale(baseRitenuta, regole.aliquotaRitenuta.valore) : 0;
+
+  const totale = imponibileIva + iva + importoEsente + (bolloAddebitato ? bollo : 0);
+  const netto = totale - ritenuta;
+
+  const diciture: string[] = [];
+  if (importoEsente > 0) diciture.push(regole.diciture.esenzione);
+  if (bollo > 0) diciture.push(regole.diciture.bollo);
+  if (input.opposizioneSts) diciture.push(regole.diciture.opposizioneSts);
+
+  const spiegazioni: string[] = [
+    `Contributo integrativo ENPAP ${percento(aliquotaIntegrativo)} sui compensi: ${euro(totaleIntegrativo)}. È un contributo che chiedi in più al paziente e versi all'ENPAP: non è tuo reddito.`,
+  ];
+  if (importoEsente > 0) {
+    spiegazioni.push(
+      `Le prestazioni sanitarie da psicologo sono esenti IVA: ${euro(importoEsente)} senza IVA.`,
+    );
+  }
+  if (imponibileIva > 0) {
+    spiegazioni.push(
+      `Le attività non sanitarie hanno l'IVA al ${percento(regole.aliquotaIva.valore)} su compenso e contributo: ${euro(iva)} da versare allo Stato.`,
+    );
+  }
+  if (bollo > 0) {
+    spiegazioni.push(
+      bolloAddebitato
+        ? `Bollo da ${euro(bollo)}: serve perché la parte esente supera ${euro(regole.sogliaBollo.valore)}; lo paga il paziente.`
+        : `Bollo da ${euro(bollo)}: serve perché la parte esente supera ${euro(regole.sogliaBollo.valore)}; lo paghi tu ed è una spesa dell'attività.`,
+    );
+  } else if (importoEsente > 0) {
+    spiegazioni.push(`Nessun bollo: la parte esente non supera ${euro(regole.sogliaBollo.valore)}.`);
+  }
+  if (ritenuta > 0) {
+    spiegazioni.push(
+      `Ritenuta d'acconto ${percento(regole.aliquotaRitenuta.valore)} sul compenso: ${euro(ritenuta)}. Il cliente la trattiene e la versa allo Stato per te; la recuperi nella dichiarazione dei redditi.`,
+    );
+  }
+
+  return {
+    righe,
+    totaleCompensi,
+    totaleIntegrativo,
+    imponibileIva,
+    iva,
+    importoEsente,
+    bollo,
+    bolloAddebitato,
+    ritenuta,
+    totale,
+    netto,
+    diciture,
+    spiegazioni,
+    regoleDaVerificare: regoleNonVerificate(regole),
+  };
+}

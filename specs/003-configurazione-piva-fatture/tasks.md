@@ -21,13 +21,13 @@ Storie: US1 configurazione, US2 fattura sanitaria, US3 fattura non sanitaria, US
 
 ## Phase 2: Foundational (motore fiscale e database)
 
-- [ ] T002 [P] Test `tests/unit/fattura-calcolo.test.ts` con i 6 casi al centesimo di [quickstart.md](quickstart.md) e le invarianti di [contracts/motore-fattura.md](contracts/motore-fattura.md) (devono fallire)
-- [ ] T003 [P] Test `tests/unit/prorata.test.ts` (quota imponibile e arrotondamento art. 19-bis)
-- [ ] T004 [P] Test `tests/unit/codice-fiscale.test.ts` e `tests/unit/partita-iva.test.ts`
-- [ ] T005 Regole per anno in `src/engine/regole/{tipi,2026,2027,index}.ts` con fonte e stato di verifica (research R-01)
-- [ ] T006 Motore `src/engine/fattura/calcola.ts` (research R-02) con spiegazioni in parole semplici
-- [ ] T007 [P] `src/engine/fattura/prorata.ts` (research R-03)
-- [ ] T008 [P] Validatori `src/engine/validazioni/{codice-fiscale,partita-iva}.ts` (research R-09)
+- [x] T002 [P] Test `tests/unit/fattura-calcolo.test.ts` con i 6 casi al centesimo di [quickstart.md](quickstart.md) e le invarianti di [contracts/motore-fattura.md](contracts/motore-fattura.md) (devono fallire)
+- [x] T003 [P] Test `tests/unit/prorata.test.ts` (quota imponibile e arrotondamento art. 19-bis)
+- [x] T004 [P] Test `tests/unit/codice-fiscale.test.ts` e `tests/unit/partita-iva.test.ts`
+- [x] T005 Regole per anno in `src/engine/regole/{tipi,2026,2027,index}.ts` con fonte e stato di verifica (research R-01)
+- [x] T006 Motore `src/engine/fattura/calcola.ts` (research R-02) con spiegazioni in parole semplici
+- [x] T007 [P] `src/engine/fattura/prorata.ts` (research R-03)
+- [x] T008 [P] Validatori `src/engine/validazioni/{codice-fiscale,partita-iva}.ts` (research R-09)
 - [ ] T009 Test pgTAP `supabase/tests/database/006_fatturazione.test.sql` (numerazione, immutabilità, incassi; data-model.md `fatture.numero`, `fatture.stato`, `incassi.importo`)
 - [ ] T010 Migrazione `supabase/migrations/20261121000400_fatturazione.sql`: tabelle di [data-model.md](data-model.md) dal modello RLS, funzioni e trigger di [contracts/database.md](contracts/database.md)
 
