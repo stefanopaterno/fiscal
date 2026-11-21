@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  Button,
   makeStyles,
   MessageBar,
   MessageBarBody,
@@ -33,6 +34,7 @@ const useStili = makeStyles({
     flexDirection: 'column',
     gap: tokens.spacingVerticalM,
   },
+  pulsante: { alignSelf: 'flex-start', minHeight: '44px' },
 });
 
 export function SezioneSbloccoRapido() {
@@ -71,12 +73,15 @@ export function SezioneSbloccoRapido() {
         setMessaggio({ tipo: 'success', testo: 'Sblocco rapido attivo su questo dispositivo.' });
       } catch (e) {
         disattivaSbloccoRapido();
+        // Il motivo tecnico (es. NotAllowedError, NotSupportedError) aiuta a capire cosa manca.
+        const motivo =
+          e instanceof Error ? (e.message === 'non_supportato' ? 'PRF assente' : e.name) : 'sconosciuto';
         setMessaggio({
           tipo: 'error',
           testo:
             e instanceof Error && e.message === 'non_supportato'
-              ? 'Questo dispositivo o browser non supporta lo sblocco rapido sicuro. Continuerai a entrare con password e codice.'
-              : 'Attivazione annullata o non riuscita.',
+              ? `Questo dispositivo o browser non supporta lo sblocco rapido sicuro (${motivo}). Continuerai a entrare con password e codice. Su Mac prova con Safari aggiornato.`
+              : `Attivazione annullata o non riuscita (${motivo}).`,
         });
       }
     } else {
@@ -113,8 +118,16 @@ export function SezioneSbloccoRapido() {
           <MessageBarBody>{messaggio.testo}</MessageBarBody>
         </MessageBar>
       ) : null}
-      {compatibile === false ? (
-        <Text>Questo dispositivo non ha Face ID, impronta o PIN utilizzabili dal browser.</Text>
+      {compatibile === false && !attivo ? (
+        <>
+          <Text>
+            Il browser dice di non avere Face ID, impronta o PIN utilizzabili. Su alcuni Mac funziona lo
+            stesso (per esempio con il Portachiavi iCloud in Safari): puoi provare.
+          </Text>
+          <Button className={s.pulsante} disabled={invio} onClick={() => void cambia(true)}>
+            Prova comunque
+          </Button>
+        </>
       ) : (
         <Switch
           checked={attivo}
