@@ -2,6 +2,8 @@
 
 import { makeStyles, mergeClasses, tokens } from '@fluentui/react-components';
 import {
+  ClipboardTaskListLtr24Filled,
+  ClipboardTaskListLtr24Regular,
   DocumentText24Filled,
   DocumentText24Regular,
   Home24Filled,
@@ -31,6 +33,12 @@ export const VOCI: Voce[] = [
     iconaAttiva: <DocumentText24Filled />,
   },
   { href: '/clienti/', etichetta: 'Clienti', icona: <People24Regular />, iconaAttiva: <People24Filled /> },
+  {
+    href: '/adempimenti/',
+    etichetta: 'Adempimenti',
+    icona: <ClipboardTaskListLtr24Regular />,
+    iconaAttiva: <ClipboardTaskListLtr24Filled />,
+  },
   {
     href: '/impostazioni/',
     etichetta: 'Impostazioni',
@@ -81,7 +89,8 @@ const useStili = makeStyles({
     gap: '2px',
     color: tokens.colorNeutralForeground2,
     textDecoration: 'none',
-    fontSize: tokens.fontSizeBase200,
+    fontSize: '11px',
+    lineHeight: '14px',
     borderRadius: tokens.borderRadiusMedium,
     ':hover': { color: tokens.colorBrandForeground1 },
     [PC]: {
@@ -96,10 +105,11 @@ const useStili = makeStyles({
       ':hover': { backgroundColor: tokens.colorNeutralBackground1Hover },
     },
   },
+  etichetta: { maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  // sul telefono la voce attiva si riconosce da colore e icona piena (il grassetto non ci starebbe)
   attiva: {
     color: tokens.colorBrandForeground1,
-    fontWeight: tokens.fontWeightSemibold,
-    [PC]: { backgroundColor: tokens.colorBrandBackground2 },
+    [PC]: { backgroundColor: tokens.colorBrandBackground2, fontWeight: tokens.fontWeightSemibold },
   },
 });
 
@@ -124,7 +134,7 @@ export function Navigazione() {
             aria-current={attiva ? 'page' : undefined}
           >
             <span aria-hidden="true">{attiva ? v.iconaAttiva : v.icona}</span>
-            {v.etichetta}
+            <span className={s.etichetta}>{v.etichetta}</span>
           </NextLink>
         );
       })}

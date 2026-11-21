@@ -297,3 +297,15 @@ export async function leggiRiepilogoIva(anno: number): Promise<RiepilogoIva | nu
       .maybeSingle(),
   ) as RiepilogoIva | null;
 }
+
+/** Tutti gli incassi (per gli adempimenti: data e tracciabilità del pagamento). */
+export async function leggiIncassi(): Promise<Incasso[]> {
+  return controlla(await getSupabase().from('incassi').select('*').order('data')) as Incasso[];
+}
+
+export async function leggiRighe(fatturaIds: string[]): Promise<RigaFattura[]> {
+  if (fatturaIds.length === 0) return [];
+  return controlla(
+    await getSupabase().from('righe_fattura').select('*').in('fattura_id', fatturaIds).order('posizione'),
+  ) as RigaFattura[];
+}

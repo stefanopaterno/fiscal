@@ -108,4 +108,18 @@ test('emetto una fattura per una seduta, la stampo e la numerazione prosegue', a
   await expect(page.getByText('Fattura n. 2/2027')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'IVA 2027' })).toBeVisible();
   await expect(page.getByText(/Solo prestazioni sanitarie/)).toBeVisible();
+
+  // Adempimenti: due spese da comunicare al Sistema Tessera Sanitaria; ne segno una come inviata
+  await page
+    .getByRole('navigation', { name: 'Sezioni di Fiscal' })
+    .getByRole('link', { name: 'Adempimenti' })
+    .click();
+  await expect(page.getByText('Da inviare', { exact: true })).toHaveCount(2);
+  await page.getByRole('checkbox', { name: 'Scegli Fattura n. 1/2027' }).check();
+  await page.getByRole('button', { name: 'Segna le scelte come inviate' }).click();
+  await expect(page.getByText('1 spesa segnata come inviata.')).toBeVisible();
+  await expect(page.getByText('Inviata', { exact: true })).toHaveCount(1);
+  // il CSV parte solo dopo l'avviso sul file non protetto
+  await page.getByRole('button', { name: /Scarica le da inviare/ }).click();
+  await expect(page.getByRole('alertdialog', { name: 'Esportazione senza protezione' })).toBeVisible();
 });

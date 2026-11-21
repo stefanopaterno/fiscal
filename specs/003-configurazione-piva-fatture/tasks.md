@@ -55,7 +55,7 @@ Storie: US1 configurazione, US2 fattura sanitaria, US3 fattura non sanitaria, US
 
 ## Phase 7: US5 adempimenti (P2)
 
-- [ ] T021 [US5] `app/adempimenti/`: elenco STS, CSV, segna inviate; riepilogo per la fattura elettronica
+- [x] T021 [US5] `app/adempimenti/`: elenco STS, CSV, segna inviate; riepilogo per la fattura elettronica
 
 ## Phase 8: US6 storico (P3)
 
