@@ -52,6 +52,16 @@ jobs:
         run: supabase start
       - name: Test del database (pgTAP)
         run: supabase test db
+      - name: Avvio delle funzioni di recupero (segreti di prova casuali, posta finta)
+        run: |
+          node scripts/env-funzioni-locali.mjs
+          nohup supabase functions serve --env-file supabase/functions/.env > funzioni.log 2>&1 &
+          for i in $(seq 1 60); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" -X OPTIONS http://127.0.0.1:54321/functions/v1/recovery-codes || true)
+            if [ "$code" = "204" ]; then echo "funzioni pronte"; exit 0; fi
+            sleep 2
+          done
+          cat funzioni.log; exit 1
       - name: Test di integrazione (accesso, secondo fattore, estraneo)
         run: npm run test:integration
       - name: Arresto dello stack

@@ -11,6 +11,7 @@ import {
   tokens,
 } from '@fluentui/react-components';
 import NextLink from 'next/link';
+import { SezioneRecupero } from '@/features/recupero/SezioneRecupero';
 import { ConAiuto } from '@/ui/AiutoContestuale';
 import { ProtectedPage } from '@/ui/ProtectedPage';
 import { Shell } from '@/ui/Shell';
@@ -95,9 +96,10 @@ export default function PaginaSicurezza() {
             </MessageBar>
           </section>
 
+          <SezioneRecupero />
+
           <Text size={200}>
-            Sessioni attive, codici di recupero, blocco automatico e cambio password arriveranno qui nei
-            prossimi aggiornamenti.
+            Sessioni attive, blocco automatico e cambio password arriveranno qui nei prossimi aggiornamenti.
           </Text>
         </div>
       </Shell>

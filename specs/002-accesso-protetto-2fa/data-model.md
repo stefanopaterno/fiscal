@@ -74,7 +74,7 @@ Vincolo: al più una richiesta `in_attesa` per utente (indice univoco parziale).
 |---|---|---|
 | `id` | uuid PK | |
 | `owner_id` | uuid FK | |
-| `tipo` | text not null | da trigger del database: `login_ok` (nuova sessione), `mfa_configurato` (fattore verificato), `password_cambiata`, `sessione_chiusa`, `sblocco_rapido_attivato`/`disattivato`; dalle funzioni Edge: `codice_recupero_usato`, `codici_rigenerati`, `frase_avviata`, `frase_annullata`, `frase_completata`, `frase_errata`. I login falliti non sono registrati qui (li limita Supabase Auth) |
+| `tipo` | text not null | da trigger del database: `login_ok` (nuova sessione), `mfa_configurato` (fattore verificato), `password_cambiata`, `sessione_chiusa`, `sblocco_rapido_attivato`/`disattivato`; dalle funzioni Edge: `codici_generati`, `codice_recupero_usato`, `codice_recupero_errato`, `codici_rigenerati`, `frase_avviata`, `frase_annullata`, `frase_completata`, `frase_errata`. I login falliti non sono registrati qui (li limita Supabase Auth) |
 | `avvenuto_il` | timestamptz not null default now() | |
 | `dispositivo` | text null | etichetta breve (es. "iPhone, Safari"), mai indirizzi IP completi |
 

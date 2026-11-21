@@ -1,24 +1,67 @@
-# Supabase di My Fiscal
+# Supabase di Fiscal
 
-Contenuto: `config.toml` (impostazioni del progetto), `migrations/` (schema e regole di accesso),
-`tests/database/` (test pgTAP). Nessun segreto in questa cartella: il repository è pubblico.
+Contenuto:
+- `config.toml`: impostazioni del progetto (registrazioni chiuse, un solo secondo fattore, JWT 15 min,
+  limiti di tentativi, funzioni Edge).
+- `migrations/`: schema e regole di accesso (sicurezza di base, registro eventi, recupero).
+- `functions/`: funzioni Edge del recupero (`recovery-codes`, `recovery-code`, `recovery-phrase`) e parti comuni.
+- `tests/database/`: test pgTAP (regole per riga, tabelle future, conformità, recupero, eventi).
+- `templates/nuova_tabella.sql`: modello per ogni tabella futura.
 
-**Stato**: test pgTAP eseguiti in locale il 2026-11-21: 14/14 superati. Lo schema non è ancora applicato al progetto remoto; l'orario TOTP nel token (prova S3) è provato solo con token simulati.
+**Nessun segreto in questa cartella**: il repository è pubblico. I segreti stanno solo nei
+"secrets" delle funzioni su Supabase (progetto vero) o in `functions/.env` (solo locale, ignorato da git).
 
-## Passi da fare (nell'ordine)
+**Stato (2026-11-21)**: migrazioni 0100 e 0200 applicate al progetto vero; 0300 (recupero) da applicare.
+Funzioni Edge da distribuire (vedi sotto).
 
-1. Installare Docker Desktop e la Supabase CLI (`brew install supabase/tap/supabase`).
-2. Provare in locale: `supabase start`, poi `supabase test db`. Correggere gli eventuali errori.
-3. Nel pannello del progetto (https://supabase.com/dashboard) **prima** di disattivare le
-   registrazioni: creare il proprio utente (Authentication > Users > Add user), con password
-   lunga (12+ caratteri) e e-mail confermata.
-4. Accedere alla CLI: `supabase login`, poi `supabase link --project-ref aldiyymgvngvdrroluus`.
-5. Sostituire `site_url` in `config.toml` con l'indirizzo reale del sito, poi
-   `supabase config push` (applica registrazioni disattivate, un solo fattore MFA, JWT a 15 min).
-6. Applicare lo schema: `supabase db push`.
-7. Verifiche nel pannello: regione del progetto (preferibilmente UE), 2FA sul tuo account
-   Supabase, accordo sul trattamento dei dati (DPA), SMTP configurato per gli avvisi.
-8. Prove tecniche S1 e S3 di `specs/002-accesso-protetto-2fa/research.md`.
+## Prove in locale
 
-Le funzioni Edge di recupero (`recovery-code`, `recovery-phrase`) non sono ancora scritte:
-si fanno nella fase di implementazione, con i loro test.
+```text
+supabase start
+supabase test db                                   # regole del database
+node scripts/env-funzioni-locali.mjs               # segreti di prova (pepe casuale, posta finta Mailpit)
+supabase functions serve --env-file supabase/functions/.env   # in un altro terminale
+npm run test:integration                           # accesso, estraneo, recupero
+npm run build:e2e && npm run test:e2e              # percorsi nel browser
+```
+
+## Segreti delle funzioni (progetto vero)
+
+Da impostare UNA volta con `supabase secrets set NOME=valore` (mai scriverli in un file del repository):
+
+| Segreto | Cosa è | Esempio di valore |
+|---|---|---|
+| `RECOVERY_PEPPER` | "pepe" segreto dei codici di recupero (32 byte casuali). Se cambia, i codici esistenti smettono di valere | generato con `openssl rand -base64 32` |
+| `ORIGINI_CONSENTITE` | siti che possono chiamare le funzioni | `https://fiscal.soarlyai.com` |
+| `AVVISO_SMTP_HOST` | server di posta per l'avviso di ripristino | `smtp.gmail.com` |
+| `AVVISO_SMTP_PORT` | porta (Supabase blocca 25 e 587: usare 465) | `465` |
+| `AVVISO_SMTP_SECURE` | connessione cifrata | `true` |
+| `AVVISO_SMTP_USER` | utente della casella che spedisce | il tuo indirizzo Gmail |
+| `AVVISO_SMTP_PASS` | password per le app della casella (non la password normale) | da Google → Sicurezza → Password per le app |
+| `AVVISO_MITTENTE` | mittente mostrato | `Fiscal <il tuo indirizzo>` |
+
+Senza SMTP funzionante la frase di recupero **non** avvia nessun ripristino (risposta "avviso non inviabile"):
+i codici di recupero invece funzionano lo stesso.
+
+## Distribuzione sul progetto vero (azione dell'utente, T074)
+
+```text
+supabase db push --remote                      # migrazione 0300 (recupero)
+supabase secrets set RECOVERY_PEPPER=... ORIGINI_CONSENTITE=https://fiscal.soarlyai.com AVVISO_SMTP_HOST=smtp.gmail.com AVVISO_SMTP_PORT=465 AVVISO_SMTP_SECURE=true AVVISO_SMTP_USER=... AVVISO_SMTP_PASS=... AVVISO_MITTENTE=...
+supabase functions deploy                     # distribuisce le tre funzioni sul progetto collegato
+```
+
+## Ripristino da amministratore (ultima risorsa, T075)
+
+Solo se si sono persi **tutti**: telefono con Google Authenticator, codici di recupero e frase di recupero.
+Lo fa solo il proprietario, entrando nel pannello Supabase con la **verifica in due passaggi del proprio
+account Supabase**:
+
+1. Aprire https://supabase.com/dashboard → progetto Soarlyai → **Authentication → Users**.
+2. Aprire il proprio utente → sezione **Multi-Factor Authentication** (fattori) → eliminare il fattore TOTP.
+3. Entrare in Fiscal con e-mail e password: l'app chiede di collegare un telefono nuovo e mostra nuovi
+   codici di recupero. Impostare anche una nuova frase dalle impostazioni di sicurezza.
+
+È lo stesso testo che l'app mostra nella pagina di recupero ("Hai perso tutto?"). Chi ha accesso
+amministrativo al progetto può fare questo passaggio: per questo l'account Supabase deve avere la 2FA e
+nessun altro membro.

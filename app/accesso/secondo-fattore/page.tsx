@@ -1,5 +1,6 @@
 'use client';
 
+import { BannerRipristinoInCorso } from '@/features/auth/BannerRipristino';
 import { FormCodice } from '@/features/auth/FormCodice';
 import { SchedaAccesso } from '@/features/auth/SchedaAccesso';
 import { ProtectedPage } from '@/ui/ProtectedPage';
@@ -13,6 +14,7 @@ export default function PaginaSecondoFattore() {
         titolo="Codice di verifica"
         sottotitolo="Apri Google Authenticator e scrivi il codice a 6 cifre che vedi sotto «Fiscal»."
       >
+        <BannerRipristinoInCorso />
         <FormCodice />
       </SchedaAccesso>
     </ProtectedPage>

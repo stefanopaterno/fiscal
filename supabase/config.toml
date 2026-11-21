@@ -58,4 +58,13 @@ verify_enabled = false
 [storage]
 enabled = true
 
-# Le funzioni Edge arrivano nella fase di implementazione (specs/002.../contracts/edge-functions.md).
+# Funzioni Edge del recupero (specs/002-accesso-protetto-2fa/contracts/edge-functions.md).
+# Segreti (mai qui): RECOVERY_PEPPER, AVVISO_SMTP_*, ORIGINI_CONSENTITE, vedi supabase/README.md.
+[functions.recovery-codes]
+verify_jwt = true
+
+[functions.recovery-code]
+verify_jwt = true
+
+[functions.recovery-phrase]
+verify_jwt = true

@@ -43,6 +43,9 @@ describe('destinazione', () => {
     ['aal1_senza_fattore', '/accesso/configura/', null],
     ['aal1_senza_fattore', '/accesso/recupero/', null],
     ['aal2', '/accesso/', '/home/'],
+    ['aal2', '/accesso/secondo-fattore/', '/home/'],
+    // Dopo aver collegato il telefono si resta sulla configurazione per codici e frase di recupero
+    ['aal2', '/accesso/configura/', null],
     ['aal2', '/home/', null],
     ['aal2', '/impostazioni/sicurezza/', null],
   ];

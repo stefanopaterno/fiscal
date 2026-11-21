@@ -10,6 +10,7 @@ import {
   tokens,
 } from '@fluentui/react-components';
 import NextLink from 'next/link';
+import { BannerRipristinoAnnullato } from '@/features/auth/BannerRipristino';
 import { useEsci } from '@/features/auth/useSessione';
 import { ConAiuto } from '@/ui/AiutoContestuale';
 import { ProtectedPage } from '@/ui/ProtectedPage';
@@ -47,6 +48,7 @@ export default function PaginaHome() {
           >
             <Title1 as="h1">Home</Title1>
           </ConAiuto>
+          <BannerRipristinoAnnullato />
           <MessageBar intent="success">
             <MessageBarBody>
               Sei entrato con password e codice: l&apos;accesso protetto funziona.

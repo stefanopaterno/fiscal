@@ -16,6 +16,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { messaggi } from '@/lib/messaggi';
 import { getSupabase } from '@/lib/supabase/client';
 import { ConAiuto } from '@/ui/AiutoContestuale';
+import { PassiRecupero } from '@/features/recupero/PassiRecupero';
 import { messaggioErroreAccesso } from './errori';
 
 /**
@@ -59,12 +60,19 @@ export function ConfiguraSecondoFattore() {
   const [codice, setCodice] = useState('');
   const [errore, setErrore] = useState<string | null>(null);
   const [invio, setInvio] = useState(false);
+  const [collegato, setCollegato] = useState(false);
   const soloCifre = codice.replace(/\D/g, '');
 
   useEffect(() => {
     let attivo = true;
     void (async () => {
       const supabase = getSupabase();
+      // Già entrato con il codice: qui non c'è niente da configurare.
+      const livello = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (livello.data?.currentLevel === 'aal2') {
+        router.replace('/home/');
+        return;
+      }
       // Se la pagina era già stata aperta, esiste un fattore non confermato: lo togliamo e ripartiamo.
       const elenco = await supabase.auth.mfa.listFactors();
       for (const f of elenco.data?.all ?? []) {
@@ -81,7 +89,7 @@ export function ConfiguraSecondoFattore() {
     return () => {
       attivo = false;
     };
-  }, []);
+  }, [router]);
 
   async function conferma(evento: FormEvent) {
     evento.preventDefault();
@@ -98,7 +106,12 @@ export function ConfiguraSecondoFattore() {
       setCodice('');
       return;
     }
-    router.replace('/home/');
+    setCollegato(true);
+  }
+
+  if (collegato) {
+    // Telefono collegato: ora codici di recupero e frase (storia US4).
+    return <PassiRecupero onFine={() => router.replace('/home/')} />;
   }
 
   if (!config) {

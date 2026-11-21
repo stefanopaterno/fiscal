@@ -1,0 +1,7 @@
+{
+  "imports": {
+    "@noble/hashes/": "npm:/@noble/hashes@2.4.0/",
+    "@supabase/supabase-js": "npm:@supabase/supabase-js@2.119.2",
+    "nodemailer": "npm:nodemailer@7.0.13"
+  }
+}

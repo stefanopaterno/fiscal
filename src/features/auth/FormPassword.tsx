@@ -7,9 +7,9 @@ import {
   makeStyles,
   MessageBar,
   MessageBarBody,
+  Text,
   tokens,
 } from '@fluentui/react-components';
-import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, type FormEvent } from 'react';
 import { getSupabase } from '@/lib/supabase/client';
@@ -21,16 +21,7 @@ const useStili = makeStyles({
   modulo: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL },
   campo: { flexGrow: 1 },
   pulsante: { minHeight: '44px' },
-  link: {
-    minHeight: '44px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-    color: tokens.colorBrandForegroundLink,
-    fontSize: tokens.fontSizeBase300,
-    ':hover': { color: tokens.colorBrandForegroundLinkHover },
-  },
+  nota: { color: tokens.colorNeutralForeground3, textAlign: 'center' },
 });
 
 export function FormPassword() {
@@ -107,9 +98,10 @@ export function FormPassword() {
       >
         {invio ? 'Controllo…' : 'Accedi'}
       </Button>
-      <NextLink href="/accesso/recupero/" className={s.link}>
-        Ho perso il telefono con l&apos;app di autenticazione
-      </NextLink>
+      <Text size={200} className={s.nota}>
+        Hai perso il telefono? Accedi con e-mail e password: nella pagina successiva scegli «Usa un codice di
+        recupero».
+      </Text>
     </form>
   );
 }

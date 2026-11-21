@@ -51,6 +51,34 @@ export async function tabellePubbliche(): Promise<string[]> {
     .sort();
 }
 
+/** Chiama una funzione Edge locale con la sessione del client (come fa l'app). */
+export async function chiamaFunzione(
+  client: SupabaseClient,
+  nome: string,
+  corpo: Record<string, unknown>,
+): Promise<{ stato: number; dati: Record<string, unknown> }> {
+  const { data } = await client.auth.getSession();
+  const r = await fetch(`${API_URL}/functions/v1/${nome}`, {
+    method: 'POST',
+    headers: {
+      apikey: CHIAVE_PUBBLICA,
+      Authorization: `Bearer ${data.session?.access_token ?? ''}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(corpo),
+  });
+  return { stato: r.status, dati: (await r.json().catch(() => ({}))) as Record<string, unknown> };
+}
+
+/** E-mail ricevute da un indirizzo nella casella finta dello stack locale (Mailpit). */
+export async function emailRicevute(indirizzo: string): Promise<Array<{ Subject: string }>> {
+  const r = await fetch(
+    `http://127.0.0.1:54324/api/v1/search?query=${encodeURIComponent(`to:"${indirizzo}"`)}`,
+  );
+  const json = (await r.json()) as { messages?: Array<{ Subject: string }> };
+  return json.messages ?? [];
+}
+
 export type UtenteProva = { id: string; email: string; password: string };
 
 export async function creaUtente(): Promise<UtenteProva> {

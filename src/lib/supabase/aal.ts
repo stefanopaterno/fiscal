@@ -45,6 +45,8 @@ const PAGINA_PRINCIPALE: Record<StatoAccesso, string> = {
 export function destinazione(stato: StatoAccesso, pagina: string): string | null {
   const percorso = pagina.endsWith('/') ? pagina : `${pagina}/`;
   if (stato === 'aal2') {
+    // La configurazione resta aperta dopo il codice: lì si completano codici e frase di recupero.
+    if (percorso === '/accesso/configura/') return null;
     return percorso.startsWith('/accesso/') ? PAGINA_PRINCIPALE.aal2 : null;
   }
   return PAGINE_PERMESSE[stato].includes(percorso) ? null : PAGINA_PRINCIPALE[stato];

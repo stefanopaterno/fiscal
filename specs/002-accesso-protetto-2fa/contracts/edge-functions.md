@@ -11,6 +11,19 @@ Convenzione errori: `{ "errore": "<codice>", "messaggio": "<testo in italiano>",
 con stato HTTP 400/401/403/423/429. I messaggi non rivelano se un utente, un codice o una frase
 esistono (nessuna enumerazione).
 
+## `POST /functions/v1/recovery-codes`
+
+Generazione dei codici di recupero (FR-008). Richiede una sessione **aal2**. I codici esistono in
+chiaro solo nella risposta: nel database restano solo gli HMAC.
+
+| Azione | Quando | Effetto |
+|---|---|---|
+| `genera` | dopo la prima configurazione del secondo fattore, o se non esistono codici validi | se esistono già codici validi non ne crea altri e risponde `{ "gia_presenti": true, "residui": N }`; altrimenti crea il lotto 1 (o il successivo), risponde `{ "codici": [10 codici], "lotto": n }` ed evento `codici_generati` |
+| `rigenera` | su richiesta dell'utente | richiede una **verifica recente** (codice a 6 cifre entro 5 minuti, dal claim `amr`); crea un nuovo lotto, i vecchi codici non valgono più; evento `codici_rigenerati` |
+
+Codici: 10 codici da 80 bit, 16 caratteri base32 in 4 gruppi (`XXXX-XXXX-XXXX-XXXX`). La conferma
+"li ho conservati" si registra con la funzione di database `conferma_codici_conservati()` (aal2).
+
 ## `POST /functions/v1/recovery-code`
 
 Rientro con un codice di recupero (FR-009). Richiede una sessione **aal1** (password già verificata).
@@ -23,7 +36,7 @@ Rientro con un codice di recupero (FR-009). Richiede una sessione **aal1** (pass
 3. Calcola l'HMAC con il pepper e cerca un codice non usato del lotto corrente.
 4. Se valido: segna `usato_il = now()`, **elimina il fattore TOTP** dell'utente con l'API di
    amministrazione, scrive l'evento `codice_recupero_usato`, restituisce lo stato.
-5. Se non valido (errato o già usato, scenario 4.3): 401 `codice_non_valido`, evento di errore.
+5. Se non valido (errato o già usato, scenario 4.3): 401 `codice_non_valido`, evento `codice_recupero_errato`.
 
 **Risposta 200**: `{ "stato": "fattore_rimosso", "codici_residui": 9, "avviso": "Configura subito un nuovo secondo fattore e rigenera i codici." }`
 
@@ -61,6 +74,7 @@ Ripristino con la frase di recupero (FR-023, FR-024). Richiede sessione **aal1**
 | `mie_sessioni()` | — | righe `{ id, creata_il, ultimo_uso, browser, corrente }` | `aal2` + accesso completo valido |
 | `chiudi_mia_sessione(p_id uuid)` | id sessione | `true` / errore se non è dell'utente | `aal2` + accesso completo valido; sessione corrente esclusa (usare il logout) |
 | `codici_recupero_residui()` | — | intero | `aal2` |
+| `conferma_codici_conservati()` | — | — | `aal2`; registra `user_security.codici_confermati_il` |
 
 ## Operazioni sensibili (riautenticazione)
 

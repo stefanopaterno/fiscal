@@ -23,6 +23,7 @@ describe.skipIf(!existsSync(path.join(out, 'app')))('build: pagina di cortesia',
   it("le pagine dell'app hanno la Content-Security-Policy", () => {
     const html = readFileSync(path.join(out, 'app', 'index.html'), 'utf8');
     expect(html).toContain('http-equiv="Content-Security-Policy"');
-    expect(html).toContain("connect-src 'self' https://aldiyymgvngvdrroluus.supabase.co");
+    // Progetto vero, oppure lo stack locale nella build dei test end-to-end
+    expect(html).toMatch(/connect-src 'self' (https:\/\/aldiyymgvngvdrroluus\.supabase\.co|http:\/\/127\.0\.0\.1:54321)/);
   });
 });

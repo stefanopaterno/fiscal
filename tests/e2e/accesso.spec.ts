@@ -33,6 +33,11 @@ test('prima configurazione, uscita, accesso con password e codice', async ({ pag
   await page.getByLabel(/Scrivi il codice a 6 cifre/).fill(app.codiceAdesso());
   await page.getByRole('button', { name: 'Conferma e entra' }).click();
 
+  // Subito dopo: codici di recupero (US4); la frase si può impostare dopo
+  await page.getByLabel(/Li ho conservati/).check();
+  await page.getByRole('button', { name: 'Continua' }).click();
+  await page.getByRole('button', { name: 'Lo faccio dopo dalle impostazioni' }).click();
+
   await expect(page).toHaveURL(/\/app\/home\/$/);
   await expect(page.getByText(/Sei entrato con password e codice/)).toBeVisible();
   const larghezze = await page.evaluate(() => [document.documentElement.scrollWidth, window.innerWidth]);
