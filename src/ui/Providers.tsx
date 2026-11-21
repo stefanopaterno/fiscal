@@ -3,6 +3,7 @@
 import {
   createDOMRenderer,
   FluentProvider,
+  makeStaticStyles,
   RendererProvider,
   renderToStyleElements,
   SSRProvider,
@@ -20,6 +21,24 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
  * - Tema chiaro o scuro secondo l'impostazione del dispositivo.
  * - In produzione registra il service worker dell'app (solo file dell'app, mai dati).
  */
+/**
+ * Aree toccabili di almeno 44 px sugli schermi touch (principio VI): i campi e i menu di Fluent UI
+ * sono più bassi per impostazione predefinita.
+ */
+const useStiliTouch = makeStaticStyles(`
+@media (pointer: coarse) {
+  .fui-Input { min-height: 44px; }
+  .fui-Input > input { min-height: 42px; }
+  .fui-Select > select { min-height: 44px; }
+  .fui-Checkbox, .fui-Switch, .fui-Tab { min-height: 44px; }
+}
+`);
+
+function StiliTouch() {
+  useStiliTouch();
+  return null;
+}
+
 export function Providers({ children }: { children: ReactNode }) {
   const [renderer] = useState(() => createDOMRenderer());
   const stiliScritti = useRef(false);
@@ -51,6 +70,7 @@ export function Providers({ children }: { children: ReactNode }) {
     <RendererProvider renderer={renderer}>
       <SSRProvider>
         <FluentProvider theme={scuro ? webDarkTheme : webLightTheme} style={{ minHeight: '100vh' }}>
+          <StiliTouch />
           <OcchioProvider>{children}</OcchioProvider>
         </FluentProvider>
       </SSRProvider>

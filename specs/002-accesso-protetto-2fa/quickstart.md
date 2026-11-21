@@ -64,3 +64,29 @@ La funzione è finita quando: tutti i controlli del punto 2 sono verdi, gli scen
 l'esito atteso, le prove tecniche sono registrate, e `.specify/memory/constitution.md` ha i
 `TODO` chiusi da questo piano (`STACK_UI`, `OFFLINE_CODA`, `RECUPERO_ATTESA`, `PWA_NEXT`)
 aggiornati con le decisioni prese.
+
+## Esiti (2026-11-21)
+
+Controlli automatici del punto 2: tutti verdi (unitari, integrazione, database, browser su telefono e PC,
+build, segreti), anche sui controlli GitHub a ogni push.
+
+| # | Scenario | Esito | Dove |
+|---|---|---|---|
+| 1 | Prima configurazione con Google Authenticator e codici di recupero | OK automatico + provato dall'utente | `e2e/accesso`, `e2e/recupero` |
+| 2 | Sola password: nessun dato | OK | `integration/login-mfa`, `e2e/accesso` |
+| 3 | Password + codice in meno di 30 secondi | OK (pochi secondi nei test) | `e2e/accesso` |
+| 4 | API con sola chiave pubblica: 0 righe | OK, anche sul progetto vero | `integration/estraneo` |
+| 5 | Blocco dopo 5 minuti / background | OK | `e2e/blocco` |
+| 6 | Sblocco rapido entro 14 giorni | OK (Chrome simulato) + provato dall'utente sul Mac | `e2e/blocco` |
+| 7 | Operazioni sensibili: password e codice | OK | `e2e/impostazioni` |
+| 8 | Rientro con un codice di recupero | OK | `integration/recovery-code`, `e2e/recupero` |
+| 9 | Frase di recupero: attesa 48 ore, avviso, annullamento | OK con posta finta | `integration/recovery-phrase`, `e2e/recupero` |
+| 10 | Frase errata 5 volte: blocco 24 ore | OK | `integration/recovery-phrase` |
+| 11 | Rete spenta durante un inserimento | OK | `e2e/rete-assente` |
+| 12 | Chiusura della sessione di un altro dispositivo | OK | `integration/sessioni`, `e2e/due-dispositivi` |
+| 13 | Registrazione di un nuovo utente rifiutata | OK, anche sul progetto vero | `integration/estraneo` |
+| 14 | Pagina di cortesia invariata | OK | `unit/postbuild` |
+| 15 | Dato visibile dall'altro dispositivo | OK (sotto 5 secondi) | `e2e/due-dispositivi` |
+
+**Da provare a mano dopo la pubblicazione su fiscal.soarlyai.com**: sblocco rapido su iPhone e Android;
+arrivo dell'e-mail di avviso reale (avvio di un ripristino con la frase, poi accesso con il codice).

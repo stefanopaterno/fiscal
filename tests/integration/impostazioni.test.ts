@@ -36,7 +36,10 @@ describe('impostazioni di sicurezza', () => {
     const chiuse = await client.auth.signOut({ scope: 'others' });
     expect(chiuse.error).toBeNull();
 
-    const conVecchia = await nuovoClient().auth.signInWithPassword({ email: utente.email, password: utente.password });
+    const conVecchia = await nuovoClient().auth.signInWithPassword({
+      email: utente.email,
+      password: utente.password,
+    });
     expect(conVecchia.error).not.toBeNull();
     const conNuova = await nuovoClient().auth.signInWithPassword({ email: utente.email, password: nuova });
     expect(conNuova.error).toBeNull();
@@ -44,7 +47,7 @@ describe('impostazioni di sicurezza', () => {
     expect(app).toBeDefined();
   });
 
-  it('verifica recente: un nuovo codice aggiorna l\'orario nel token e permette la rigenerazione', async () => {
+  it("verifica recente: un nuovo codice aggiorna l'orario nel token e permette la rigenerazione", async () => {
     const { client, app } = await utenteCompleto();
     const prima = (await contenutoToken(client)).amr as Array<{ method: string; timestamp: number }>;
     await new Promise((r) => setTimeout(r, 1100));

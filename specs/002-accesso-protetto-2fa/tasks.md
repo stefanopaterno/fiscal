@@ -59,7 +59,7 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 
 - [x] T016 Prova **S5**: pagina di prova `app/_prove/fluent/page.tsx` con `FluentProvider` e `RendererProvider`; `npm run build`; aprirla con JavaScript attivo e disattivo e annotare esito e ripiego (app solo lato client con scheletro) in fondo a `research.md`
 - [x] T017 Prova **S6**: generare il service worker dopo `next build` con Serwist in modalità configuratore (ripiego `workbox-build`) in `scripts/build-sw.mjs`; verificare che le pagine esportate siano nella precache e che le richieste a `*.supabase.co` siano sempre `NetworkOnly`; annotare l'esito in `research.md` (chiude `TODO(PWA_NEXT)`)
-- [ ] T018 Prova **S4** (richiede l'utente): `vercel build` in locale o progetto Vercel temporaneo con preset Next.js, `output: 'export'`, `basePath`, file di cortesia copiati; annotare l'esito in `research.md`. **Nessun merge su `main` finché non passa**. Le variabili di Supabase su Vercel MUST essere impostate **solo** per l'ambiente Production: l'anteprima del ramo non si collega mai al database (costituzione, Hosting); anteprima protetta con Vercel Authentication
+- [x] T018 (Superata il 2026-11-21: build dell'anteprima riuscita, pagina di cortesia e /app/ verificate dall'utente, anteprima protetta) Prova **S4** (richiede l'utente): `vercel build` in locale o progetto Vercel temporaneo con preset Next.js, `output: 'export'`, `basePath`, file di cortesia copiati; annotare l'esito in `research.md`. **Nessun merge su `main` finché non passa**. Le variabili di Supabase su Vercel MUST essere impostate **solo** per l'ambiente Production: l'anteprima del ramo non si collega mai al database (costituzione, Hosting); anteprima protetta con Vercel Authentication
 
 ### Infrastruttura comune
 
@@ -185,7 +185,7 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 - [x] T071 [US4] Pagina `app/accesso/recupero/page.tsx` con `src/features/auth/Recupero.tsx`: scelta codice o frase, stato dell'attesa con conto alla rovescia, pulsante "Annulla ripristino", spiegazione dei limiti se tutto è perso (scenario 4.4) con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
 - [x] T072 [US4] Banner bloccante `src/features/auth/BannerRipristino.tsx` mostrato a ogni accesso mentre una richiesta è in attesa
 - [x] T073 [US4] Test E2E `tests/e2e/recupero.spec.ts`: perdita simulata del fattore → rientro con codice → nuova configurazione; frase → attesa → annullamento da accesso valido
-- [ ] T074 [US4] (Istruzioni pronte in `supabase/README.md`) **Azione dell'utente**: impostare i segreti delle funzioni (`supabase secrets set ...`, pepper e SMTP) e distribuirle (`supabase functions deploy --remote`); annotare l'esito in `supabase/README.md`
+- [x] T074 [US4] (Fatto dall'utente il 2026-11-21: migrazione 0300, segreti, funzioni attive; verificato) **Azione dell'utente**: impostare i segreti delle funzioni (`supabase secrets set ...`, pepper e SMTP) e distribuirle (`supabase functions deploy --remote`); annotare l'esito in `supabase/README.md`
 - [x] T075 [US4] Sezione "Ripristino da amministratore" in `supabase/README.md`: ultima risorsa quando fattore, codici e frase sono tutti persi; passi nel pannello Supabase (con la 2FA dell'account) per eliminare il fattore MFA dell'utente; testo che l'app mostra nello scenario 4.4 (T071)
 
 **Checkpoint**: recupero provato; nessuna via per saltare il secondo fattore.
@@ -239,12 +239,12 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 
 ## Phase 9: Polish e verifiche trasversali
 
-- [ ] T089 [P] Controllo finale degli aiuti contestuali (specifica 011): ogni schermata e campo di accesso e sicurezza ha il suo aiuto, scritto insieme alla pagina; testi raccolti e riletti in `src/features/auth/aiuti.ts` e `src/features/lock/aiuti.ts`
-- [ ] T090 [P] Controllo di usabilità: nessuno scroll orizzontale da 360 px e aree toccabili da 44 px su tutte le pagine di `app/` (test Playwright `tests/e2e/layout.spec.ts`)
-- [ ] T091 Avviso di export non cifrato (FR-018): componente `src/ui/AvvisoExportInChiaro.tsx` pronto per le funzioni di esportazione future
-- [ ] T092 Eseguire tutti gli scenari 1–14 di [quickstart.md](quickstart.md) da telefono e PC e annotare gli esiti
-- [ ] T093 Aggiornare `.specify/memory/constitution.md`: chiudere `TODO(OFFLINE_CODA)`, `TODO(RECUPERO_ATTESA)`, `TODO(PWA_NEXT)` e `TODO(STACK_UI)` con le decisioni prese, e (con l'utente) `TODO(VERCEL_PIANO)` e `TODO(ACCESSO_APP)`
-- [ ] T094 Revisione di sicurezza finale: rilettura di [contracts/rls-policy-contract.md](contracts/rls-policy-contract.md), controllo che nessun segreto sia in repository, bundle o log, verifica che le anteprime di Vercel siano disattivate o protette; verificare che su Vercel le variabili di Supabase siano presenti solo nell'ambiente Production
+- [x] T089 [P] (Controllo automatico in `tests/e2e/layout.spec.ts`; i testi restano accanto alle pagine, scritti con esse) Controllo finale degli aiuti contestuali (specifica 011): ogni schermata e campo di accesso e sicurezza ha il suo aiuto, scritto insieme alla pagina; testi raccolti e riletti in `src/features/auth/aiuti.ts` e `src/features/lock/aiuti.ts`
+- [x] T090 [P] Controllo di usabilità: nessuno scroll orizzontale da 360 px e aree toccabili da 44 px su tutte le pagine di `app/` (test Playwright `tests/e2e/layout.spec.ts`)
+- [x] T091 Avviso di export non cifrato (FR-018): componente `src/ui/AvvisoExportInChiaro.tsx` pronto per le funzioni di esportazione future
+- [x] T092 (Esiti in quickstart.md; restano a mano sblocco rapido su iPhone/Android ed e-mail reale dopo la pubblicazione) Eseguire tutti gli scenari 1–14 di [quickstart.md](quickstart.md) da telefono e PC e annotare gli esiti
+- [x] T093 (Costituzione 2.7.0: chiusi LAYOUT, PWA_NEXT, OFFLINE_CODA, RECUPERO_ATTESA; restano VERCEL_PIANO e ACCESSO_APP, decisioni dell'utente) Aggiornare `.specify/memory/constitution.md`: chiudere `TODO(OFFLINE_CODA)`, `TODO(RECUPERO_ATTESA)`, `TODO(PWA_NEXT)` e `TODO(STACK_UI)` con le decisioni prese, e (con l'utente) `TODO(VERCEL_PIANO)` e `TODO(ACCESSO_APP)`
+- [x] T094 Revisione di sicurezza finale: rilettura di [contracts/rls-policy-contract.md](contracts/rls-policy-contract.md), controllo che nessun segreto sia in repository, bundle o log, verifica che le anteprime di Vercel siano disattivate o protette; verificare che su Vercel le variabili di Supabase siano presenti solo nell'ambiente Production
 
 ---
 

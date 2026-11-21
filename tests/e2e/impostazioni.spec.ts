@@ -77,7 +77,9 @@ test('sostituzione del telefono: il nuovo funziona, il vecchio no', async ({ pag
   await page.getByRole('button', { name: 'Sostituisci il telefono' }).click();
   await confermaCheSeiTu(page);
   const chiave = (await page.getByText(/^[A-Z2-7]{16,}$/).textContent())?.trim() ?? '';
-  await page.getByLabel(/^Codice a 6 cifre del nuovo telefono/).fill(await authenticator(chiave).codiceStabile());
+  await page
+    .getByLabel(/^Codice a 6 cifre del nuovo telefono/)
+    .fill(await authenticator(chiave).codiceStabile());
   await page.getByRole('button', { name: 'Collega il nuovo telefono' }).click();
   await expect(page.getByText(/Nuovo telefono collegato/)).toBeVisible();
 

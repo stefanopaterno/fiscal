@@ -52,8 +52,10 @@ maggiorazione 1%), percentuali di deducibilità e detraibilità IVA per categori
 La UI MUST essere moderna, ordinata e priva di elementi superflui: card con KPI chiari, grafici
 a barre/ciambella per il breakdown fiscale. I componenti dell'interfaccia MUST essere quelli di
 Fluent UI 9 (`@fluentui/react-components`), con un tema chiaro e scuro coerente; il layout
-(navigazione, disposizione delle schermate) sarà definito più avanti. TODO(LAYOUT): scegliere
-layout e tema nel piano; lo stile iOS di My Money non è più il riferimento. Ogni
+segue il mockup approvato il 2026-11-21 (https://claude.ai/artifact/5vKrL6Zf6HjMBEKjJpFdBw): sul
+telefono una colonna con barra di navigazione in basso, sul PC barra laterale e card affiancate;
+pulsante "occhio" nella testata; tema chiaro o scuro secondo il dispositivo. Lo stile iOS di My
+Money non è più il riferimento. Ogni
 schermata MUST rispondere a una decisione concreta dell'utente (es. "quanto posso spendere
 oggi?", "quanto pagherò a giugno?"). Il testo dell'interfaccia MUST essere in italiano, chiaro
 e privo di legalese inutile. Ogni schermata, campo, importo calcolato e termine tecnico MUST
@@ -121,8 +123,10 @@ rischio residuo (dati leggibili dal gestore del progetto) accettato dall'utente.
   testabile da riga di comando. Versioni esatte di Next.js, React, Fluent UI 9 e Vitest,
   gestore di pacchetti e versione di Node: da fissare nel piano (e bloccate nel file di lock).
   Calcoli, PDF, file Excel e pacchetti cifrati MUST essere generati nel browser dell'utente, non
-  in funzioni server. TODO(PWA_NEXT): scegliere nel piano come gestire il service worker con
-  l'esportazione statica di Next.js.
+  in funzioni server. PWA: service worker scritto a mano e generato
+  dopo la build (`scripts/build-sw.mjs`): mette in cache solo i file dell'app e non intercetta mai
+  le richieste verso altri domini (Supabase sempre in rete). L'app vive sotto `/app/`; lo script
+  `postbuild` sposta l'output di Next.js e ricopia invariata la pagina di cortesia.
   Roadmap: la release successiva alla prima prevede job schedulati lato server (notifiche e
   salvataggi automatici); il piano della prima versione MUST non precluderli. Preferenza
   indicata per quei job: funzioni pianificate di Supabase (pg_cron ed Edge Functions), perché i
@@ -159,8 +163,10 @@ rischio residuo (dati leggibili dal gestore del progetto) accettato dall'utente.
   rete cade durante un inserimento, il dato MUST essere conservato in una coda protetta sul
   dispositivo e inviato al ritorno della rete, senza mai perderlo; MUST NOT esistere una copia
   completa dei dati sul dispositivo. L'uso offline completo (consultazione e inserimento) è
-  rinviato. TODO(OFFLINE_CODA): scegliere nel piano come proteggere la coda sul dispositivo e come
-  gestire i conflitti.
+  rinviato. Coda: IndexedDB con ogni voce cifrata AES-GCM e chiave non
+  esportabile; invio idempotente (id generato sul dispositivo); modifiche su una versione cambiata
+  altrove segnalate "da controllare" con scelta dell'utente; conservata durante il blocco, cancellata
+  con "Esci".
 - **Storage dati e backup**: database Supabase come fonte di verità, più export e backup in file
   cifrati. Struttura del file di backup e politica di ripristino: da definire nel piano.
 - **Autenticazione a due fattori**: login di Supabase Auth con secondo fattore obbligatorio per
@@ -168,8 +174,9 @@ rischio residuo (dati leggibili dal gestore del progetto) accettato dall'utente.
   Secondo fattore deciso: app di autenticazione con codici temporanei (l'utente usa Google
   Authenticator), senza SMS. Recupero: codici monouso, frase di recupero personale (solo per avviare un
   ripristino con attesa e avviso, mai per saltare il secondo fattore) e ripristino da
-  amministratore; nessun reset via e-mail. TODO(RECUPERO_ATTESA): durata dell'attesa e canale
-  dell'avviso da definire nel piano (vedi specifica 002).
+  amministratore; nessun reset via e-mail. Attesa del ripristino con la frase: 48 ore;
+  avviso via e-mail (SMTP sulla porta 465 dalle funzioni di Supabase) più banner a ogni accesso; senza
+  avviso inviabile il ripristino non parte; ogni accesso completo lo annulla.
 - **Dati dei pazienti (categoria particolare GDPR)**: i dati di pazienti e clienti sono dati
   relativi alla salute. L'app MUST conservarne solo il minimo necessario a fatture e Sistema
   Tessera Sanitaria (identificativi) e MUST NOT conservare dati clinici (diagnosi, note di
@@ -258,4 +265,4 @@ principi o sezioni, PATCH per chiarimenti. Ogni piano e ogni revisione MUST veri
 conformità ai principi; le deroghe MUST essere giustificate per iscritto nel piano. Il file
 `CLAUDE.md` resta la guida di ruolo e contesto per lo sviluppo quotidiano.
 
-**Version**: 2.6.2 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-21
+**Version**: 2.7.0 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-21
