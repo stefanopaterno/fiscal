@@ -22,3 +22,14 @@ supabase/.temp/
 supabase/.branches/
 supabase/.env
 supabase/.env.*
+
+# Next.js, test e strumenti
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+test-results/
+playwright-report/
+blob-report/
+.vercel/
+*.log

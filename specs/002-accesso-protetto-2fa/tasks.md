@@ -31,17 +31,17 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 **Scopo**: creare il progetto multipagina senza toccare la pagina di cortesia.
 
 - [x] T001 Cartella `supabase/` con `config.toml` (registrazioni chiuse, un solo fattore MFA, JWT 15 min, `site_url` su fiscal.soarlyai.com) — commit `5b5b46c`, `213c647`; applicata al progetto con `supabase config push --remote`
-- [ ] T002 Inizializzare il progetto Next.js (App Router) con TypeScript `strict` in `package.json`, `tsconfig.json`, `.nvmrc` (Node 24) e `engines`; bloccare le versioni nel file di lock; **non** creare né modificare `index.html` alla radice
-- [ ] T003 Configurare `next.config.ts` con `output: 'export'`, `basePath: '/app'`, `trailingSlash: true`, `images.unoptimized: true` (research D-12)
-- [ ] T004 [P] Aggiungere `.gitignore` per `.next/`, `out/`, `node_modules/`, `.env.local`, `test-results/` (senza rimuovere le voci già presenti)
-- [ ] T005 [P] Configurare ESLint e Prettier in `eslint.config.mjs` e `.prettierrc`, e le regole di import vietato: `src/engine/**` non può importare `react`, `next`, `@supabase/*` né moduli di rete (principio I)
-- [ ] T006 [P] Configurare Vitest in `vitest.config.ts` e Playwright in `playwright.config.ts` (schermo 360×740 per telefono e 1280×800 per PC)
-- [ ] T007 [P] Creare `.env.example` con soli `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` (la chiave pubblica `sb_publishable_...`); verificare che `.env.local` sia ignorato (FR-005)
-- [ ] T008 Scrivere `scripts/postbuild.mjs` che copia **byte per byte** `index.html` e `robots.txt` in `out/` e lo collega al comando `npm run build` (research D-12)
-- [ ] T009 [P] Test Vitest `tests/unit/postbuild.test.ts`: dopo la build, SHA-256 di `out/index.html` e `out/robots.txt` identici a quelli alla radice (SC: pagina di cortesia invariata)
-- [ ] T010 [P] Creare `vercel.json` con le intestazioni di sicurezza (CSP verso `aldiyymgvngvdrroluus.supabase.co`, HSTS, nosniff, `Referrer-Policy: no-referrer`, `Permissions-Policy`, `frame-ancestors 'none'`) e cache `no-store` per HTML e `sw.js` (research D-15)
-- [ ] T011 [P] Creare `scripts/scan-secrets.mjs` (o configurare `gitleaks`) e lo script npm `scan:secrets` che controlla repository e `out/` (nessuna `service_role`, nessun dato personale) (SC-003)
-- [ ] T012 Aggiungere gli script npm `typecheck`, `test`, `test:integration`, `test:e2e`, `build`, `scan:secrets` come in [quickstart.md](quickstart.md)
+- [x] T002 Inizializzare il progetto Next.js (App Router) con TypeScript `strict` in `package.json`, `tsconfig.json`, `.nvmrc` (Node 24) e `engines`; bloccare le versioni nel file di lock; **non** creare né modificare `index.html` alla radice
+- [x] T003 Configurare `next.config.ts` con `output: 'export'`, `basePath: '/app'`, `trailingSlash: true`, `images.unoptimized: true` (research D-12)
+- [x] T004 [P] Aggiungere `.gitignore` per `.next/`, `out/`, `node_modules/`, `.env.local`, `test-results/` (senza rimuovere le voci già presenti)
+- [x] T005 [P] Configurare ESLint e Prettier in `eslint.config.mjs` e `.prettierrc`, e le regole di import vietato: `src/engine/**` non può importare `react`, `next`, `@supabase/*` né moduli di rete (principio I)
+- [x] T006 [P] Configurare Vitest in `vitest.config.ts` e Playwright in `playwright.config.ts` (schermo 360×740 per telefono e 1280×800 per PC)
+- [x] T007 [P] Creare `.env.example` con soli `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY` (la chiave pubblica `sb_publishable_...`); verificare che `.env.local` sia ignorato (FR-005)
+- [x] T008 Scrivere `scripts/postbuild.mjs` che copia **byte per byte** `index.html` e `robots.txt` in `out/` e lo collega al comando `npm run build` (research D-12)
+- [x] T009 [P] Test Vitest `tests/unit/postbuild.test.ts`: dopo la build, SHA-256 di `out/index.html` e `out/robots.txt` identici a quelli alla radice (SC: pagina di cortesia invariata)
+- [x] T010 [P] Creare `vercel.json` con le intestazioni di sicurezza (CSP verso `aldiyymgvngvdrroluus.supabase.co`, HSTS, nosniff, `Referrer-Policy: no-referrer`, `Permissions-Policy`, `frame-ancestors 'none'`) e cache `no-store` per HTML e `sw.js` (research D-15)
+- [x] T011 [P] Creare `scripts/scan-secrets.mjs` (o configurare `gitleaks`) e lo script npm `scan:secrets` che controlla repository e `out/` (nessuna `service_role`, nessun dato personale) (SC-003)
+- [x] T012 Aggiungere gli script npm `typecheck`, `test`, `test:integration`, `test:e2e`, `build`, `scan:secrets` come in [quickstart.md](quickstart.md)
 
 ---
 

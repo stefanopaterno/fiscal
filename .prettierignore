@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+coverage/
+test-results/
+playwright-report/
+package-lock.json
+index.html
+robots.txt
+specs/
+.specify/
+supabase/migrations/
