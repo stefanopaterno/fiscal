@@ -25,7 +25,9 @@ async function esiste(p) {
 }
 
 async function impronta(p) {
-  return createHash('sha256').update(await readFile(p)).digest('hex');
+  return createHash('sha256')
+    .update(await readFile(p))
+    .digest('hex');
 }
 
 if (!(await esiste(out))) {
@@ -35,7 +37,8 @@ if (!(await esiste(out))) {
 
 // Se out/ è già sistemata (contiene out/app/ e nient'altro di Next.js), non rifare lo spostamento.
 const contenuto = await readdir(out);
-const giaSistemata = contenuto.includes('app') && contenuto.every((f) => f === 'app' || fileDiCortesia.includes(f));
+const giaSistemata =
+  contenuto.includes('app') && contenuto.every((f) => f === 'app' || fileDiCortesia.includes(f));
 
 if (!giaSistemata) {
   await rm(temporanea, { recursive: true, force: true });
@@ -59,7 +62,12 @@ for (const nome of fileDiCortesia) {
 //    Next.js inserisce script in linea che cambiano a ogni build: ne calcoliamo l'impronta e li
 //    autorizziamo uno per uno, così nessun altro script in linea può girare. La pagina di cortesia
 //    non viene toccata. frame-ancestors e le altre intestazioni stanno in vercel.json.
-const SUPABASE = 'https://aldiyymgvngvdrroluus.supabase.co';
+// L'indirizzo di Supabase della build (lo stack locale solo nei test end-to-end).
+const SUPABASE = (process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://aldiyymgvngvdrroluus.supabase.co').replace(
+  /\/$/,
+  '',
+);
+const SUPABASE_WS = SUPABASE.replace(/^https:/, 'wss:').replace(/^http:/, 'ws:');
 const regexScriptInLinea = /<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g;
 
 async function* fileHtml(cartella) {
@@ -85,7 +93,7 @@ for await (const file of fileHtml(path.join(out, 'app'))) {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "font-src 'self'",
-    `connect-src 'self' ${SUPABASE} ${SUPABASE.replace('https://', 'wss://')}`,
+    `connect-src 'self' ${SUPABASE} ${SUPABASE_WS}`,
     "worker-src 'self'",
     "manifest-src 'self'",
     "base-uri 'self'",

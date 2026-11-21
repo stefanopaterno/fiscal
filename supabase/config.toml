@@ -24,6 +24,15 @@ enable_anonymous_sign_ins = false
 minimum_password_length = 12
 password_requirements = "lower_upper_letters_digits_symbols"
 
+# Limiti di tentativi (FR-012), per indirizzo IP ogni 5 minuti: password, codici a 6 cifre, rinnovi.
+[auth.rate_limit]
+email_sent = 2
+sms_sent = 30
+anonymous_users = 30
+token_refresh = 150
+sign_in_sign_ups = 30
+token_verifications = 30
+
 [auth.email]
 # Il login con e-mail e password resta attivo; le registrazioni sono bloccate da [auth] enable_signup.
 enabled = true

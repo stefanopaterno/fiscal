@@ -85,21 +85,21 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 
 ### Test per US1 (da scrivere prima; devono fallire)
 
-- [ ] T028 [P] [US1] Test di integrazione `tests/integration/login-mfa.test.ts` contro lo stack locale: sola password → `aal1` e 0 righe su ogni tabella; password + TOTP → `aal2` e dati visibili; TOTP errato rifiutato; tentativi ripetuti rallentati (FR-012)
-- [ ] T029 [P] [US1] Test di integrazione `tests/integration/mfa-un-solo-fattore.test.ts` (**S1**): con fattore già verificato e sessione `aal1`, `mfa.enroll` deve fallire
-- [ ] T030 [P] [US1] Test E2E Playwright `tests/e2e/accesso.spec.ts` a 360 px: prima configurazione (QR, codice), accesso, rifiuto con solo password; genera i codici TOTP con la libreria `otpauth`
-- [ ] T031 [P] [US1] Test pgTAP `supabase/tests/database/005_eventi.test.sql`: ogni trigger di sicurezza scrive in `security_events` il tipo atteso e nessun contenuto oltre all'etichetta del dispositivo
+- [x] T028 [P] [US1] Test di integrazione `tests/integration/login-mfa.test.ts` contro lo stack locale: sola password → `aal1` e 0 righe su ogni tabella; password + TOTP → `aal2` e dati visibili; TOTP errato rifiutato; tentativi ripetuti rallentati (FR-012)
+- [x] T029 [P] [US1] Test di integrazione `tests/integration/mfa-un-solo-fattore.test.ts` (**S1**): con fattore già verificato e sessione `aal1`, `mfa.enroll` deve fallire
+- [x] T030 [P] [US1] Test E2E Playwright `tests/e2e/accesso.spec.ts` a 360 px: prima configurazione (QR, codice), accesso, rifiuto con solo password; genera i codici TOTP con la libreria `otpauth`
+- [x] T031 [P] [US1] Test pgTAP `supabase/tests/database/005_eventi.test.sql`: ogni trigger di sicurezza scrive in `security_events` il tipo atteso e nessun contenuto oltre all'etichetta del dispositivo
 
 ### Implementazione per US1
 
-- [ ] T032 [US1] Pagina password `app/accesso/page.tsx` con `src/features/auth/FormPassword.tsx` (`signInWithPassword`, messaggio generico in caso di errore, gestione del limite di tentativi) con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
-- [ ] T033 [US1] Pagina del codice `app/accesso/secondo-fattore/page.tsx` con `src/features/auth/FormCodice.tsx` (`mfa.challengeAndVerify`, 6 cifre, avviso se l'orologio del dispositivo è sbagliato) con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
-- [ ] T034 [US1] Pagina di prima configurazione `app/accesso/configura/page.tsx` con `src/features/auth/ConfiguraSecondoFattore.tsx`: `mfa.enroll` (QR e chiave testuale), verifica del primo codice; i **codici di recupero e la frase** si aggiungono in US4 con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
-- [ ] T035 [US1] Hook di sessione `src/features/auth/useSessione.ts` (stato di accesso, rinnovo del token, logout che chiama `pulisci` della coda quando esisterà) e reindirizzamenti in `src/ui/ProtectedPage.tsx`
-- [ ] T036 [US1] Home protetta segnaposto `app/home/page.tsx` dentro `ProtectedPage` (nessun dato fiscale ancora)
-- [ ] T037 [US1] Script locale `scripts/prova-supabase.mjs` per le prove **S1** e **S3** sul progetto vero: legge email, password e codice dalla tastiera (mai salvati), verifica che `enroll` con `aal1` fallisca e che `amr` con l'orario del TOTP compaia nel token anche dopo il rinnovo; annotare gli esiti in `research.md`
-- [ ] T038 [US1] Se S3 fallisce: aggiornare `private.accesso_completo_valido()` per usare `auth.sessions.created_at` (claim `session_id`) in una nuova migrazione `supabase/migrations/<data>_accesso_completo_ripiego.sql` e adattare il test pgTAP (lavoro condizionato all'esito di T037)
-- [ ] T039 [US1] Migrazione `supabase/migrations/<data>_eventi_sicurezza.sql` con trigger `security definer` che scrivono gli eventi da database (`data-model.md` + `security_events.tipo`): nuova riga in `auth.sessions` → `login_ok`; fattore in `auth.mfa_factors` passato a `verified` → `mfa_configurato`; cambio password in `auth.users` → `password_cambiata`; cancellazione da `auth.sessions` → `sessione_chiusa`; modifica di `user_security.sblocco_rapido_attivo` → `sblocco_rapido_attivato`/`disattivato`
+- [x] T032 [US1] Pagina password `app/accesso/page.tsx` con `src/features/auth/FormPassword.tsx` (`signInWithPassword`, messaggio generico in caso di errore, gestione del limite di tentativi) con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
+- [x] T033 [US1] Pagina del codice `app/accesso/secondo-fattore/page.tsx` con `src/features/auth/FormCodice.tsx` (`mfa.challengeAndVerify`, 6 cifre, avviso se l'orologio del dispositivo è sbagliato) con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
+- [x] T034 [US1] Pagina di prima configurazione `app/accesso/configura/page.tsx` con `src/features/auth/ConfiguraSecondoFattore.tsx`: `mfa.enroll` (QR e chiave testuale), verifica del primo codice; i **codici di recupero e la frase** si aggiungono in US4 con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
+- [x] T035 [US1] Hook di sessione `src/features/auth/useSessione.ts` (stato di accesso, rinnovo del token, logout che chiama `pulisci` della coda quando esisterà) e reindirizzamenti in `src/ui/ProtectedPage.tsx`
+- [x] T036 [US1] Home protetta segnaposto `app/home/page.tsx` dentro `ProtectedPage` (nessun dato fiscale ancora)
+- [ ] T037 [US1] (Script pronto; manca l'esecuzione sul progetto vero da parte dell'utente) Script locale `scripts/prova-supabase.mjs` per le prove **S1** e **S3** sul progetto vero: legge email, password e codice dalla tastiera (mai salvati), verifica che `enroll` con `aal1` fallisca e che `amr` con l'orario del TOTP compaia nel token anche dopo il rinnovo; annotare gli esiti in `research.md`
+- [x] T038 [US1] (Non necessario: S3 superata sullo stack locale, vedi research.md) Se S3 fallisce: aggiornare `private.accesso_completo_valido()` per usare `auth.sessions.created_at` (claim `session_id`) in una nuova migrazione `supabase/migrations/<data>_accesso_completo_ripiego.sql` e adattare il test pgTAP (lavoro condizionato all'esito di T037)
+- [x] T039 [US1] Migrazione `supabase/migrations/<data>_eventi_sicurezza.sql` con trigger `security definer` che scrivono gli eventi da database (`data-model.md` + `security_events.tipo`): nuova riga in `auth.sessions` → `login_ok`; fattore in `auth.mfa_factors` passato a `verified` → `mfa_configurato`; cambio password in `auth.users` → `password_cambiata`; cancellazione da `auth.sessions` → `sessione_chiusa`; modifica di `user_security.sblocco_rapido_attivo` → `sblocco_rapido_attivato`/`disattivato`
 
 **Checkpoint**: accesso con 2FA completo e provato; MVP consegnabile.
 

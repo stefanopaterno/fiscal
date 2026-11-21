@@ -6,7 +6,7 @@ export const messaggi = {
   accesso: {
     credenzialiErrate: 'E-mail o password non corrette.',
     troppiTentativi: 'Troppi tentativi. Aspetta qualche minuto e riprova.',
-    codiceErrato: 'Il codice non è giusto. Controlla l\'app di autenticazione e riprova.',
+    codiceErrato: "Il codice non è giusto. Controlla l'app di autenticazione e riprova.",
     codiceScaduto: 'Il codice è cambiato nel frattempo. Scrivi quello che vedi adesso.',
     orologioSbagliato:
       'Se il codice viene rifiutato anche quando è giusto, controlla che data e ora del telefono siano impostate in automatico.',
@@ -24,6 +24,6 @@ export const messaggi = {
     stime: 'Sono stime: non sostituiscono il commercialista.',
   },
   configurazione: {
-    errore: 'L\'app non è configurata correttamente. Controlla le impostazioni di Supabase.',
+    errore: "L'app non è configurata correttamente. Controlla le impostazioni di Supabase.",
   },
 } as const;

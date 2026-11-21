@@ -243,3 +243,9 @@ prova tecnica (spike) prima di scrivere il resto del codice, **D** = decisione d
   variabile d'ambiente sul progetto, quindi l'anteprima non può collegarsi al database. Da completare: le
   variabili Supabase vanno aggiunte **solo per Production** prima del merge su `main`. Nota: su Vercel
   esistono due progetti collegati al repository (`fiscal` e `fiscal.soarlyai`), da ridurre a uno.
+- **S1 e S3 sullo stack locale (2026-11-21): SUPERATE** (`tests/integration/mfa-un-solo-fattore.test.ts`,
+  `tests/integration/login-mfa.test.ts`). S1: con sessione aal1 e fattore verificato `mfa.enroll` e
+  `mfa.unenroll` vengono rifiutati (`max_enrolled_factors = 1`). S3: il token aal2 contiene `amr`
+  `{method: totp, timestamp}` e il rinnovo non cambia l'orario; dopo il rinnovo le policy riconoscono ancora
+  l'accesso completo. Il ripiego T038 non serve. Conferma sul progetto vero con `scripts/prova-supabase.mjs`
+  (T037) dopo la prima configurazione del secondo fattore.

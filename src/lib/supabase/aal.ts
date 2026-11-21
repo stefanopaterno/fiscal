@@ -13,7 +13,11 @@ export type StatoAccesso = 'anonimo' | 'aal1' | 'aal1_senza_fattore' | 'aal2';
 // Supabase dichiara i livelli come stringhe generiche: qualsiasi valore diverso da 'aal2' non dà accesso.
 type Livello = string | null | undefined;
 
-export function statoDaLivelli(input: { sessione: boolean; currentLevel?: Livello; nextLevel?: Livello }): StatoAccesso {
+export function statoDaLivelli(input: {
+  sessione: boolean;
+  currentLevel?: Livello;
+  nextLevel?: Livello;
+}): StatoAccesso {
   if (!input.sessione) return 'anonimo';
   if (input.currentLevel === 'aal2') return 'aal2';
   if (input.nextLevel === 'aal2') return 'aal1';

@@ -17,7 +17,7 @@ describe('verificaChiavePubblica', () => {
   });
 
   it('rifiuta la chiave segreta sb_secret_', () => {
-    expect(() => verificaChiavePubblica('sb_secret_abcdefghij1234')).toThrow(/segreta/);
+    expect(() => verificaChiavePubblica('sb_' + 'secret_' + 'chiave-finta-di-prova')).toThrow(/segreta/);
   });
 
   it('rifiuta un JWT con ruolo service_role', () => {

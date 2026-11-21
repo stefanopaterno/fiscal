@@ -55,7 +55,12 @@ export function useAiuto(iniziale = false) {
   return { aperto, alterna: () => setAperto((a) => !a), idPannello: `aiuto-${id}` };
 }
 
-export function PulsanteAiuto(props: { argomento: string; aperto: boolean; alterna: () => void; idPannello: string }) {
+export function PulsanteAiuto(props: {
+  argomento: string;
+  aperto: boolean;
+  alterna: () => void;
+  idPannello: string;
+}) {
   const s = useStili();
   return (
     <Button
@@ -98,6 +103,42 @@ export function PannelloAiuto(props: ContenutoAiuto & { aperto: boolean; idPanne
           {props.daDove}
         </Text>
       ) : null}
+    </div>
+  );
+}
+
+const useStiliConAiuto = makeStyles({
+  blocco: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalS, minWidth: 0 },
+  riga: { display: 'flex', gap: tokens.spacingHorizontalXS, minWidth: 0 },
+  fine: { alignItems: 'flex-end' },
+  centro: { alignItems: 'center' },
+  contenuto: { flexGrow: 1, minWidth: 0 },
+});
+
+/**
+ * Un elemento (campo, titolo, numero) con il suo "?" accanto e la spiegazione che si apre SOTTO,
+ * su tutta la larghezza. È il modo standard di mettere gli aiuti in Fiscal.
+ */
+export function ConAiuto(props: {
+  aiuto: ContenutoAiuto;
+  children: ReactNode;
+  allineamento?: 'fine' | 'centro';
+  apertoAllInizio?: boolean;
+}) {
+  const s = useStiliConAiuto();
+  const { aperto, alterna, idPannello } = useAiuto(props.apertoAllInizio);
+  return (
+    <div className={s.blocco}>
+      <div className={`${s.riga} ${props.allineamento === 'centro' ? s.centro : s.fine}`}>
+        <div className={s.contenuto}>{props.children}</div>
+        <PulsanteAiuto
+          argomento={props.aiuto.argomento}
+          aperto={aperto}
+          alterna={alterna}
+          idPannello={idPannello}
+        />
+      </div>
+      <PannelloAiuto {...props.aiuto} aperto={aperto} idPannello={idPannello} />
     </div>
   );
 }

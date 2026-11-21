@@ -29,11 +29,17 @@ const config = [
         'error',
         {
           patterns: [
-            { group: ['react', 'react-*', 'react/*'], message: 'Il motore fiscale non usa React (principio I).' },
+            {
+              group: ['react', 'react-*', 'react/*'],
+              message: 'Il motore fiscale non usa React (principio I).',
+            },
             { group: ['next', 'next/*'], message: 'Il motore fiscale non usa Next.js (principio I).' },
             { group: ['@supabase/*'], message: 'Il motore fiscale non accede al database (principio I).' },
-            { group: ['@fluentui/*'], message: 'Il motore fiscale non usa l\'interfaccia (principio I).' },
-            { group: ['@/ui/*', '@/features/*', '@/lib/supabase/*'], message: 'Il motore fiscale non dipende da UI o dati.' },
+            { group: ['@fluentui/*'], message: "Il motore fiscale non usa l'interfaccia (principio I)." },
+            {
+              group: ['@/ui/*', '@/features/*', '@/lib/supabase/*'],
+              message: 'Il motore fiscale non dipende da UI o dati.',
+            },
           ],
         },
       ],

@@ -13,7 +13,10 @@ export default defineConfig({
     locale: 'it-IT',
   },
   projects: [
-    { name: 'telefono', use: { browserName: 'chromium', viewport: { width: 360, height: 740 }, isMobile: true, hasTouch: true } },
+    {
+      name: 'telefono',
+      use: { browserName: 'chromium', viewport: { width: 360, height: 740 }, isMobile: true, hasTouch: true },
+    },
     { name: 'pc', use: { browserName: 'chromium', viewport: { width: 1280, height: 800 } } },
   ],
   webServer: {

@@ -59,7 +59,8 @@ function png(lato) {
 }
 
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#0F6CBD"/>${LETTERA_F.map(
-  ([x0, y0, x1, y1]) => `<rect x="${x0 * 100}" y="${y0 * 100}" width="${((x1 - x0) * 100).toFixed(1)}" height="${((y1 - y0) * 100).toFixed(1)}" fill="#FFFFFF"/>`,
+  ([x0, y0, x1, y1]) =>
+    `<rect x="${x0 * 100}" y="${y0 * 100}" width="${((x1 - x0) * 100).toFixed(1)}" height="${((y1 - y0) * 100).toFixed(1)}" fill="#FFFFFF"/>`,
 ).join('')}</svg>\n`;
 
 const cartella = path.join(process.cwd(), 'public', 'icons');

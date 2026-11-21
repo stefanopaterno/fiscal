@@ -16,8 +16,10 @@ export function getSupabase(): SupabaseClient {
   if (!client) {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
     const chiave = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '';
-    if (!url.startsWith('https://')) {
-      throw new Error('Configurazione: manca l\'indirizzo del progetto Supabase (NEXT_PUBLIC_SUPABASE_URL).');
+    // https obbligatorio; http solo per lo stack locale dei test sul proprio computer.
+    const locale = url.startsWith('http://127.0.0.1:') || url.startsWith('http://localhost:');
+    if (!url.startsWith('https://') && !locale) {
+      throw new Error("Configurazione: manca l'indirizzo del progetto Supabase (NEXT_PUBLIC_SUPABASE_URL).");
     }
     verificaChiavePubblica(chiave);
     client = createClient(url, chiave, {

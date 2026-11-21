@@ -18,7 +18,12 @@ export default defineConfig({
       },
       {
         extends: true,
-        test: { name: 'integration', include: ['tests/integration/**/*.test.ts'], environment: 'node', testTimeout: 30000 },
+        test: {
+          name: 'integration',
+          include: ['tests/integration/**/*.test.ts'],
+          environment: 'node',
+          testTimeout: 30000,
+        },
       },
     ],
   },

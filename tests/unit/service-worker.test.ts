@@ -14,7 +14,7 @@ describe.skipIf(!existsSync(sw))('service worker', () => {
     expect(codice).toContain('if (url.origin !== self.location.origin) return;');
   });
 
-  it("non contiene indirizzi di Supabase né di altri domini da mettere in cache", () => {
+  it('non contiene indirizzi di Supabase né di altri domini da mettere in cache', () => {
     expect(codice).not.toMatch(/supabase\.co/i);
     expect(codice).not.toMatch(/https?:\/\//);
   });

@@ -8,7 +8,9 @@ export function verificaChiavePubblica(chiave: string): void {
     throw new Error('Configurazione: manca la chiave pubblica di Supabase (NEXT_PUBLIC_SUPABASE_ANON_KEY).');
   }
   if (chiave.startsWith('sb_secret_')) {
-    throw new Error('Configurazione: è stata inserita la chiave segreta di Supabase. Usare solo la chiave pubblica.');
+    throw new Error(
+      'Configurazione: è stata inserita la chiave segreta di Supabase. Usare solo la chiave pubblica.',
+    );
   }
   const parti = chiave.split('.');
   if (parti.length === 3 && parti[1]) {
@@ -19,12 +21,17 @@ export function verificaChiavePubblica(chiave: string): void {
       ruolo = undefined;
     }
     if (ruolo === 'service_role') {
-      throw new Error('Configurazione: è stata inserita la chiave segreta (service_role). Usare solo la chiave pubblica.');
+      throw new Error(
+        'Configurazione: è stata inserita la chiave segreta (service_role). Usare solo la chiave pubblica.',
+      );
     }
   }
 }
 
 function decodificaBase64Url(testo: string): string {
-  const base64 = testo.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(testo.length / 4) * 4, '=');
+  const base64 = testo
+    .replace(/-/g, '+')
+    .replace(/_/g, '/')
+    .padEnd(Math.ceil(testo.length / 4) * 4, '=');
   return typeof atob === 'function' ? atob(base64) : Buffer.from(base64, 'base64').toString('utf8');
 }

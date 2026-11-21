@@ -38,6 +38,10 @@ const useStili = makeStyles({
     fontSize: tokens.fontSizeBase500,
     flexShrink: 0,
   },
+  logoSuBlu: {
+    backgroundColor: tokens.colorNeutralBackground1,
+    color: tokens.colorBrandForeground1,
+  },
   marchio: { display: 'flex', flexDirection: 'column' },
   contenuto: {
     flexGrow: 1,
@@ -51,11 +55,12 @@ const useStili = makeStyles({
   },
 });
 
-export function Marchio() {
+/** Logo e nome. `suSfondoBlu`: riquadro bianco con la F blu, per i pannelli blu. */
+export function Marchio({ suSfondoBlu = false }: { suSfondoBlu?: boolean }) {
   const s = useStili();
   return (
     <div className={s.testata}>
-      <div className={s.logo} aria-hidden="true">
+      <div className={suSfondoBlu ? `${s.logo} ${s.logoSuBlu}` : s.logo} aria-hidden="true">
         F
       </div>
       <div className={s.marchio}>

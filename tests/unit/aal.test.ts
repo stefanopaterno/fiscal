@@ -15,7 +15,9 @@ describe('statoDaLivelli', () => {
   });
 
   it('password giusta ma nessun secondo fattore: va configurato', () => {
-    expect(statoDaLivelli({ sessione: true, currentLevel: 'aal1', nextLevel: 'aal1' })).toBe('aal1_senza_fattore');
+    expect(statoDaLivelli({ sessione: true, currentLevel: 'aal1', nextLevel: 'aal1' })).toBe(
+      'aal1_senza_fattore',
+    );
   });
 
   it('password e codice: accesso completo (aal2)', () => {
@@ -24,7 +26,9 @@ describe('statoDaLivelli', () => {
 
   it('livelli mancanti o sconosciuti non danno mai accesso completo', () => {
     expect(statoDaLivelli({ sessione: true })).toBe('aal1_senza_fattore');
-    expect(statoDaLivelli({ sessione: true, currentLevel: null, nextLevel: null })).toBe('aal1_senza_fattore');
+    expect(statoDaLivelli({ sessione: true, currentLevel: null, nextLevel: null })).toBe(
+      'aal1_senza_fattore',
+    );
   });
 });
 

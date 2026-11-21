@@ -11,7 +11,7 @@ const out = path.join(radice, 'out');
 const impronta = (p: string) => createHash('sha256').update(readFileSync(p)).digest('hex');
 
 describe.skipIf(!existsSync(path.join(out, 'app')))('build: pagina di cortesia', () => {
-  it.each(['index.html', 'robots.txt'])('%s in out/ è identico all\'originale', (nome) => {
+  it.each(['index.html', 'robots.txt'])("%s in out/ è identico all'originale", (nome) => {
     expect(impronta(path.join(out, nome))).toBe(impronta(path.join(radice, nome)));
   });
 
