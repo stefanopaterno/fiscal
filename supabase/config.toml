@@ -14,8 +14,7 @@ major_version = 17
 
 [auth]
 enabled = true
-# TODO(ACCESSO_APP): sostituire con l'indirizzo reale del sito prima di applicare al progetto remoto.
-site_url = "http://localhost:3000"
+site_url = "https://fiscal.soarlyai.com"
 additional_redirect_urls = []
 jwt_expiry = 900                         # 15 minuti (D-09)
 enable_refresh_token_rotation = true
