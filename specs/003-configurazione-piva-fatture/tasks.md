@@ -63,7 +63,7 @@ Storie: US1 configurazione, US2 fattura sanitaria, US3 fattura non sanitaria, US
 
 ## Phase 9: Polish
 
-- [ ] T023 Test di impaginazione esteso alle pagine nuove; nessun dato clinico (SC-007); aiuti su ogni campo
+- [x] T023 Test di impaginazione esteso alle pagine nuove; nessun dato clinico (SC-007); aiuti su ogni campo
 - [ ] T024 Aggiornare la costituzione e lo stato di verifica delle regole 2027 dopo conferma con ENPAP e commercialista
 
 ## Dipendenze
