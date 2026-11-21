@@ -1,6 +1,8 @@
 'use client';
 
-import { makeStyles, Text, tokens } from '@fluentui/react-components';
+import { Button, makeStyles, Text, tokens } from '@fluentui/react-components';
+import { Eye24Regular, EyeOff24Regular } from '@fluentui/react-icons';
+import { useOcchio } from '@/features/lock/useOcchio';
 import type { ReactNode } from 'react';
 
 /**
@@ -19,6 +21,13 @@ const useStili = makeStyles({
     flexDirection: 'column',
     overflowX: 'hidden',
   },
+  barra: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingRight: tokens.spacingHorizontalL,
+  },
+  occhio: { minWidth: '44px', minHeight: '44px' },
   testata: {
     display: 'flex',
     alignItems: 'center',
@@ -73,11 +82,31 @@ export function Marchio({ suSfondoBlu = false }: { suSfondoBlu?: boolean }) {
   );
 }
 
+/** Pulsante dell'occhio (FR-011): mostra o nasconde importi e nomi in tutta l'app. */
+export function PulsanteOcchio() {
+  const s = useStili();
+  const { nascosto, alterna } = useOcchio();
+  return (
+    <Button
+      appearance="subtle"
+      shape="circular"
+      className={s.occhio}
+      icon={nascosto ? <EyeOff24Regular /> : <Eye24Regular />}
+      aria-label={nascosto ? 'Mostra gli importi' : 'Nascondi gli importi'}
+      aria-pressed={!nascosto}
+      onClick={alterna}
+    />
+  );
+}
+
 export function Shell({ children }: { children: ReactNode }) {
   const s = useStili();
   return (
     <div className={s.pagina}>
-      <Marchio />
+      <div className={s.barra}>
+        <Marchio />
+        <PulsanteOcchio />
+      </div>
       <main className={s.contenuto}>{children}</main>
     </div>
   );

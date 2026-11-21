@@ -200,17 +200,17 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 
 ### Test per US5
 
-- [ ] T076 [P] [US5] Test unitari `tests/unit/blocco.test.ts` con orologio simulato: blocco dopo `user_security.blocco_minuti` (`data-model.md` + `user_security.blocco_minuti`), blocco immediato in background, sblocco rapido rifiutato oltre `user_security.accesso_completo_giorni` (`data-model.md`), su nuovo dispositivo e per operazioni sensibili
-- [ ] T077 [P] [US5] Test E2E `tests/e2e/blocco.spec.ts`: inattività → pagina `/app/blocco/` senza importi; occhio chiuso → importi nascosti; dopo 3 rifiuti dello sblocco rapido chiede password e codice
+- [x] T076 [P] [US5] Test unitari `tests/unit/blocco.test.ts` con orologio simulato: blocco dopo `user_security.blocco_minuti` (`data-model.md` + `user_security.blocco_minuti`), blocco immediato in background, sblocco rapido rifiutato oltre `user_security.accesso_completo_giorni` (`data-model.md`), su nuovo dispositivo e per operazioni sensibili
+- [x] T077 [P] [US5] Test E2E `tests/e2e/blocco.spec.ts`: inattività → pagina `/app/blocco/` senza importi; occhio chiuso → importi nascosti; dopo 3 rifiuti dello sblocco rapido chiede password e codice
 
 ### Implementazione per US5
 
-- [ ] T078 [US5] Prova **S2**: pagina di prova `app/_prove/webauthn/page.tsx` per l'estensione PRF su Safari iOS e Chrome Android; annotare in `research.md`; se non supportata, lo sblocco rapido non viene offerto su quel dispositivo (research D-08)
-- [ ] T079 [P] [US5] Timer di inattività e rilevamento dello sfondo in `src/features/lock/useBlocco.ts` (svuota la memoria dei dati, mantiene il token cifrato)
-- [ ] T080 [P] [US5] Modalità occhio in `src/features/lock/useOcchio.ts` e `src/ui/ImportoNascosto.tsx` (si ripristina nascosta all'avvio, FR-011)
-- [ ] T081 [US5] Sblocco rapido con WebAuthn in `src/features/lock/sbloccoRapido.ts` (`@simplewebauthn/browser`, `userVerification: required`, chiave di cifratura dal PRF per il token di sessione; nessuna sessione nuova, FR-020)
-- [ ] T082 [US5] Pagina `app/blocco/page.tsx` con sblocco rapido o login completo, 3 rifiuti → login completo, regole di "sempre login completo" del contratto con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
-- [ ] T083 [US5] Interruttore "sblocco rapido" (attiva/disattiva, `data-model.md` + `user_security.sblocco_rapido_attivo`) in `app/impostazioni/sicurezza/page.tsx`
+- [x] T078 [US5] (Provata con l'autenticatore virtuale di Chrome nei test e2e; da confermare su iPhone, Mac e Android) Prova **S2**: pagina di prova `app/_prove/webauthn/page.tsx` per l'estensione PRF su Safari iOS e Chrome Android; annotare in `research.md`; se non supportata, lo sblocco rapido non viene offerto su quel dispositivo (research D-08)
+- [x] T079 [P] [US5] Timer di inattività e rilevamento dello sfondo in `src/features/lock/useBlocco.ts` (svuota la memoria dei dati, mantiene il token cifrato)
+- [x] T080 [P] [US5] Modalità occhio in `src/features/lock/useOcchio.ts` e `src/ui/ImportoNascosto.tsx` (si ripristina nascosta all'avvio, FR-011)
+- [x] T081 [US5] (WebAuthn nativo, senza @simplewebauthn) Sblocco rapido con WebAuthn in `src/features/lock/sbloccoRapido.ts` (`@simplewebauthn/browser`, `userVerification: required`, chiave di cifratura dal PRF per il token di sessione; nessuna sessione nuova, FR-020)
+- [x] T082 [US5] Pagina `app/blocco/page.tsx` con sblocco rapido o login completo, 3 rifiuti → login completo, regole di "sempre login completo" del contratto con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
+- [x] T083 [US5] Interruttore "sblocco rapido" (attiva/disattiva, `data-model.md` + `user_security.sblocco_rapido_attivo`) in `app/impostazioni/sicurezza/page.tsx`
 
 **Checkpoint**: blocco e sblocco rapido funzionano senza indebolire il login.
 

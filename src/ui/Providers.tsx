@@ -10,6 +10,7 @@ import {
   webLightTheme,
 } from '@fluentui/react-components';
 import { useServerInsertedHTML } from 'next/navigation';
+import { OcchioProvider } from '@/features/lock/useOcchio';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 /**
@@ -50,7 +51,7 @@ export function Providers({ children }: { children: ReactNode }) {
     <RendererProvider renderer={renderer}>
       <SSRProvider>
         <FluentProvider theme={scuro ? webDarkTheme : webLightTheme} style={{ minHeight: '100vh' }}>
-          {children}
+          <OcchioProvider>{children}</OcchioProvider>
         </FluentProvider>
       </SSRProvider>
     </RendererProvider>

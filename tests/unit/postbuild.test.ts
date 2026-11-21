@@ -24,6 +24,8 @@ describe.skipIf(!existsSync(path.join(out, 'app')))('build: pagina di cortesia',
     const html = readFileSync(path.join(out, 'app', 'index.html'), 'utf8');
     expect(html).toContain('http-equiv="Content-Security-Policy"');
     // Progetto vero, oppure lo stack locale nella build dei test end-to-end
-    expect(html).toMatch(/connect-src 'self' (https:\/\/aldiyymgvngvdrroluus\.supabase\.co|http:\/\/127\.0\.0\.1:54321)/);
+    expect(html).toMatch(
+      /connect-src 'self' (https:\/\/aldiyymgvngvdrroluus\.supabase\.co|http:\/\/127\.0\.0\.1:54321)/,
+    );
   });
 });

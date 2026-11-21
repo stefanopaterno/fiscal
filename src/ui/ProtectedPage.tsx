@@ -3,6 +3,7 @@
 import { makeStyles, Skeleton, SkeletonItem, tokens } from '@fluentui/react-components';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
+import { GuardiaBlocco } from '@/features/lock/GuardiaBlocco';
 import { destinazione, getStatoAccesso } from '@/lib/supabase/aal';
 import { getSupabase } from '@/lib/supabase/client';
 
@@ -26,6 +27,7 @@ export function ProtectedPage({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pagina = usePathname();
   const [consentito, setConsentito] = useState(false);
+  const [completo, setCompleto] = useState(false);
 
   useEffect(() => {
     let attivo = true;
@@ -34,6 +36,7 @@ export function ProtectedPage({ children }: { children: ReactNode }) {
       const stato = await getStatoAccesso(supabase);
       if (!attivo) return;
       const dove = destinazione(stato, pagina);
+      setCompleto(stato === 'aal2');
       if (dove) {
         setConsentito(false);
         router.replace(dove);
@@ -58,5 +61,11 @@ export function ProtectedPage({ children }: { children: ReactNode }) {
       </Skeleton>
     );
   }
-  return <>{children}</>;
+  // Con accesso completo la guardia blocca l'app dopo l'inattività (storia US5).
+  return (
+    <>
+      {children}
+      {completo ? <GuardiaBlocco /> : null}
+    </>
+  );
 }

@@ -249,3 +249,13 @@ prova tecnica (spike) prima di scrivere il resto del codice, **D** = decisione d
   `{method: totp, timestamp}` e il rinnovo non cambia l'orario; dopo il rinnovo le policy riconoscono ancora
   l'accesso completo. Il ripiego T038 non serve. Conferma sul progetto vero con `scripts/prova-supabase.mjs`
   (T037) dopo la prima configurazione del secondo fattore.
+- **S2 e sblocco rapido (2026-11-21)**: realizzato senza librerie esterne (WebAuthn nativo con estensione PRF,
+  `src/features/lock/`). Schema: dal segreto PRF (solo dopo verifica dell'utente) si ricava una chiave AES che
+  protegge una chiave privata RSA; al blocco la sessione si chiude con la chiave pubblica (niente Face ID per
+  bloccare) e viene tolta dal dispositivo SENZA annullarla sul server; allo sblocco si riapre la STESSA sessione
+  (stesso `session_id`, verificato nel test e2e). Provato con l'autenticatore virtuale di Chrome con PRF
+  (`tests/e2e/blocco.spec.ts`), compresi i 3 rifiuti. **Da provare sui dispositivi veri**: iPhone (Safari, iOS 18+),
+  Mac (Touch ID) e Android (Chrome). Dove il PRF non c'è, lo sblocco rapido non viene offerto.
+- **Background (scelta)**: quando l'app va in background si chiude subito l'occhio (importi nascosti al ritorno,
+  storia 5 scenario 2); il blocco vero scatta per inattività. Bloccare a ogni cambio di scheda sul PC sarebbe
+  troppo invadente.

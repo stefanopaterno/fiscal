@@ -54,7 +54,10 @@ test('prima configurazione: codici di recupero mostrati una volta e frase', asyn
   await page.getByRole('button', { name: 'Salva la frase' }).click();
   await expect(page).toHaveURL(/\/app\/home\/$/);
 
-  const dati = await admin.from('user_security').select('codici_confermati_il, frase_recupero_impostata_il').eq('owner_id', utente!.id);
+  const dati = await admin
+    .from('user_security')
+    .select('codici_confermati_il, frase_recupero_impostata_il')
+    .eq('owner_id', utente!.id);
   expect(dati.data?.[0]?.codici_confermati_il).not.toBeNull();
   expect(dati.data?.[0]?.frase_recupero_impostata_il).not.toBeNull();
 });
@@ -62,7 +65,8 @@ test('prima configurazione: codici di recupero mostrati una volta e frase', asyn
 test('telefono perso: rientro con un codice di recupero e nuovo telefono', async ({ page }) => {
   const client = await accediConPassword(utente!);
   await configuraSecondoFattore(client);
-  const codici = (await chiamaFunzione(client, 'recovery-codes', { azione: 'genera' })).dati.codici as string[];
+  const codici = (await chiamaFunzione(client, 'recovery-codes', { azione: 'genera' })).dati
+    .codici as string[];
   await client.auth.signOut();
 
   await accediSoloPassword(page);
