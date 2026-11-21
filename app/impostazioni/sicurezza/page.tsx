@@ -13,6 +13,9 @@ import {
 import NextLink from 'next/link';
 import { SezioneSbloccoRapido } from '@/features/lock/SezioneSbloccoRapido';
 import { ElencoSessioni } from '@/features/sessions/ElencoSessioni';
+import { RegistroEventi } from '@/features/sessions/RegistroEventi';
+import { SezioneAccesso } from '@/features/sicurezza/SezioneAccesso';
+import { SezioneTempi } from '@/features/sicurezza/SezioneTempi';
 import { SezioneRecupero } from '@/features/recupero/SezioneRecupero';
 import { ConAiuto } from '@/ui/AiutoContestuale';
 import { ProtectedPage } from '@/ui/ProtectedPage';
@@ -98,15 +101,17 @@ export default function PaginaSicurezza() {
             </MessageBar>
           </section>
 
+          <SezioneAccesso />
+
           <SezioneRecupero />
+
+          <SezioneTempi />
 
           <SezioneSbloccoRapido />
 
           <ElencoSessioni />
 
-          <Text size={200}>
-            Tempi di blocco e cambio password arriveranno qui nel prossimo aggiornamento.
-          </Text>
+          <RegistroEventi />
         </div>
       </Shell>
     </ProtectedPage>

@@ -224,14 +224,14 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 
 ### Test per US6
 
-- [ ] T084 [P] [US6] Test di integrazione `tests/integration/impostazioni.test.ts`: cambio password con verifica recente richiesta; altre sessioni invalidate (`signOut({ scope: 'others' })`); tempi di blocco fuori limite rifiutati (`user_security.blocco_minuti` 1–60, `user_security.accesso_completo_giorni` 1–30 in `data-model.md`); rigenerazione codici invalida il lotto precedente
-- [ ] T085 [P] [US6] Test E2E `tests/e2e/impostazioni.spec.ts` da telefono: cambio password e rigenerazione codici con nuova verifica
+- [x] T084 [P] [US6] Test di integrazione `tests/integration/impostazioni.test.ts`: cambio password con verifica recente richiesta; altre sessioni invalidate (`signOut({ scope: 'others' })`); tempi di blocco fuori limite rifiutati (`user_security.blocco_minuti` 1–60, `user_security.accesso_completo_giorni` 1–30 in `data-model.md`); rigenerazione codici invalida il lotto precedente
+- [x] T085 [P] [US6] Test E2E `tests/e2e/impostazioni.spec.ts` da telefono: cambio password e rigenerazione codici con nuova verifica
 
 ### Implementazione per US6
 
-- [ ] T086 [US6] Verifica recente in `src/features/auth/useVerificaRecente.ts`: chiede di nuovo password e codice a 6 cifre per le operazioni sensibili (entro 5 minuti) e non accetta lo sblocco rapido
-- [ ] T087 [US6] Sezioni in `app/impostazioni/sicurezza/page.tsx`: password (`updateUser` + `signOut({ scope: 'others' })`), sostituzione del secondo fattore (mai la disattivazione), rigenerazione dei codici (chiama `recovery-codes`), modifica della frase, tempi di blocco e di accesso completo con i limiti (`data-model.md` + `user_security.blocco_minuti`, `data-model.md` + `user_security.accesso_completo_giorni`) con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
-- [ ] T088 [US6] Registro eventi di sicurezza in `src/features/sessions/RegistroEventi.tsx` (lettura di `security_events`, senza contenuti)
+- [x] T086 [US6] (Logica in `verificaRecente.ts`: password controllata con un accesso usa e getta chiuso subito, codice confermato sulla sessione in corso) Verifica recente in `src/features/auth/useVerificaRecente.ts`: chiede di nuovo password e codice a 6 cifre per le operazioni sensibili (entro 5 minuti) e non accetta lo sblocco rapido
+- [x] T087 [US6] Sezioni in `app/impostazioni/sicurezza/page.tsx`: password (`updateUser` + `signOut({ scope: 'others' })`), sostituzione del secondo fattore (mai la disattivazione), rigenerazione dei codici (chiama `recovery-codes`), modifica della frase, tempi di blocco e di accesso completo con i limiti (`data-model.md` + `user_security.blocco_minuti`, `data-model.md` + `user_security.accesso_completo_giorni`) con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
+- [x] T088 [US6] Registro eventi di sicurezza in `src/features/sessions/RegistroEventi.tsx` (lettura di `security_events`, senza contenuti)
 
 **Checkpoint**: manutenzione ordinaria della sicurezza completa.
 

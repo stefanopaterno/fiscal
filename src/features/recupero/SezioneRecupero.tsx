@@ -11,6 +11,7 @@ import {
 } from '@fluentui/react-components';
 import { useCallback, useEffect, useState } from 'react';
 import { getSupabase } from '@/lib/supabase/client';
+import { useVerificaRecente } from '@/features/auth/useVerificaRecente';
 import { ConAiuto } from '@/ui/AiutoContestuale';
 import { chiamaRecupero } from './api';
 import { ImpostaFrase } from './ImpostaFrase';
@@ -55,6 +56,7 @@ const useStili = makeStyles({
 
 export function SezioneRecupero() {
   const s = useStili();
+  const { chiedi, finestra } = useVerificaRecente();
   const [residui, setResidui] = useState<number | null>(null);
   const [fraseImpostata, setFraseImpostata] = useState<boolean | null>(null);
   const [codiciNuovi, setCodiciNuovi] = useState<string[] | null>(null);
@@ -79,6 +81,8 @@ export function SezioneRecupero() {
 
   async function generaCodici() {
     setMessaggio(null);
+    // Nuovi codici al posto di quelli esistenti: operazione sensibile, serve la verifica recente.
+    if (residui && !(await chiedi())) return;
     const r = await chiamaRecupero<{ codici?: string[] }>('recovery-codes', {
       azione: residui ? 'rigenera' : 'genera',
     });
@@ -87,7 +91,7 @@ export function SezioneRecupero() {
         tipo: 'error',
         testo:
           r.errore === 'verifica_recente'
-            ? 'Per sicurezza, per generare codici nuovi esci e rientra con password e codice, poi riprova entro 5 minuti.'
+            ? 'La conferma è scaduta: riprova e scrivi di nuovo password e codice.'
             : r.messaggio,
       });
       return;
@@ -112,6 +116,7 @@ export function SezioneRecupero() {
 
   return (
     <section className={s.sezione} aria-labelledby="titolo-recupero">
+      {finestra}
       <ConAiuto
         allineamento="centro"
         aiuto={{
@@ -148,7 +153,15 @@ export function SezioneRecupero() {
         <Text>
           Frase di recupero: {fraseImpostata === null ? '…' : fraseImpostata ? 'impostata' : 'non impostata'}
         </Text>
-        <Button className={s.pulsante} onClick={() => setModificaFrase(true)}>
+        <Button
+          className={s.pulsante}
+          onClick={() => {
+            // Cambiare una frase già impostata richiede la verifica recente.
+            void (async () => {
+              if (!fraseImpostata || (await chiedi())) setModificaFrase(true);
+            })();
+          }}
+        >
           {fraseImpostata ? 'Cambia la frase' : 'Imposta la frase'}
         </Button>
       </div>
