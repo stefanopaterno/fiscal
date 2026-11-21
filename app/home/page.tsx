@@ -36,7 +36,7 @@ export default function PaginaHome() {
   const esci = useEsci();
   return (
     <ProtectedPage>
-      <Shell>
+      <Shell navigazione>
         <div className={s.colonna}>
           <ConAiuto
             allineamento="centro"

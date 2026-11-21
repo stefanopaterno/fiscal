@@ -98,4 +98,10 @@ test('tutte le pagine: niente scorrimento laterale, aree da 44 px sul telefono, 
   await page.goto('/app/impostazioni/sicurezza/');
   await expect(page.getByRole('heading', { name: 'Registro di sicurezza' })).toBeVisible();
   await controllaPagina(page, 'sicurezza', telefono);
+  await page.goto('/app/impostazioni/');
+  await expect(page.getByRole('heading', { name: 'Impostazioni', level: 1 })).toBeVisible();
+  await controllaPagina(page, 'impostazioni', telefono);
+  await page.goto('/app/impostazioni/attivita/');
+  await expect(page.getByRole('heading', { name: 'Pronto a fatturare?' })).toBeVisible();
+  await controllaPagina(page, 'attivita', telefono);
 });

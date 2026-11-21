@@ -17,7 +17,7 @@ Storie: US1 configurazione, US2 fattura sanitaria, US3 fattura non sanitaria, US
 
 ## Phase 1: Setup
 
-- [ ] T001 Navigazione del mockup in `src/ui/Navigazione.tsx` (barra laterale da 900 px, barra in basso sul telefono) montata in `src/ui/Shell.tsx`, con voci verso le pagine della 002 e della 003
+- [x] T001 Navigazione del mockup in `src/ui/Navigazione.tsx` (barra laterale da 900 px, barra in basso sul telefono) montata in `src/ui/Shell.tsx`, con voci verso le pagine della 002 e della 003
 
 ## Phase 2: Foundational (motore fiscale e database)
 
@@ -33,8 +33,8 @@ Storie: US1 configurazione, US2 fattura sanitaria, US3 fattura non sanitaria, US
 
 ## Phase 3: US1 configurazione (P1) 🎯
 
-- [ ] T011 [US1] Pagina `app/impostazioni/attivita/` con profilo professionale (`data-model.md` + `profilo_professionale.*`), validazione CF/P.IVA, indicatore "pronto a fatturare" e dati mancanti, aiuti
-- [ ] T012 [US1] Gestione attività (`data-model.md` + `attivita.natura_iva`, `attivita.previdenza`) nella stessa pagina
+- [x] T011 [US1] Pagina `app/impostazioni/attivita/` con profilo professionale (`data-model.md` + `profilo_professionale.*`), validazione CF/P.IVA, indicatore "pronto a fatturare" e dati mancanti, aiuti
+- [x] T012 [US1] Gestione attività (`data-model.md` + `attivita.natura_iva`, `attivita.previdenza`) nella stessa pagina
 
 ## Phase 4: US2 fattura sanitaria (P1) 🎯
 

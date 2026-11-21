@@ -4,13 +4,13 @@ import { Button, makeStyles, Text, tokens } from '@fluentui/react-components';
 import { Eye24Regular, EyeOff24Regular } from '@fluentui/react-icons';
 import { useOcchio } from '@/features/lock/useOcchio';
 import { StatoCoda } from '@/features/offline-queue/StatoCoda';
+import { LARGHEZZA_PC, Navigazione } from '@/ui/Navigazione';
 import type { ReactNode } from 'react';
 
 /**
  * Struttura comune delle pagine (T022, principio VI).
  * Mobile-first: nessuno scroll orizzontale dai 360 px, aree toccabili di almeno 44 px.
- * La navigazione delle pagine interne (barra laterale su PC, barra in basso sul telefono)
- * arriva con le prime pagine protette.
+ * Le pagine protette mostrano la navigazione: barra laterale su PC, barra in basso sul telefono.
  */
 const useStili = makeStyles({
   pagina: {
@@ -53,6 +53,16 @@ const useStili = makeStyles({
     color: tokens.colorBrandForeground1,
   },
   marchio: { display: 'flex', flexDirection: 'column' },
+  corpo: {
+    flexGrow: 1,
+    display: 'flex',
+    minWidth: 0,
+  },
+  // spazio per la barra in basso del telefono (56 px + margine dello schermo)
+  conBarraInBasso: {
+    paddingBottom: 'calc(64px + env(safe-area-inset-bottom))',
+    [`@media (min-width: ${LARGHEZZA_PC}px)`]: { paddingBottom: 0 },
+  },
   contenuto: {
     flexGrow: 1,
     width: '100%',
@@ -100,7 +110,7 @@ export function PulsanteOcchio() {
   );
 }
 
-export function Shell({ children }: { children: ReactNode }) {
+export function Shell({ children, navigazione = false }: { children: ReactNode; navigazione?: boolean }) {
   const s = useStili();
   return (
     <div className={s.pagina}>
@@ -108,10 +118,13 @@ export function Shell({ children }: { children: ReactNode }) {
         <Marchio />
         <PulsanteOcchio />
       </div>
-      <main className={s.contenuto}>
-        <StatoCoda />
-        {children}
-      </main>
+      <div className={navigazione ? `${s.corpo} ${s.conBarraInBasso}` : s.corpo}>
+        {navigazione ? <Navigazione /> : null}
+        <main className={s.contenuto}>
+          <StatoCoda />
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

@@ -56,10 +56,10 @@ export default function PaginaSicurezza() {
   const s = useStili();
   return (
     <ProtectedPage>
-      <Shell>
+      <Shell navigazione>
         <div className={s.colonna}>
-          <NextLink href="/home/" className={s.indietro}>
-            ← Home
+          <NextLink href="/impostazioni/" className={s.indietro}>
+            ← Impostazioni
           </NextLink>
           <Title1 as="h1">Sicurezza</Title1>
 
