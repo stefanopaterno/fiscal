@@ -6,12 +6,15 @@ Tutte con **sicurezza dell'invocante** (soggette alla RLS: aal2 e proprietario),
 
 | Funzione | Cosa fa | Errori |
 |---|---|---|
-| `emetti_fattura(p_id uuid) → (anno int, numero int)` | lucchetto per utente e anno; controlla configurazione completa, data ≥ inizio attività, almeno una riga; assegna il numero successivo della sequenza unica dell'anno; stato bozza→emessa | `configurazione_incompleta`, `data_anteriore_inizio`, `fattura_vuota`, `non_bozza` |
-| `crea_nota_di_credito(p_fattura uuid, p_id_nota uuid)` | crea una nota di credito (stessa sequenza, importi con segno opposto) collegata alla fattura; se copre l'intero importo la fattura passa ad `annullata` | `non_emessa` |
-| `registra_incasso(p_id uuid, p_fattura uuid, p_data date, p_importo bigint, p_modalita, p_tracciabile)` | inserisce l'incasso; rifiuta se la somma supera il netto | `oltre_il_netto`, `non_emessa` |
-| `segna_sts_inviate(p_ids uuid[])` | stato_sts da_inviare→inviata | — |
-| vista `reddito_cassa` | anno di incasso, totale incassato | — |
-| vista `riepilogo_iva` | per anno: imponibili, esenti (dalle fatture emesse) | — |
+| `emetti_fattura(p_id uuid) → (anno int, numero int)` | lucchetto per utente e anno; controlla configurazione completa, data ≥ inizio attività e ≥ ultima emessa dell'anno, almeno una riga, somma delle righe = totale compensi; assegna il numero successivo della sequenza unica dell'anno; imposta lo stato STS; salva la fotografia di professionista, cliente e attività; stato bozza→emessa | `configurazione_incompleta`, `data_anteriore_inizio`, `data_anteriore_ultima`, `fattura_vuota`, `totali_incoerenti`, `non_bozza` |
+| `crea_nota_di_credito(p_fattura uuid, p_id_nota uuid, p_data date default current_date) → (anno, numero)` | storno totale: copia righe e importi (positivi; il tipo `nota_credito` indica che si sottraggono nei riepiloghi), la emette nella stessa sequenza e porta la fattura ad `annullata`. Note di credito parziali: rinviate | `non_emessa` più quelli dell'emissione |
+| inserimento diretto in `incassi` (compatibile con la coda senza rete) | trigger `incassi_controlla`: lucchetto sulla fattura, rifiuta se non emessa o se la somma supera il netto; i contanti non sono tracciabili (vincolo) | `oltre_il_netto`, `non_emessa` |
+| `segna_sts_inviate(p_ids uuid[]) → int` | stato_sts da_inviare→inviata, restituisce quante | — |
+| vista `reddito_cassa` | per anno di incasso: incassato e parte di compenso incassata (in proporzione al netto) | — |
+| vista `riepilogo_iva` | per anno: imponibile, IVA, esente delle fatture emesse, note di credito sottratte | — |
+
+Gli errori hanno codice `P0001`, messaggio = codice dell'errore, `detail` in italiano semplice.
+Le viste sono `security_invoker` (soggette alla RLS di chi legge).
 
 Trigger:
 - `fatture_immutabili`: nessuna modifica o cancellazione di fatture `emessa`/`annullata`, eccetto

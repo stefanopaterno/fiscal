@@ -28,8 +28,8 @@ Storie: US1 configurazione, US2 fattura sanitaria, US3 fattura non sanitaria, US
 - [x] T006 Motore `src/engine/fattura/calcola.ts` (research R-02) con spiegazioni in parole semplici
 - [x] T007 [P] `src/engine/fattura/prorata.ts` (research R-03)
 - [x] T008 [P] Validatori `src/engine/validazioni/{codice-fiscale,partita-iva}.ts` (research R-09)
-- [ ] T009 Test pgTAP `supabase/tests/database/006_fatturazione.test.sql` (numerazione, immutabilità, incassi; data-model.md `fatture.numero`, `fatture.stato`, `incassi.importo`)
-- [ ] T010 Migrazione `supabase/migrations/20261121000400_fatturazione.sql`: tabelle di [data-model.md](data-model.md) dal modello RLS, funzioni e trigger di [contracts/database.md](contracts/database.md)
+- [x] T009 Test pgTAP `supabase/tests/database/006_fatturazione.test.sql` (numerazione, immutabilità, incassi; data-model.md `fatture.numero`, `fatture.stato`, `incassi.importo`)
+- [x] T010 Migrazione `supabase/migrations/20261121000400_fatturazione.sql`: tabelle di [data-model.md](data-model.md) dal modello RLS, funzioni e trigger di [contracts/database.md](contracts/database.md)
 
 ## Phase 3: US1 configurazione (P1) 🎯
 
