@@ -109,6 +109,18 @@ test('emetto una fattura per una seduta, la stampo e la numerazione prosegue', a
   await expect(page.getByRole('heading', { name: 'IVA 2027' })).toBeVisible();
   await expect(page.getByText(/Solo prestazioni sanitarie/)).toBeVisible();
 
+  // Totali e filtro «da incassare» (FR-011, FR-018)
+  const mostra = page.getByRole('button', { name: 'Mostra gli importi' });
+  if (await mostra.isVisible()) await mostra.click();
+  const totali = page.getByRole('region', { name: 'Totali' });
+  await expect(totali).toContainText('Emesso147,60 €');
+  await expect(totali).toContainText('Incassato62,40 €');
+  await expect(totali).toContainText('Da incassare85,20 €');
+  await page.getByLabel(/^Stato/).selectOption({ label: 'Da incassare' });
+  await expect(page.getByText('Fattura n. 1/2027')).toBeVisible();
+  await expect(page.getByText('Fattura n. 2/2027')).toHaveCount(0);
+  await expect(page.getByRole('region', { name: 'Totali della selezione' })).toContainText('Emesso85,20 €');
+
   // Adempimenti: due spese da comunicare al Sistema Tessera Sanitaria; ne segno una come inviata
   await page
     .getByRole('navigation', { name: 'Sezioni di Fiscal' })

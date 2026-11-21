@@ -59,7 +59,7 @@ Storie: US1 configurazione, US2 fattura sanitaria, US3 fattura non sanitaria, US
 
 ## Phase 8: US6 storico (P3)
 
-- [ ] T022 [US6] Elenco fatture con filtri e totali; nota di credito dal dettaglio
+- [x] T022 [US6] Elenco fatture con filtri e totali; nota di credito dal dettaglio
 
 ## Phase 9: Polish
 
