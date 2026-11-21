@@ -219,3 +219,22 @@ prova tecnica (spike) prima di scrivere il resto del codice, **D** = decisione d
 - Configurare il servizio di posta (SMTP) del progetto Supabase per l'avviso di ripristino.
 - Installare Docker sul computer di sviluppo (stack locale di Supabase per i test).
 - Scegliere le frasi e conservare i codici di recupero fuori dall'app (per esempio su carta).
+
+## Esiti delle prove (2026-11-21)
+
+- **S5 (Fluent UI 9 con esportazione statica): SUPERATA.** Con `RendererProvider` + `SSRProvider` e
+  `useServerInsertedHTML` (src/ui/Providers.tsx) gli stili di Griffel vengono scritti nell'HTML
+  esportato (`<style data-make-styles-bucket=…>` in `out/app/index.html`): la pagina è già formattata
+  prima del JavaScript. Ripiego non necessario.
+- **S6 (service worker con esportazione statica): SUPERATA con ripiego più semplice.** Invece di Serwist,
+  un service worker scritto a mano e generato dopo la build (`scripts/build-sw.mjs`): mette in cache solo i
+  file di `/app/`, esce subito per ogni richiesta verso altri domini (Supabase sempre in rete), versione
+  nuova a ogni build. Test in `tests/unit/service-worker.test.ts`. Chiude `TODO(PWA_NEXT)`.
+- **Scoperta durante la build**: con `basePath: '/app'` Next.js usa il prefisso solo nei collegamenti e
+  scrive i file alla radice di `out/`, sopra la pagina di cortesia. `scripts/postbuild.mjs` sposta tutto in
+  `out/app/` e ricopia `index.html` e `robots.txt` byte per byte (test in `tests/unit/postbuild.test.ts`).
+- **CSP**: gli script in linea di Next.js cambiano a ogni build, quindi `postbuild` inserisce in ogni pagina
+  dell'app una CSP con le loro impronte (`script-src 'self' 'sha256-…'`); `frame-ancestors` e le altre
+  intestazioni stanno in `vercel.json`. Provato in un browser: nessuna violazione, l'app si avvia e
+  reindirizza all'accesso.
+- **S4 (Vercel)**: da fare con l'anteprima del ramo `002-accesso-protetto-2fa` (vedi T018).

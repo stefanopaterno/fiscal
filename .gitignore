@@ -33,3 +33,4 @@ playwright-report/
 blob-report/
 .vercel/
 *.log
+.playwright-mcp/

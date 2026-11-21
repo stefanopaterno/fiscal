@@ -57,21 +57,21 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 
 ### Prove tecniche di fondazione (research.md, "Prove da fare per prime")
 
-- [ ] T016 Prova **S5**: pagina di prova `app/_prove/fluent/page.tsx` con `FluentProvider` e `RendererProvider`; `npm run build`; aprirla con JavaScript attivo e disattivo e annotare esito e ripiego (app solo lato client con scheletro) in fondo a `research.md`
-- [ ] T017 Prova **S6**: generare il service worker dopo `next build` con Serwist in modalità configuratore (ripiego `workbox-build`) in `scripts/build-sw.mjs`; verificare che le pagine esportate siano nella precache e che le richieste a `*.supabase.co` siano sempre `NetworkOnly`; annotare l'esito in `research.md` (chiude `TODO(PWA_NEXT)`)
+- [x] T016 Prova **S5**: pagina di prova `app/_prove/fluent/page.tsx` con `FluentProvider` e `RendererProvider`; `npm run build`; aprirla con JavaScript attivo e disattivo e annotare esito e ripiego (app solo lato client con scheletro) in fondo a `research.md`
+- [x] T017 Prova **S6**: generare il service worker dopo `next build` con Serwist in modalità configuratore (ripiego `workbox-build`) in `scripts/build-sw.mjs`; verificare che le pagine esportate siano nella precache e che le richieste a `*.supabase.co` siano sempre `NetworkOnly`; annotare l'esito in `research.md` (chiude `TODO(PWA_NEXT)`)
 - [ ] T018 Prova **S4** (richiede l'utente): `vercel build` in locale o progetto Vercel temporaneo con preset Next.js, `output: 'export'`, `basePath`, file di cortesia copiati; annotare l'esito in `research.md`. **Nessun merge su `main` finché non passa**. Le variabili di Supabase su Vercel MUST essere impostate **solo** per l'ambiente Production: l'anteprima del ramo non si collega mai al database (costituzione, Hosting); anteprima protetta con Vercel Authentication
 
 ### Infrastruttura comune
 
-- [ ] T019 Creare il client in `src/lib/supabase/client.ts` (solo URL e chiave pubblica da variabili `NEXT_PUBLIC_*`, `persistSession` e rinnovo automatico attivi) e un controllo che fallisce se compare una chiave `service_role` (FR-005)
-- [ ] T020 [P] Helper del livello di garanzia in `src/lib/supabase/aal.ts`: `getStatoAccesso()` che restituisce `anonimo | aal1 | aal1_senza_fattore | aal2` usando `auth.mfa.getAuthenticatorAssuranceLevel()` e `auth.mfa.listFactors()`
-- [ ] T021 [P] Test unitari `tests/unit/aal.test.ts` della macchina a stati di [contracts/app-routes-and-lock.md](contracts/app-routes-and-lock.md) (tutte le transizioni elencate)
-- [ ] T022 Layout radice `app/layout.tsx` con `FluentProvider` (tema chiaro e scuro), lingua `it`, `viewport` mobile-first, e struttura comune in `src/ui/Shell.tsx` (area toccabile minima 44 px, nessuno scroll orizzontale da 360 px)
-- [ ] T023 [P] Componente di protezione pagina `src/ui/ProtectedPage.tsx`: mostra solo uno scheletro finché non verifica sessione e `aal2`, poi reindirizza al login se manca; nessun dato nell'HTML esportato
-- [ ] T024 [P] Componente di aiuto contestuale `src/ui/AiutoContestuale.tsx` (testo semplicissimo, esempio, "perché mi viene chiesto", "da dove viene") predisposto per la specifica 011
-- [ ] T025 [P] Catalogo dei messaggi in italiano `src/lib/messaggi.ts` (errori di accesso senza rivelare se l'utente esiste, limiti di tentativi, rete assente)
-- [ ] T026 [P] Manifest e icone PWA in `public/manifest.webmanifest` e `public/icons/` (nome mostrato coerente con la pagina di cortesia)
-- [ ] T027 Percorso di smistamento `app/page.tsx` (senza sessione → `/app/accesso/`, con sessione completa → `/app/home/`)
+- [x] T019 Creare il client in `src/lib/supabase/client.ts` (solo URL e chiave pubblica da variabili `NEXT_PUBLIC_*`, `persistSession` e rinnovo automatico attivi) e un controllo che fallisce se compare una chiave `service_role` (FR-005)
+- [x] T020 [P] Helper del livello di garanzia in `src/lib/supabase/aal.ts`: `getStatoAccesso()` che restituisce `anonimo | aal1 | aal1_senza_fattore | aal2` usando `auth.mfa.getAuthenticatorAssuranceLevel()` e `auth.mfa.listFactors()`
+- [x] T021 [P] Test unitari `tests/unit/aal.test.ts` della macchina a stati di [contracts/app-routes-and-lock.md](contracts/app-routes-and-lock.md) (tutte le transizioni elencate)
+- [x] T022 Layout radice `app/layout.tsx` con `FluentProvider` (tema chiaro e scuro), lingua `it`, `viewport` mobile-first, e struttura comune in `src/ui/Shell.tsx` (area toccabile minima 44 px, nessuno scroll orizzontale da 360 px)
+- [x] T023 [P] Componente di protezione pagina `src/ui/ProtectedPage.tsx`: mostra solo uno scheletro finché non verifica sessione e `aal2`, poi reindirizza al login se manca; nessun dato nell'HTML esportato
+- [x] T024 [P] Componente di aiuto contestuale `src/ui/AiutoContestuale.tsx` (testo semplicissimo, esempio, "perché mi viene chiesto", "da dove viene") predisposto per la specifica 011
+- [x] T025 [P] Catalogo dei messaggi in italiano `src/lib/messaggi.ts` (errori di accesso senza rivelare se l'utente esiste, limiti di tentativi, rete assente)
+- [x] T026 [P] Manifest e icone PWA in `public/manifest.webmanifest` e `public/icons/` (nome mostrato coerente con la pagina di cortesia)
+- [x] T027 Percorso di smistamento `app/page.tsx` (senza sessione → `/app/accesso/`, con sessione completa → `/app/home/`)
 
 **Checkpoint**: scheletro, client Supabase, prove S4–S6 registrate. Le storie possono partire.
 

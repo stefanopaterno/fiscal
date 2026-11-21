@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node scripts/postbuild.mjs",
+    "build": "next build && node scripts/postbuild.mjs && node scripts/build-sw.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "format": "prettier --write .",
