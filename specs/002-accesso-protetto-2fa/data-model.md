@@ -30,9 +30,10 @@ le date sono `timestamptz` in UTC. Nessuna tabella di questa funzione contiene d
 | `codici_confermati_il` | timestamptz null | l'utente ha confermato di averli conservati (FR-008) |
 | `aggiornato_il` | timestamptz not null default now() | |
 
-La colonna `frase_recupero_hash` **non è leggibile** dal client: l'accesso alla tabella passa da
-una vista `user_security_pubblica` che la esclude; la scrittura della frase avviene solo dalla
-funzione Edge (service role).
+La colonna `frase_recupero_hash` **non è leggibile** dal client: i permessi sono concessi **per colonna**
+(lettura di tutti i campi tranne l'impronta e i contatori della frase; modifica solo di `blocco_minuti`,
+`accesso_completo_giorni`, `sblocco_rapido_attivo`). La scrittura della frase avviene solo dalla funzione
+Edge (service role). Così è nella migrazione `20261121000100_sicurezza_base.sql`.
 
 ### `recovery_codes` — codici di recupero monouso
 
@@ -73,13 +74,20 @@ Vincolo: al più una richiesta `in_attesa` per utente (indice univoco parziale).
 |---|---|---|
 | `id` | uuid PK | |
 | `owner_id` | uuid FK | |
-| `tipo` | text not null | `login_ok`, `login_fallito`, `mfa_configurato`, `codice_recupero_usato`, `codici_rigenerati`, `frase_avviata`, `frase_annullata`, `frase_completata`, `password_cambiata`, `sessione_chiusa`, `sblocco_rapido_attivato`/`disattivato` |
+| `tipo` | text not null | da trigger del database: `login_ok` (nuova sessione), `mfa_configurato` (fattore verificato), `password_cambiata`, `sessione_chiusa`, `sblocco_rapido_attivato`/`disattivato`; dalle funzioni Edge: `codice_recupero_usato`, `codici_rigenerati`, `frase_avviata`, `frase_annullata`, `frase_completata`, `frase_errata`. I login falliti non sono registrati qui (li limita Supabase Auth) |
 | `avvenuto_il` | timestamptz not null default now() | |
 | `dispositivo` | text null | etichetta breve (es. "iPhone, Safari"), mai indirizzi IP completi |
 
-Solo inserimenti dalle funzioni; il client può leggere i propri eventi, non modificarli né
+Solo inserimenti da trigger del database (sugli eventi di Supabase Auth e su `user_security`) e dalle funzioni Edge; il client può leggere i propri eventi, non modificarli né
 cancellarli (nessuna policy di update/delete). Nessun dato fiscale né personale oltre
 all'etichetta del dispositivo.
+
+### `prove_sincronizzazione` — solo nello stack locale dei test
+
+Tabella conforme al contratto RLS (`id`, `owner_id`, `versione`, `testo`, `creato_il`, `aggiornato_il`),
+definita in `supabase/seed.sql`: esiste **solo** nello stack locale (il seed non viene applicato con
+`supabase db push`). Serve a provare la coda offline e la visibilità tra dispositivi (US3, SC-005) prima
+che esistano tabelle fiscali.
 
 ### `offline_conflicts` — non necessaria
 

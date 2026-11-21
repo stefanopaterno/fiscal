@@ -64,7 +64,7 @@ Ripristino con la frase di recupero (FR-023, FR-024). Richiede sessione **aal1**
 
 ## Operazioni sensibili (riautenticazione)
 
-Cambio password, rigenerazione dei codici, esportazione dei dati, disattivazione della 2FA e
+Cambio password, rigenerazione dei codici, esportazione dei dati, sostituzione del secondo fattore (mai la disattivazione) e
 impostazione/modifica della frase richiedono una **verifica recente** (FR-019): il client chiede
 di nuovo password e codice a 6 cifre; la funzione o la policy controlla che l'orario dell'ultima
 verifica TOTP nel token sia entro 5 minuti. Lo sblocco rapido non è accettato.

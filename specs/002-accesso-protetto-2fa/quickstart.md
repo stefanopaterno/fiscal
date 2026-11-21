@@ -10,6 +10,9 @@ implementazione: i dettagli stanno in `tasks.md` e nel codice.
 - Node.js 24 LTS e npm; Docker in esecuzione; Supabase CLI.
 - Progetto Supabase configurato: registrazioni disattivate, un solo fattore MFA per utente,
   durata del token 15 minuti, SMTP configurato per l'avviso di ripristino.
+- Su Vercel le variabili di Supabase sono impostate **solo** per l'ambiente Production: le anteprime
+  dei rami non si collegano mai al database (costituzione, Hosting). Anteprime protette da Vercel
+  Authentication.
 - File locale **non versionato** `.env.local` con soli `NEXT_PUBLIC_SUPABASE_URL` e
   `NEXT_PUBLIC_SUPABASE_ANON_KEY` (chiave pubblica). La chiave `service_role` e il pepper sono
   solo nei segreti di Supabase.
@@ -53,10 +56,11 @@ npm run scan:secrets     # nessun segreto nel repository né in out/
 | 12 | Elenco sessioni: chiusura di quella del PC dal telefono | il PC deve rifare l'accesso (dopo la scadenza del token, max 15 minuti) |
 | 13 | Tentativo di registrazione di un nuovo utente | rifiutato |
 | 14 | Visita di `https://<sito>/` | si vede la pagina di cortesia "Soarlyai project", identica a prima |
+| 15 | Un dato inserito da un dispositivo, letto dall'altro (SC-005) | visibile entro pochi secondi dall'aggiornamento: provato in automatico nello stack locale con la tabella di prova; a mano con la prima funzione che ha dati (specifica 003) |
 
 ## 4. Criteri di uscita
 
-La funzione è finita quando: tutti i controlli del punto 2 sono verdi, gli scenari 1-14 hanno
+La funzione è finita quando: tutti i controlli del punto 2 sono verdi, gli scenari 1-15 hanno
 l'esito atteso, le prove tecniche sono registrate, e `.specify/memory/constitution.md` ha i
 `TODO` chiusi da questo piano (`STACK_UI`, `OFFLINE_CODA`, `RECUPERO_ATTESA`, `PWA_NEXT`)
 aggiornati con le decisioni prese.

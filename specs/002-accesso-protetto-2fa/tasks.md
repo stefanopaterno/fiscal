@@ -59,7 +59,7 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 
 - [ ] T016 Prova **S5**: pagina di prova `app/_prove/fluent/page.tsx` con `FluentProvider` e `RendererProvider`; `npm run build`; aprirla con JavaScript attivo e disattivo e annotare esito e ripiego (app solo lato client con scheletro) in fondo a `research.md`
 - [ ] T017 Prova **S6**: generare il service worker dopo `next build` con Serwist in modalità configuratore (ripiego `workbox-build`) in `scripts/build-sw.mjs`; verificare che le pagine esportate siano nella precache e che le richieste a `*.supabase.co` siano sempre `NetworkOnly`; annotare l'esito in `research.md` (chiude `TODO(PWA_NEXT)`)
-- [ ] T018 Prova **S4** (richiede l'utente): `vercel build` in locale o progetto Vercel temporaneo con preset Next.js, `output: 'export'`, `basePath`, file di cortesia copiati; annotare l'esito in `research.md`. **Nessun merge su `main` finché non passa**
+- [ ] T018 Prova **S4** (richiede l'utente): `vercel build` in locale o progetto Vercel temporaneo con preset Next.js, `output: 'export'`, `basePath`, file di cortesia copiati; annotare l'esito in `research.md`. **Nessun merge su `main` finché non passa**. Le variabili di Supabase su Vercel MUST essere impostate **solo** per l'ambiente Production: l'anteprima del ramo non si collega mai al database (costituzione, Hosting); anteprima protetta con Vercel Authentication
 
 ### Infrastruttura comune
 
@@ -88,16 +88,18 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 - [ ] T028 [P] [US1] Test di integrazione `tests/integration/login-mfa.test.ts` contro lo stack locale: sola password → `aal1` e 0 righe su ogni tabella; password + TOTP → `aal2` e dati visibili; TOTP errato rifiutato; tentativi ripetuti rallentati (FR-012)
 - [ ] T029 [P] [US1] Test di integrazione `tests/integration/mfa-un-solo-fattore.test.ts` (**S1**): con fattore già verificato e sessione `aal1`, `mfa.enroll` deve fallire
 - [ ] T030 [P] [US1] Test E2E Playwright `tests/e2e/accesso.spec.ts` a 360 px: prima configurazione (QR, codice), accesso, rifiuto con solo password; genera i codici TOTP con la libreria `otpauth`
+- [ ] T031 [P] [US1] Test pgTAP `supabase/tests/database/005_eventi.test.sql`: ogni trigger di sicurezza scrive in `security_events` il tipo atteso e nessun contenuto oltre all'etichetta del dispositivo
 
 ### Implementazione per US1
 
-- [ ] T031 [US1] Pagina password `app/accesso/page.tsx` con `src/features/auth/FormPassword.tsx` (`signInWithPassword`, messaggio generico in caso di errore, gestione del limite di tentativi)
-- [ ] T032 [US1] Pagina del codice `app/accesso/secondo-fattore/page.tsx` con `src/features/auth/FormCodice.tsx` (`mfa.challengeAndVerify`, 6 cifre, avviso se l'orologio del dispositivo è sbagliato)
-- [ ] T033 [US1] Pagina di prima configurazione `app/accesso/configura/page.tsx` con `src/features/auth/ConfiguraSecondoFattore.tsx`: `mfa.enroll` (QR e chiave testuale), verifica del primo codice; i **codici di recupero e la frase** si aggiungono in US4
-- [ ] T034 [US1] Hook di sessione `src/features/auth/useSessione.ts` (stato di accesso, rinnovo del token, logout che chiama `pulisci` della coda quando esisterà) e reindirizzamenti in `src/ui/ProtectedPage.tsx`
-- [ ] T035 [US1] Home protetta segnaposto `app/home/page.tsx` dentro `ProtectedPage` (nessun dato fiscale ancora)
-- [ ] T036 [US1] Script locale `scripts/prova-supabase.mjs` per le prove **S1** e **S3** sul progetto vero: legge email, password e codice dalla tastiera (mai salvati), verifica che `enroll` con `aal1` fallisca e che `amr` con l'orario del TOTP compaia nel token anche dopo il rinnovo; annotare gli esiti in `research.md`
-- [ ] T037 [US1] Se S3 fallisce: aggiornare `private.accesso_completo_valido()` per usare `auth.sessions.created_at` (claim `session_id`) in una nuova migrazione `supabase/migrations/<data>_accesso_completo_ripiego.sql` e adattare il test pgTAP (lavoro condizionato all'esito di T036)
+- [ ] T032 [US1] Pagina password `app/accesso/page.tsx` con `src/features/auth/FormPassword.tsx` (`signInWithPassword`, messaggio generico in caso di errore, gestione del limite di tentativi) con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
+- [ ] T033 [US1] Pagina del codice `app/accesso/secondo-fattore/page.tsx` con `src/features/auth/FormCodice.tsx` (`mfa.challengeAndVerify`, 6 cifre, avviso se l'orologio del dispositivo è sbagliato) con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
+- [ ] T034 [US1] Pagina di prima configurazione `app/accesso/configura/page.tsx` con `src/features/auth/ConfiguraSecondoFattore.tsx`: `mfa.enroll` (QR e chiave testuale), verifica del primo codice; i **codici di recupero e la frase** si aggiungono in US4 con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
+- [ ] T035 [US1] Hook di sessione `src/features/auth/useSessione.ts` (stato di accesso, rinnovo del token, logout che chiama `pulisci` della coda quando esisterà) e reindirizzamenti in `src/ui/ProtectedPage.tsx`
+- [ ] T036 [US1] Home protetta segnaposto `app/home/page.tsx` dentro `ProtectedPage` (nessun dato fiscale ancora)
+- [ ] T037 [US1] Script locale `scripts/prova-supabase.mjs` per le prove **S1** e **S3** sul progetto vero: legge email, password e codice dalla tastiera (mai salvati), verifica che `enroll` con `aal1` fallisca e che `amr` con l'orario del TOTP compaia nel token anche dopo il rinnovo; annotare gli esiti in `research.md`
+- [ ] T038 [US1] Se S3 fallisce: aggiornare `private.accesso_completo_valido()` per usare `auth.sessions.created_at` (claim `session_id`) in una nuova migrazione `supabase/migrations/<data>_accesso_completo_ripiego.sql` e adattare il test pgTAP (lavoro condizionato all'esito di T037)
+- [ ] T039 [US1] Migrazione `supabase/migrations/<data>_eventi_sicurezza.sql` con trigger `security definer` che scrivono gli eventi da database (`data-model.md` + `security_events.tipo`): nuova riga in `auth.sessions` → `login_ok`; fattore in `auth.mfa_factors` passato a `verified` → `mfa_configurato`; cambio password in `auth.users` → `password_cambiata`; cancellazione da `auth.sessions` → `sessione_chiusa`; modifica di `user_security.sblocco_rapido_attivo` → `sblocco_rapido_attivato`/`disattivato`
 
 **Checkpoint**: accesso con 2FA completo e provato; MVP consegnabile.
 
@@ -111,16 +113,16 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 
 ### Test per US2
 
-- [ ] T038 [P] [US2] Estendere `supabase/tests/database/001_rls_sicurezza.test.sql` (o nuovo `002_tabelle_future.test.sql`): crea una tabella di prova **senza** policy e verifica che il trigger `ensure_rls` attivi la RLS e che il test "ogni tabella conforme" la segnali come non conforme (scenario 3 della storia 2)
-- [ ] T039 [P] [US2] Test di integrazione `tests/integration/estraneo.test.ts` con la sola chiave pubblica: lettura, inserimento, modifica e cancellazione su ogni tabella di `public` rifiutati; `private` non esposto; registrazione rifiutata (`signup_disabled`) (SC-002, D-05)
-- [ ] T040 [P] [US2] Test `tests/unit/segreti-nel-bundle.test.ts`: dopo `npm run build`, `out/` non contiene `service_role`, pepper o dati personali (SC-003)
+- [ ] T040 [P] [US2] Estendere `supabase/tests/database/001_rls_sicurezza.test.sql` (o nuovo `002_tabelle_future.test.sql`): crea una tabella di prova **senza** policy e verifica che il trigger `ensure_rls` attivi la RLS e che il test "ogni tabella conforme" la segnali come non conforme (scenario 3 della storia 2)
+- [ ] T041 [P] [US2] Test di integrazione `tests/integration/estraneo.test.ts` con la sola chiave pubblica: lettura, inserimento, modifica e cancellazione su ogni tabella di `public` rifiutati; `private` non esposto; registrazione rifiutata (`signup_disabled`) (SC-002, D-05)
+- [ ] T042 [P] [US2] Test `tests/unit/segreti-nel-bundle.test.ts`: dopo `npm run build`, `out/` non contiene `service_role`, pepper o dati personali (SC-003)
 
 ### Implementazione per US2
 
-- [ ] T041 [US2] Modello di migrazione per le tabelle future in `supabase/templates/nuova_tabella.sql` copiato da [contracts/rls-policy-contract.md](contracts/rls-policy-contract.md) (colonne `id`, `owner_id`, `versione`, `creato_il`, `aggiornato_il`, RLS, policy, revoca ad `anon`)
-- [ ] T042 [US2] Rendere esplicito nel test "ogni tabella conforme" l'elenco delle eccezioni (vuoto) in `supabase/tests/database/003_conformita.test.sql` e fallire se una tabella di `public` non ha le due policy
-- [ ] T043 [P] [US2] Flusso di integrazione continua in `.github/workflows/controlli.yml`: `typecheck`, `npm test`, `supabase test db` (stack locale), `scan:secrets`, build con verifica d'impronta della pagina di cortesia
-- [ ] T044 [US2] Dichiarazione chiara in `app/impostazioni/sicurezza/page.tsx` (sezione "Dove sono i tuoi dati") che i dati sono in chiaro nel database e che chi ha accesso amministrativo al progetto può leggerli; promemoria sulla 2FA dell'account Supabase (FR-016)
+- [ ] T043 [US2] Modello di migrazione per le tabelle future in `supabase/templates/nuova_tabella.sql` copiato da [contracts/rls-policy-contract.md](contracts/rls-policy-contract.md) (colonne `id`, `owner_id`, `versione`, `creato_il`, `aggiornato_il`, RLS, policy, revoca ad `anon`)
+- [ ] T044 [US2] Rendere esplicito nel test "ogni tabella conforme" l'elenco delle eccezioni (vuoto) in `supabase/tests/database/003_conformita.test.sql` e fallire se una tabella di `public` non ha le due policy
+- [ ] T045 [P] [US2] Flusso di integrazione continua in `.github/workflows/controlli.yml`: `typecheck`, `npm test`, `supabase test db` (stack locale), `scan:secrets`, build con verifica d'impronta della pagina di cortesia
+- [ ] T046 [US2] Dichiarazione chiara in `app/impostazioni/sicurezza/page.tsx` (sezione "Dove sono i tuoi dati") che i dati sono in chiaro nel database e che chi ha accesso amministrativo al progetto può leggerli; promemoria sulla 2FA dell'account Supabase (FR-016)
 
 **Checkpoint**: ogni tabella presente e futura è protetta e provata automaticamente.
 
@@ -134,18 +136,20 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 
 ### Test per US3
 
-- [ ] T045 [P] [US3] Test di integrazione `tests/integration/sessioni.test.ts`: `mie_sessioni()` elenca solo le proprie; `chiudi_mia_sessione()` rifiuta l'id altrui e la sessione corrente; con `aal1` è rifiutata
-- [ ] T046 [P] [US3] Test unitari `tests/unit/offline-queue.test.ts`: accodamento, invio idempotente (stesso `id` due volte → una riga), conflitto per `versioneBase`, cancellazione al logout, nessuna copia completa dei dati (FR-022)
-- [ ] T047 [P] [US3] Test E2E `tests/e2e/rete-assente.spec.ts`: rete spenta durante un inserimento di prova → "in attesa di invio"; riaccesa → inviato senza duplicati; sessione scaduta nel frattempo → la coda aspetta il nuovo accesso
+- [ ] T047 [US3] Tabella di prova `prove_sincronizzazione` in `supabase/seed.sql`, conforme al contratto RLS (`data-model.md` + `prove_sincronizzazione`): esiste solo nello stack locale (il seed non viene applicato con `supabase db push`)
+- [ ] T048 [P] [US3] Test di integrazione `tests/integration/sessioni.test.ts`: `mie_sessioni()` elenca solo le proprie; `chiudi_mia_sessione()` rifiuta l'id altrui e la sessione corrente; con `aal1` è rifiutata
+- [ ] T049 [P] [US3] Test unitari `tests/unit/offline-queue.test.ts`: accodamento, invio idempotente (stesso `id` due volte → una riga), conflitto per `versioneBase`, cancellazione al logout, nessuna copia completa dei dati (FR-022)
+- [ ] T050 [P] [US3] Test E2E `tests/e2e/rete-assente.spec.ts`: rete spenta durante un inserimento di prova nella tabella `prove_sincronizzazione` → "in attesa di invio"; riaccesa → inviato senza duplicati; sessione scaduta nel frattempo → la coda aspetta il nuovo accesso
+- [ ] T051 [P] [US3] Test E2E `tests/e2e/due-dispositivi.spec.ts` con due contesti di browser: un dato inserito in `prove_sincronizzazione` dal primo è visibile dal secondo entro pochi secondi dall'aggiornamento (SC-005)
 
 ### Implementazione per US3
 
-- [ ] T048 [P] [US3] Modulo coda in `src/features/offline-queue/queue.ts` con IndexedDB (`idb`), AES-GCM e chiave `CryptoKey` non esportabile (research D-11); tipi `VoceCoda` come in [contracts/app-routes-and-lock.md](contracts/app-routes-and-lock.md)
-- [ ] T049 [US3] Invio e conflitti in `src/features/offline-queue/sync.ts`: `insert ... on conflict (id) do nothing`, modifiche con `versione = versioneBase`, `svuotaVersoServer()` e `risolviConflitto()`; parte solo con sessione `aal2` valida
-- [ ] T050 [US3] Componente `src/features/offline-queue/StatoCoda.tsx` con stati "in attesa di invio", "inviato", "in conflitto" e confronto delle due versioni
-- [ ] T051 [P] [US3] Elenco sessioni in `src/features/sessions/ElencoSessioni.tsx` (`rpc('mie_sessioni')`, etichetta del dispositivo, ultimo uso, pulsante "Chiudi" tranne per la corrente) montato in `app/impostazioni/sicurezza/page.tsx`
-- [ ] T052 [US3] Conservare il dato in corso quando la sessione scade durante un inserimento (FR-014): salvataggio della bozza nella coda prima del reindirizzamento al login in `src/features/auth/useSessione.ts`
-- [ ] T053 [US3] Regola di rete nel service worker (da T017): richieste a `*.supabase.co` sempre `NetworkOnly`, nessuna risposta con dati dell'utente in cache; test che lo verifica in `tests/unit/sw-regole.test.ts`
+- [ ] T052 [P] [US3] Modulo coda in `src/features/offline-queue/queue.ts` con IndexedDB (`idb`), AES-GCM e chiave `CryptoKey` non esportabile (research D-11); tipi `VoceCoda` come in [contracts/app-routes-and-lock.md](contracts/app-routes-and-lock.md)
+- [ ] T053 [US3] Invio e conflitti in `src/features/offline-queue/sync.ts`: `insert ... on conflict (id) do nothing`, modifiche con `versione = versioneBase`, `svuotaVersoServer()` e `risolviConflitto()`; parte solo con sessione `aal2` valida
+- [ ] T054 [US3] Componente `src/features/offline-queue/StatoCoda.tsx` con stati "in attesa di invio", "inviato", "in conflitto" e confronto delle due versioni
+- [ ] T055 [P] [US3] Elenco sessioni in `src/features/sessions/ElencoSessioni.tsx` (`rpc('mie_sessioni')`, etichetta del dispositivo, ultimo uso, pulsante "Chiudi" tranne per la corrente) montato in `app/impostazioni/sicurezza/page.tsx` con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
+- [ ] T056 [US3] Conservare il dato in corso quando la sessione scade durante un inserimento (FR-014): salvataggio della bozza nella coda prima del reindirizzamento al login in `src/features/auth/useSessione.ts`
+- [ ] T057 [US3] Regola di rete nel service worker (da T017): richieste a `*.supabase.co` sempre `NetworkOnly`, nessuna risposta con dati dell'utente in cache; test che lo verifica in `tests/unit/sw-regole.test.ts`
 
 **Checkpoint**: uso su più dispositivi e inserimenti senza rete affidabili.
 
@@ -159,29 +163,30 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 
 ### Preparazione contratti
 
-- [ ] T054 [US4] Completare [contracts/edge-functions.md](contracts/edge-functions.md) con la funzione **`recovery-codes`** (azioni `genera`/`rigenera`, richiede `aal2` per la rigenerazione, mostra i 10 codici una sola volta, invalida il lotto precedente, scrive `codici_rigenerati`): oggi il contratto descrive solo l'uso dei codici e manca la generazione lato server (necessaria perché esistono solo gli HMAC)
+- [ ] T058 [US4] Completare [contracts/edge-functions.md](contracts/edge-functions.md) con la funzione **`recovery-codes`** (azioni `genera`/`rigenera`, richiede `aal2` per la rigenerazione, mostra i 10 codici una sola volta, invalida il lotto precedente, scrive `codici_rigenerati`): oggi il contratto descrive solo l'uso dei codici e manca la generazione lato server (necessaria perché esistono solo gli HMAC)
 
 ### Test per US4
 
-- [ ] T055 [P] [US4] Test di integrazione `tests/integration/recovery-code.test.ts`: codice valido → fattore rimosso e codice segnato usato; stesso codice rifiutato; codice errato 5 volte → 429; con sessione `aal2` → 400
-- [ ] T056 [P] [US4] Test di integrazione `tests/integration/recovery-phrase.test.ts`: `avvia` crea una sola richiesta in attesa con `esegui_dopo = +48 h` (`data-model.md` + `recovery_requests.esegui_dopo`); `completa` prima della scadenza rifiutata; dopo la scadenza elimina il fattore e invalida la frase; 5 frasi errate → blocco 24 h (`data-model.md` + `user_security.frase_recupero_bloccata_fino`); accesso `aal2` valido annulla la richiesta; avviso non inviabile → nessuna richiesta
-- [ ] T057 [P] [US4] Test unitari `supabase/functions/_shared/*.test.ts` (Deno): HMAC dei codici stabile con lo stesso pepper e diverso con un altro; argon2id con sale per utente; limite di tentativi
-- [ ] T058 [P] [US4] Test pgTAP `supabase/tests/database/004_recupero.test.sql`: una sola richiesta `in_attesa` per utente (`data-model.md` + `recovery_requests.stato`); `recovery_codes` mai leggibile dal client; transizioni di stato ammesse
+- [ ] T059 [P] [US4] Test di integrazione `tests/integration/recovery-code.test.ts`: codice valido → fattore rimosso e codice segnato usato; stesso codice rifiutato; codice errato 5 volte → 429; con sessione `aal2` → 400
+- [ ] T060 [P] [US4] Test di integrazione `tests/integration/recovery-phrase.test.ts`: `avvia` crea una sola richiesta in attesa con `esegui_dopo = +48 h` (`data-model.md` + `recovery_requests.esegui_dopo`); `completa` prima della scadenza rifiutata; dopo la scadenza elimina il fattore e invalida la frase; 5 frasi errate → blocco 24 h (`data-model.md` + `user_security.frase_recupero_bloccata_fino`); accesso `aal2` valido annulla la richiesta; avviso non inviabile → nessuna richiesta
+- [ ] T061 [P] [US4] Test unitari `supabase/functions/_shared/*.test.ts` (Deno): HMAC dei codici stabile con lo stesso pepper e diverso con un altro; argon2id con sale per utente; limite di tentativi
+- [ ] T062 [P] [US4] Test pgTAP `supabase/tests/database/004_recupero.test.sql`: una sola richiesta `in_attesa` per utente (`data-model.md` + `recovery_requests.stato`); `recovery_codes` mai leggibile dal client; transizioni di stato ammesse
 
 ### Implementazione per US4
 
-- [ ] T059 [P] [US4] Libreria condivisa `supabase/functions/_shared/crypto.ts`: generazione di 10 codici da 80 bit, HMAC-SHA256 con pepper dai segreti, argon2id (`@noble/hashes`) per la frase (`data-model.md` + `recovery_codes.codice_hmac`, `user_security.frase_recupero_hash`)
-- [ ] T060 [P] [US4] Libreria condivisa `supabase/functions/_shared/limiti.ts` (tentativi per finestra, aggiornamento di `user_security.frase_recupero_tentativi`) e `_shared/eventi.ts` (scrittura in `security_events` con `tipo` tra i valori di `data-model.md` + `security_events.tipo`, etichetta del dispositivo senza IP completo)
-- [ ] T061 [P] [US4] Libreria condivisa `supabase/functions/_shared/avviso.ts` per l'e-mail di avviso tramite l'SMTP del progetto (nessun dato fiscale nel testo); se non configurato restituisce errore `avviso_non_inviabile`
-- [ ] T062 [US4] Funzione `supabase/functions/recovery-codes/index.ts` (genera/rigenera, lotto incrementale: `data-model.md` + `recovery_codes.lotto`, invalida i vecchi)
-- [ ] T063 [US4] Funzione `supabase/functions/recovery-code/index.ts` come da [contracts/edge-functions.md](contracts/edge-functions.md): verifica `aal1`, limite tentativi, HMAC, `usato_il` (`data-model.md` + `recovery_codes.usato_il`), eliminazione del fattore TOTP con l'API di amministrazione, evento
-- [ ] T064 [US4] Funzione `supabase/functions/recovery-phrase/index.ts` con azioni `avvia`, `stato`, `annulla`, `completa`, `imposta`; stati e transizioni di `recovery_requests.stato`, scadenza dopo 7 giorni (`data-model.md` + `recovery_requests.stato`); annullamento automatico a ogni accesso `aal2` valido
-- [ ] T065 [US4] Registrare le funzioni in `supabase/config.toml` (`[functions.recovery-code]`, `[functions.recovery-codes]`, `[functions.recovery-phrase]` con `verify_jwt = true`) e documentare i segreti da impostare (pepper, SMTP) in `supabase/README.md` **senza** valori
-- [ ] T066 [US4] Estendere `app/accesso/configura/page.tsx`: dopo la verifica del primo codice mostra i **codici di recupero una sola volta**, chiede la conferma di averli conservati (`data-model.md` + `user_security.codici_confermati_il`) e l'impostazione della frase di recupero (lunghezza minima)
-- [ ] T067 [US4] Pagina `app/accesso/recupero/page.tsx` con `src/features/auth/Recupero.tsx`: scelta codice o frase, stato dell'attesa con conto alla rovescia, pulsante "Annulla ripristino", spiegazione dei limiti se tutto è perso (scenario 4.4)
-- [ ] T068 [US4] Banner bloccante `src/features/auth/BannerRipristino.tsx` mostrato a ogni accesso mentre una richiesta è in attesa
-- [ ] T069 [US4] Test E2E `tests/e2e/recupero.spec.ts`: perdita simulata del fattore → rientro con codice → nuova configurazione; frase → attesa → annullamento da accesso valido
-- [ ] T070 [US4] **Azione dell'utente**: impostare i segreti delle funzioni (`supabase secrets set ...`, pepper e SMTP) e distribuirle (`supabase functions deploy --remote`); annotare l'esito in `supabase/README.md`
+- [ ] T063 [P] [US4] Libreria condivisa `supabase/functions/_shared/crypto.ts`: generazione di 10 codici da 80 bit, HMAC-SHA256 con pepper dai segreti, argon2id (`@noble/hashes`) per la frase (`data-model.md` + `recovery_codes.codice_hmac`, `user_security.frase_recupero_hash`)
+- [ ] T064 [P] [US4] Libreria condivisa `supabase/functions/_shared/limiti.ts` (tentativi per finestra, aggiornamento di `data-model.md` + `user_security.frase_recupero_tentativi`) e `_shared/eventi.ts` (scrittura in `security_events` con `tipo` tra i valori di `data-model.md` + `security_events.tipo`, etichetta del dispositivo senza IP completo)
+- [ ] T065 [P] [US4] Libreria condivisa `supabase/functions/_shared/avviso.ts` per l'e-mail di avviso tramite l'SMTP del progetto (nessun dato fiscale nel testo); se non configurato restituisce errore `avviso_non_inviabile`
+- [ ] T066 [US4] Funzione `supabase/functions/recovery-codes/index.ts` (genera/rigenera, lotto incrementale: `data-model.md` + `recovery_codes.lotto`, invalida i vecchi)
+- [ ] T067 [US4] Funzione `supabase/functions/recovery-code/index.ts` come da [contracts/edge-functions.md](contracts/edge-functions.md): verifica `aal1`, limite tentativi, HMAC, `usato_il` (`data-model.md` + `recovery_codes.usato_il`), eliminazione del fattore TOTP con l'API di amministrazione, evento
+- [ ] T068 [US4] Funzione `supabase/functions/recovery-phrase/index.ts` con azioni `avvia`, `stato`, `annulla`, `completa`, `imposta`; stati e transizioni di `recovery_requests.stato`, scadenza dopo 7 giorni (`data-model.md` + `recovery_requests.stato`); annullamento automatico a ogni accesso `aal2` valido; blocco dopo 5 errori (`data-model.md` + `user_security.frase_recupero_bloccata_fino`) e attesa (`data-model.md` + `recovery_requests.esegui_dopo`)
+- [ ] T069 [US4] Registrare le funzioni in `supabase/config.toml` (`[functions.recovery-code]`, `[functions.recovery-codes]`, `[functions.recovery-phrase]` con `verify_jwt = true`) e documentare i segreti da impostare (pepper, SMTP) in `supabase/README.md` **senza** valori
+- [ ] T070 [US4] Estendere `app/accesso/configura/page.tsx`: dopo la verifica del primo codice mostra i **codici di recupero una sola volta**, chiede la conferma di averli conservati (`data-model.md` + `user_security.codici_confermati_il`) e l'impostazione della frase di recupero (lunghezza minima) con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
+- [ ] T071 [US4] Pagina `app/accesso/recupero/page.tsx` con `src/features/auth/Recupero.tsx`: scelta codice o frase, stato dell'attesa con conto alla rovescia, pulsante "Annulla ripristino", spiegazione dei limiti se tutto è perso (scenario 4.4) con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
+- [ ] T072 [US4] Banner bloccante `src/features/auth/BannerRipristino.tsx` mostrato a ogni accesso mentre una richiesta è in attesa
+- [ ] T073 [US4] Test E2E `tests/e2e/recupero.spec.ts`: perdita simulata del fattore → rientro con codice → nuova configurazione; frase → attesa → annullamento da accesso valido
+- [ ] T074 [US4] **Azione dell'utente**: impostare i segreti delle funzioni (`supabase secrets set ...`, pepper e SMTP) e distribuirle (`supabase functions deploy --remote`); annotare l'esito in `supabase/README.md`
+- [ ] T075 [US4] Sezione "Ripristino da amministratore" in `supabase/README.md`: ultima risorsa quando fattore, codici e frase sono tutti persi; passi nel pannello Supabase (con la 2FA dell'account) per eliminare il fattore MFA dell'utente; testo che l'app mostra nello scenario 4.4 (T071)
 
 **Checkpoint**: recupero provato; nessuna via per saltare il secondo fattore.
 
@@ -195,17 +200,17 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 
 ### Test per US5
 
-- [ ] T071 [P] [US5] Test unitari `tests/unit/blocco.test.ts` con orologio simulato: blocco dopo `user_security.blocco_minuti` (`data-model.md` + `user_security.blocco_minuti`), blocco immediato in background, sblocco rapido rifiutato oltre `user_security.accesso_completo_giorni` (`data-model.md`), su nuovo dispositivo e per operazioni sensibili
-- [ ] T072 [P] [US5] Test E2E `tests/e2e/blocco.spec.ts`: inattività → pagina `/app/blocco/` senza importi; occhio chiuso → importi nascosti; dopo 3 rifiuti dello sblocco rapido chiede password e codice
+- [ ] T076 [P] [US5] Test unitari `tests/unit/blocco.test.ts` con orologio simulato: blocco dopo `user_security.blocco_minuti` (`data-model.md` + `user_security.blocco_minuti`), blocco immediato in background, sblocco rapido rifiutato oltre `user_security.accesso_completo_giorni` (`data-model.md`), su nuovo dispositivo e per operazioni sensibili
+- [ ] T077 [P] [US5] Test E2E `tests/e2e/blocco.spec.ts`: inattività → pagina `/app/blocco/` senza importi; occhio chiuso → importi nascosti; dopo 3 rifiuti dello sblocco rapido chiede password e codice
 
 ### Implementazione per US5
 
-- [ ] T073 [US5] Prova **S2**: pagina di prova `app/_prove/webauthn/page.tsx` per l'estensione PRF su Safari iOS e Chrome Android; annotare in `research.md`; se non supportata, lo sblocco rapido non viene offerto su quel dispositivo (research D-08)
-- [ ] T074 [P] [US5] Timer di inattività e rilevamento dello sfondo in `src/features/lock/useBlocco.ts` (svuota la memoria dei dati, mantiene il token cifrato)
-- [ ] T075 [P] [US5] Modalità occhio in `src/features/lock/useOcchio.ts` e `src/ui/ImportoNascosto.tsx` (si ripristina nascosta all'avvio, FR-011)
-- [ ] T076 [US5] Sblocco rapido con WebAuthn in `src/features/lock/sbloccoRapido.ts` (`@simplewebauthn/browser`, `userVerification: required`, chiave di cifratura dal PRF per il token di sessione; nessuna sessione nuova, FR-020)
-- [ ] T077 [US5] Pagina `app/blocco/page.tsx` con sblocco rapido o login completo, 3 rifiuti → login completo, regole di "sempre login completo" del contratto
-- [ ] T078 [US5] Interruttore "sblocco rapido" (attiva/disattiva, `data-model.md` + `user_security.sblocco_rapido_attivo`) in `app/impostazioni/sicurezza/page.tsx`
+- [ ] T078 [US5] Prova **S2**: pagina di prova `app/_prove/webauthn/page.tsx` per l'estensione PRF su Safari iOS e Chrome Android; annotare in `research.md`; se non supportata, lo sblocco rapido non viene offerto su quel dispositivo (research D-08)
+- [ ] T079 [P] [US5] Timer di inattività e rilevamento dello sfondo in `src/features/lock/useBlocco.ts` (svuota la memoria dei dati, mantiene il token cifrato)
+- [ ] T080 [P] [US5] Modalità occhio in `src/features/lock/useOcchio.ts` e `src/ui/ImportoNascosto.tsx` (si ripristina nascosta all'avvio, FR-011)
+- [ ] T081 [US5] Sblocco rapido con WebAuthn in `src/features/lock/sbloccoRapido.ts` (`@simplewebauthn/browser`, `userVerification: required`, chiave di cifratura dal PRF per il token di sessione; nessuna sessione nuova, FR-020)
+- [ ] T082 [US5] Pagina `app/blocco/page.tsx` con sblocco rapido o login completo, 3 rifiuti → login completo, regole di "sempre login completo" del contratto con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
+- [ ] T083 [US5] Interruttore "sblocco rapido" (attiva/disattiva, `data-model.md` + `user_security.sblocco_rapido_attivo`) in `app/impostazioni/sicurezza/page.tsx`
 
 **Checkpoint**: blocco e sblocco rapido funzionano senza indebolire il login.
 
@@ -219,14 +224,14 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 
 ### Test per US6
 
-- [ ] T079 [P] [US6] Test di integrazione `tests/integration/impostazioni.test.ts`: cambio password con verifica recente richiesta; altre sessioni invalidate (`signOut({ scope: 'others' })`); tempi di blocco fuori limite rifiutati (`user_security.blocco_minuti` 1–60, `user_security.accesso_completo_giorni` 1–30 in `data-model.md`); rigenerazione codici invalida il lotto precedente
-- [ ] T080 [P] [US6] Test E2E `tests/e2e/impostazioni.spec.ts` da telefono: cambio password e rigenerazione codici con nuova verifica
+- [ ] T084 [P] [US6] Test di integrazione `tests/integration/impostazioni.test.ts`: cambio password con verifica recente richiesta; altre sessioni invalidate (`signOut({ scope: 'others' })`); tempi di blocco fuori limite rifiutati (`user_security.blocco_minuti` 1–60, `user_security.accesso_completo_giorni` 1–30 in `data-model.md`); rigenerazione codici invalida il lotto precedente
+- [ ] T085 [P] [US6] Test E2E `tests/e2e/impostazioni.spec.ts` da telefono: cambio password e rigenerazione codici con nuova verifica
 
 ### Implementazione per US6
 
-- [ ] T081 [US6] Verifica recente in `src/features/auth/useVerificaRecente.ts`: chiede di nuovo password e codice a 6 cifre per le operazioni sensibili (entro 5 minuti) e non accetta lo sblocco rapido
-- [ ] T082 [US6] Sezioni in `app/impostazioni/sicurezza/page.tsx`: password (`updateUser` + `signOut({ scope: 'others' })`), riconfigurazione del secondo fattore, rigenerazione dei codici (chiama `recovery-codes`), modifica della frase, tempi di blocco e di accesso completo con i limiti
-- [ ] T083 [US6] Registro eventi di sicurezza in `src/features/sessions/RegistroEventi.tsx` (lettura di `security_events`, senza contenuti)
+- [ ] T086 [US6] Verifica recente in `src/features/auth/useVerificaRecente.ts`: chiede di nuovo password e codice a 6 cifre per le operazioni sensibili (entro 5 minuti) e non accetta lo sblocco rapido
+- [ ] T087 [US6] Sezioni in `app/impostazioni/sicurezza/page.tsx`: password (`updateUser` + `signOut({ scope: 'others' })`), sostituzione del secondo fattore (mai la disattivazione), rigenerazione dei codici (chiama `recovery-codes`), modifica della frase, tempi di blocco e di accesso completo con i limiti (`data-model.md` + `user_security.blocco_minuti`, `data-model.md` + `user_security.accesso_completo_giorni`) con i relativi aiuti contestuali (specifica 011), scritti insieme alla pagina
+- [ ] T088 [US6] Registro eventi di sicurezza in `src/features/sessions/RegistroEventi.tsx` (lettura di `security_events`, senza contenuti)
 
 **Checkpoint**: manutenzione ordinaria della sicurezza completa.
 
@@ -234,12 +239,12 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 
 ## Phase 9: Polish e verifiche trasversali
 
-- [ ] T084 [P] Aiuti contestuali (specifica 011) per tutte le schermate di accesso e sicurezza, in linguaggio semplicissimo, in `src/features/auth/aiuti.ts` e `src/features/lock/aiuti.ts`
-- [ ] T085 [P] Controllo di usabilità: nessuno scroll orizzontale da 360 px e aree toccabili da 44 px su tutte le pagine di `app/` (test Playwright `tests/e2e/layout.spec.ts`)
-- [ ] T086 Avviso di export non cifrato (FR-018): componente `src/ui/AvvisoExportInChiaro.tsx` pronto per le funzioni di esportazione future
-- [ ] T087 Eseguire tutti gli scenari 1–14 di [quickstart.md](quickstart.md) da telefono e PC e annotare gli esiti
-- [ ] T088 Aggiornare `.specify/memory/constitution.md`: chiudere `TODO(OFFLINE_CODA)`, `TODO(RECUPERO_ATTESA)`, `TODO(PWA_NEXT)` e `TODO(STACK_UI)` con le decisioni prese, e (con l'utente) `TODO(VERCEL_PIANO)` e `TODO(ACCESSO_APP)`
-- [ ] T089 Revisione di sicurezza finale: rilettura di [contracts/rls-policy-contract.md](contracts/rls-policy-contract.md), controllo che nessun segreto sia in repository, bundle o log, verifica che le anteprime di Vercel siano disattivate o protette
+- [ ] T089 [P] Controllo finale degli aiuti contestuali (specifica 011): ogni schermata e campo di accesso e sicurezza ha il suo aiuto, scritto insieme alla pagina; testi raccolti e riletti in `src/features/auth/aiuti.ts` e `src/features/lock/aiuti.ts`
+- [ ] T090 [P] Controllo di usabilità: nessuno scroll orizzontale da 360 px e aree toccabili da 44 px su tutte le pagine di `app/` (test Playwright `tests/e2e/layout.spec.ts`)
+- [ ] T091 Avviso di export non cifrato (FR-018): componente `src/ui/AvvisoExportInChiaro.tsx` pronto per le funzioni di esportazione future
+- [ ] T092 Eseguire tutti gli scenari 1–14 di [quickstart.md](quickstart.md) da telefono e PC e annotare gli esiti
+- [ ] T093 Aggiornare `.specify/memory/constitution.md`: chiudere `TODO(OFFLINE_CODA)`, `TODO(RECUPERO_ATTESA)`, `TODO(PWA_NEXT)` e `TODO(STACK_UI)` con le decisioni prese, e (con l'utente) `TODO(VERCEL_PIANO)` e `TODO(ACCESSO_APP)`
+- [ ] T094 Revisione di sicurezza finale: rilettura di [contracts/rls-policy-contract.md](contracts/rls-policy-contract.md), controllo che nessun segreto sia in repository, bundle o log, verifica che le anteprime di Vercel siano disattivate o protette; verificare che su Vercel le variabili di Supabase siano presenti solo nell'ambiente Production
 
 ---
 
@@ -250,9 +255,9 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 - **Setup (Phase 1)** → **Foundational (Phase 2)** → storie. Le prove T016–T018 vanno fatte **prima** di costruire le pagine che ne dipendono.
 - **US1** parte dopo la Foundational e non dipende da altre storie. È l'MVP.
 - **US2** è indipendente da US1 per il database (già pronto), ma i test di integrazione si appoggiano all'accesso di US1.
-- **US3** dipende da US1 (sessione) e da T017/T053 (service worker).
-- **US4** dipende da US1 (`configura` e il rientro) e da T054 (contratto).
-- **US5** dipende da US1 (sessione) e da T073 (S2).
+- **US3** dipende da US1 (sessione) e da T017/T057 (service worker).
+- **US4** dipende da US1 (`configura` e il rientro) e da T058 (contratto).
+- **US5** dipende da US1 (sessione) e da T078 (S2).
 - **US6** dipende da US1 e da US4 (rigenerazione dei codici).
 - **Polish** dopo le storie desiderate.
 
@@ -265,21 +270,21 @@ Test (devono fallire) → librerie/moduli → funzioni e pagine → integrazione
 - Setup: T004–T007, T009–T011 in parallelo.
 - Foundational: T020, T021, T023–T026 in parallelo dopo T019 e T022.
 - Dopo la Foundational, US2, US3 e US5 possono procedere in parallelo mentre si completa US1; US4 e US6 seguono US1.
-- Dentro US4: T055–T058 (test) e T059–T061 (librerie) in parallelo.
+- Dentro US4: T059–T062 (test) e T063–T065 (librerie) in parallelo.
 
 ## Esempio di parallelo: User Story 4
 
 ```text
 # Test insieme:
-T055 tests/integration/recovery-code.test.ts
-T056 tests/integration/recovery-phrase.test.ts
-T057 supabase/functions/_shared/*.test.ts
-T058 supabase/tests/database/004_recupero.test.sql
+T059 tests/integration/recovery-code.test.ts
+T060 tests/integration/recovery-phrase.test.ts
+T061 supabase/functions/_shared/*.test.ts
+T062 supabase/tests/database/004_recupero.test.sql
 
 # Librerie condivise insieme:
-T059 supabase/functions/_shared/crypto.ts
-T060 supabase/functions/_shared/limiti.ts e eventi.ts
-T061 supabase/functions/_shared/avviso.ts
+T063 supabase/functions/_shared/crypto.ts
+T064 supabase/functions/_shared/limiti.ts e eventi.ts
+T065 supabase/functions/_shared/avviso.ts
 ```
 
 ## Strategia di realizzazione
@@ -287,7 +292,7 @@ T061 supabase/functions/_shared/avviso.ts
 ### MVP (solo US1)
 
 1. Setup (T002–T012) → Foundational (T016–T027, incluse le tre prove).
-2. US1 (T028–T037): accesso con password + codice, prove S1 e S3 sul progetto vero.
+2. US1 (T028–T039): accesso con password + codice, prove S1 e S3 sul progetto vero.
 3. **Fermarsi e verificare** con lo scenario 1–4 di quickstart.
 4. Merge su `main` solo dopo la prova S4 (T018), per non rompere la pagina di cortesia.
 
@@ -298,6 +303,6 @@ US1 → US2 (protezione provata in continuo) → US4 (recupero, per non restare 
 ## Note
 
 - Le prove tecniche S1–S6 sono lavori veri: se una fallisce si applica il ripiego indicato in `research.md` prima di proseguire.
-- T018, T036 e T070 richiedono azioni dell'utente (progetto Vercel, accesso al progetto Supabase con la 2FA, segreti delle funzioni).
+- T018, T037 e T074 richiedono azioni dell'utente (progetto Vercel, accesso al progetto Supabase con la 2FA, segreti delle funzioni).
 - Commit dopo ogni lavoro o gruppo logico; non versionare `supabase/.temp/` né file `.env*` (già in `.gitignore`).
 - Il motore fiscale **non** fa parte di questa funzione: `src/engine/` nasce vuoto con la sola regola di import (T005).

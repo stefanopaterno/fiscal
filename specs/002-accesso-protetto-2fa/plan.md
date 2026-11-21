@@ -28,7 +28,7 @@ Approccio tecnico (dettagli in [research.md](research.md)):
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x (modalità `strict`), Node.js 24 LTS (decisione 2026-11-21: è la versione installata; da bloccare in `.nvmrc`
-e in `package.json > engines`); SQL (Postgres 15/17 di Supabase); Deno/TypeScript per le funzioni Edge.
+e in `package.json > engines`); SQL (Postgres 17 di Supabase); Deno/TypeScript per le funzioni Edge.
 
 **Primary Dependencies**: Next.js (App Router, `output: 'export'`), React, `@fluentui/react-components`
 (Fluent UI 9) con Griffel, `@supabase/supabase-js` v2, `@simplewebauthn/browser` (sblocco rapido),
@@ -62,7 +62,7 @@ primo caricamento di una pagina di accesso sotto 2 s su rete mobile 4G.
 - Mobile-first da 360 px, aree toccabili 44 px, testi in italiano.
 
 **Scale/Scope**: un solo utente, un solo progetto Supabase, 2-3 dispositivi; ~8 schermate di
-accesso e sicurezza; 5 tabelle nuove di sicurezza in questa funzione.
+accesso e sicurezza; 4 tabelle nuove di sicurezza in questa funzione (più una tabella di prova solo locale).
 
 ## Constitution Check
 

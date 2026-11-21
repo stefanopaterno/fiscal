@@ -44,7 +44,7 @@ Regole:
   PRF, l'ultimo accesso completo è entro `accesso_completo_giorni`, il dispositivo è lo stesso su
   cui è stato attivato. Dopo 3 rifiuti consecutivi chiede il login completo.
 - **Sempre login completo** (mai sblocco rapido): nuovo dispositivo, accesso completo scaduto,
-  cambio password, rigenerazione codici, esportazione dati, disattivazione 2FA, modifica frase.
+  cambio password, rigenerazione codici, esportazione dati, sostituzione del secondo fattore, modifica frase. Il secondo fattore non si può disattivare.
 - **Modalità "occhio"**: stato locale che nasconde importi e nomi (FR-011); si ripristina bloccato
   all'avvio.
 
