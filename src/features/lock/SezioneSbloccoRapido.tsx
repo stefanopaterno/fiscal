@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  Button,
   makeStyles,
   MessageBar,
   MessageBarBody,
@@ -34,7 +33,6 @@ const useStili = makeStyles({
     flexDirection: 'column',
     gap: tokens.spacingVerticalM,
   },
-  pulsante: { alignSelf: 'flex-start', minHeight: '44px' },
 });
 
 export function SezioneSbloccoRapido() {
@@ -118,16 +116,11 @@ export function SezioneSbloccoRapido() {
           <MessageBarBody>{messaggio.testo}</MessageBarBody>
         </MessageBar>
       ) : null}
-      {compatibile === false && !attivo ? (
-        <>
-          <Text>
-            Il browser dice di non avere Face ID, impronta o PIN utilizzabili. Su alcuni Mac funziona lo
-            stesso (per esempio con il Portachiavi iCloud in Safari): puoi provare.
-          </Text>
-          <Button className={s.pulsante} disabled={invio} onClick={() => void cambia(true)}>
-            Prova comunque
-          </Button>
-        </>
+      {compatibile === false ? (
+        <Text>
+          Questo browser non permette lo sblocco rapido (succede per esempio nell&apos;anteprima dentro un
+          editor). Apri Fiscal in Safari, Chrome o Edge per attivarlo.
+        </Text>
       ) : (
         <Switch
           checked={attivo}
