@@ -3,7 +3,7 @@
 Contenuto: `config.toml` (impostazioni del progetto), `migrations/` (schema e regole di accesso),
 `tests/database/` (test pgTAP). Nessun segreto in questa cartella: il repository è pubblico.
 
-**Stato**: scritti ma **mai eseguiti** (nessun Postgres né Supabase CLI al momento della stesura).
+**Stato**: test pgTAP eseguiti in locale il 2026-11-21: 14/14 superati. Lo schema non è ancora applicato al progetto remoto; l'orario TOTP nel token (prova S3) è provato solo con token simulati.
 
 ## Passi da fare (nell'ordine)
 

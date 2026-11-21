@@ -16,3 +16,9 @@ coverage/
 # Esportazioni e dati personali
 *.backup.json
 exports/
+
+# Supabase CLI: file temporanei e segreti dello stack locale
+supabase/.temp/
+supabase/.branches/
+supabase/.env
+supabase/.env.*
