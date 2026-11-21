@@ -32,11 +32,22 @@ async function controllaPagina(page: Page, nome: string, telefono: boolean) {
         }))
         .filter((x) => x.altezza < 44),
       aiuti: document.querySelectorAll('button[aria-label^="Aiuto:"]').length,
+      // nessun campo esce dalla sua scheda o dallo schermo (difetto visto su iPhone)
+      fuoriScheda: [...document.querySelectorAll('.fui-Input')]
+        .filter((e) => (e as HTMLElement).offsetParent !== null)
+        .filter((e) => {
+          const r = e.getBoundingClientRect();
+          const contenitore = (
+            e.closest('section, form, [role=dialog], main') ?? document.body
+          ).getBoundingClientRect();
+          return r.right > Math.min(contenitore.right, window.innerWidth) + 1;
+        }).length,
     };
   });
   expect(esito.scorreDiLato, `${nome}: scorrimento laterale`).toBe(false);
   if (telefono) expect(esito.piccoli, `${nome}: elementi sotto i 44 px`).toEqual([]);
   expect(esito.aiuti, `${nome}: almeno un aiuto "?"`).toBeGreaterThan(0);
+  expect(esito.fuoriScheda, `${nome}: campi che escono dalla scheda`).toBe(0);
 }
 
 const daEliminare: UtenteProva[] = [];
@@ -47,7 +58,7 @@ test.afterEach(async () => {
 test('tutte le pagine: niente scorrimento laterale, aree da 44 px sul telefono, aiuti presenti', async ({
   page,
 }, info) => {
-  const telefono = info.project.name === 'telefono';
+  const telefono = info.project.name !== 'pc';
 
   await page.goto('/app/accesso/');
   await controllaPagina(page, 'accesso', telefono);

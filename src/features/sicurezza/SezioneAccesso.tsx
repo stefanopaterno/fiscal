@@ -228,7 +228,7 @@ export function SezioneAccesso() {
           <Text className={s.chiave}>{nuovoTelefono.chiave}</Text>
           <Field label="Codice a 6 cifre del nuovo telefono" required>
             <Input
-              input={{ className: s.codice }}
+              input={{ className: s.codice, size: 7 }}
               inputMode="numeric"
               autoComplete="one-time-code"
               maxLength={7}

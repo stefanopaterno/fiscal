@@ -191,7 +191,7 @@ export function Recupero() {
           >
             <Field label="Codice di recupero" required>
               <Input
-                input={{ className: s.codice }}
+                input={{ className: s.codice, size: 7 }}
                 value={codice}
                 onChange={(_, d) => setCodice(d.value)}
                 size="large"

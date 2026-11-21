@@ -94,7 +94,7 @@ export function useVerificaRecente() {
               </Field>
               <Field label="Codice a 6 cifre" required>
                 <Input
-                  input={{ className: s.codice }}
+                  input={{ className: s.codice, size: 7 }}
                   inputMode="numeric"
                   autoComplete="one-time-code"
                   maxLength={7}

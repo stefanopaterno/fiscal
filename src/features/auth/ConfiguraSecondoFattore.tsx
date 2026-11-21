@@ -157,7 +157,7 @@ export function ConfiguraSecondoFattore() {
       >
         <Field label="2. Scrivi il codice a 6 cifre che vedi nell'app" required className={s.campo}>
           <Input
-            input={{ className: s.codice }}
+            input={{ className: s.codice, size: 7 }}
             inputMode="numeric"
             autoComplete="one-time-code"
             maxLength={7}

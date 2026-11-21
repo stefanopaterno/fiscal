@@ -26,6 +26,9 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
  * sono più bassi per impostazione predefinita.
  */
 const useStiliTouch = makeStaticStyles(`
+/* I campi non escono mai dal loro contenitore (es. il codice a 6 cifre su iPhone). */
+.fui-Input { box-sizing: border-box; width: 100%; max-width: 100%; min-width: 0; }
+.fui-Input > input { min-width: 0; width: 100%; }
 @media (pointer: coarse) {
   .fui-Input { min-height: 44px; }
   .fui-Input > input { min-height: 42px; }

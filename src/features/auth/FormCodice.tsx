@@ -88,7 +88,7 @@ export function FormCodice() {
       >
         <Field label="Codice a 6 cifre" required className={s.campo} hint="Il codice cambia ogni 30 secondi.">
           <Input
-            input={{ className: s.codice }}
+            input={{ className: s.codice, size: 7 }}
             inputMode="numeric"
             autoComplete="one-time-code"
             maxLength={7}
