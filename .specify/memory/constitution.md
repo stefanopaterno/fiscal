@@ -153,8 +153,9 @@ rischio residuo (dati leggibili dal gestore del progetto) accettato dall'utente.
   contrario valutare il piano a pagamento o un altro hosting statico.
 - **Pagina di cortesia**: la pagina `index.html` alla radice ("Soarlyai project") MUST restare
   invariata finché l'utente non decide diversamente; l'app non la sostituisce né la modifica.
-  TODO(ACCESSO_APP): decidere più avanti come si raggiunge l'app dalla pagina di cortesia
-  (percorso dedicato o altro); fino ad allora l'app non è collegata alla pagina di cortesia.
+  Accesso all'app (decisione dell'utente del 2026-11-21): l'app si raggiunge all'indirizzo
+  `https://fiscal.soarlyai.com/app/` (segnalibro o icona dell'app installata); la pagina di cortesia
+  non contiene collegamenti all'app.
 - **Database**: Supabase, progetto `https://aldiyymgvngvdrroluus.supabase.co`. L'indirizzo è
   pubblico per natura, ma l'accesso ai dati MUST dipendere solo da login, 2FA e Row Level
   Security. TODO(REGIONE): verificare la regione del progetto, preferibilmente UE.
@@ -265,4 +266,4 @@ principi o sezioni, PATCH per chiarimenti. Ogni piano e ogni revisione MUST veri
 conformità ai principi; le deroghe MUST essere giustificate per iscritto nel piano. Il file
 `CLAUDE.md` resta la guida di ruolo e contesto per lo sviluppo quotidiano.
 
-**Version**: 2.7.0 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-21
+**Version**: 2.7.1 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-21
