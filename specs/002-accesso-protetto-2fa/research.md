@@ -259,3 +259,6 @@ prova tecnica (spike) prima di scrivere il resto del codice, **D** = decisione d
 - **Background (scelta)**: quando l'app va in background si chiude subito l'occhio (importi nascosti al ritorno,
   storia 5 scenario 2); il blocco vero scatta per inattività. Bloccare a ogni cambio di scheda sul PC sarebbe
   troppo invadente.
+- **S2 su dispositivo vero (2026-11-21)**: sblocco rapido provato dall'utente sul Mac nel browser: funziona.
+  Nell'anteprima del browser integrato di VS Code il browser non espone l'autenticatore: l'app lo dice e invita
+  ad aprire Fiscal in Safari, Chrome o Edge. Da provare ancora su iPhone e Android quando l'app sarà pubblicata.
