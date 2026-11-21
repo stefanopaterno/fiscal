@@ -31,7 +31,7 @@ Progetto Next.js alla radice: `app/`, `src/`, `public/`, `tests/`, `scripts/`; p
 **Scopo**: creare il progetto multipagina senza toccare la pagina di cortesia.
 
 - [x] T001 Cartella `supabase/` con `config.toml` (registrazioni chiuse, un solo fattore MFA, JWT 15 min, `site_url` su fiscal.soarlyai.com) — commit `5b5b46c`, `213c647`; applicata al progetto con `supabase config push --remote`
-- [ ] T002 Inizializzare il progetto Next.js (App Router) con TypeScript `strict` in `package.json`, `tsconfig.json`, `.nvmrc` (Node 22) e `engines`; bloccare le versioni nel file di lock; **non** creare né modificare `index.html` alla radice
+- [ ] T002 Inizializzare il progetto Next.js (App Router) con TypeScript `strict` in `package.json`, `tsconfig.json`, `.nvmrc` (Node 24) e `engines`; bloccare le versioni nel file di lock; **non** creare né modificare `index.html` alla radice
 - [ ] T003 Configurare `next.config.ts` con `output: 'export'`, `basePath: '/app'`, `trailingSlash: true`, `images.unoptimized: true` (research D-12)
 - [ ] T004 [P] Aggiungere `.gitignore` per `.next/`, `out/`, `node_modules/`, `.env.local`, `test-results/` (senza rimuovere le voci già presenti)
 - [ ] T005 [P] Configurare ESLint e Prettier in `eslint.config.mjs` e `.prettierrc`, e le regole di import vietato: `src/engine/**` non può importare `react`, `next`, `@supabase/*` né moduli di rete (principio I)

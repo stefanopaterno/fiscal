@@ -27,7 +27,7 @@ Approccio tecnico (dettagli in [research.md](research.md)):
 
 ## Technical Context
 
-**Language/Version**: TypeScript 5.x (modalità `strict`), Node.js 22 LTS (da bloccare in `.nvmrc`
+**Language/Version**: TypeScript 5.x (modalità `strict`), Node.js 24 LTS (decisione 2026-11-21: è la versione installata; da bloccare in `.nvmrc`
 e in `package.json > engines`); SQL (Postgres 15/17 di Supabase); Deno/TypeScript per le funzioni Edge.
 
 **Primary Dependencies**: Next.js (App Router, `output: 'export'`), React, `@fluentui/react-components`

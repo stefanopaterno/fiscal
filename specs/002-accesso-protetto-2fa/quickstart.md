@@ -7,7 +7,7 @@ implementazione: i dettagli stanno in `tasks.md` e nel codice.
 
 ## Prerequisiti
 
-- Node.js 22 LTS e npm; Docker in esecuzione; Supabase CLI.
+- Node.js 24 LTS e npm; Docker in esecuzione; Supabase CLI.
 - Progetto Supabase configurato: registrazioni disattivate, un solo fattore MFA per utente,
   durata del token 15 minuti, SMTP configurato per l'avviso di ripristino.
 - File locale **non versionato** `.env.local` con soli `NEXT_PUBLIC_SUPABASE_URL` e
