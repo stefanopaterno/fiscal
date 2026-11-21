@@ -101,20 +101,52 @@ rischio residuo (dati leggibili dal gestore del progetto) accettato dall'utente.
 - **Riferimento normativo**: normativa fiscale italiana vigente per gli anni 2026/2027.
 - **Privacy dei dati**: vedi principio VII. I dati fiscali e personali sono conservati solo nel
   progetto Supabase dell'utente; nessun altro servizio di terzi li riceve.
-- **Stack tecnologico**: TypeScript, React (richiesto da Fluent UI 9, che è una libreria per
-  React; sostituisce l'ipotesi Preact, non supportata ufficialmente da Fluent UI 9), Vite e PWA
-  (vite-plugin-pwa), con il client JavaScript di Supabase per accesso ai dati e autenticazione.
-  TODO(STACK_UI): confermare nel piano React e la versione di Fluent UI 9. Il motore fiscale MUST
-  essere un modulo TypeScript puro, senza dipendenze da UI, browser o rete, eseguibile e
-  testabile da riga di comando. Versioni esatte e libreria di test: da fissare nel piano.
+- **Stack tecnologico** (valutato il 2026-11-21 in funzione dell'hosting su Vercel): applicazione
+  **a più pagine** (non a pagina singola), con una pagina vera e un indirizzo proprio per ogni
+  sezione (dashboard, fatture, spese, simulatore, scadenzario, archivio, impostazioni, ecc.).
+  Tecnologie: TypeScript, React (richiesto da Fluent UI 9, che è una libreria per React),
+  Next.js con instradamento a file e **esportazione statica** (`output: 'export'`, che produce
+  una pagina HTML per ogni percorso), Fluent UI 9, PWA con service worker (libreria da scegliere
+  nel piano) e client JavaScript di Supabase per accesso ai dati e autenticazione. Di Next.js
+  MUST essere usata solo l'esportazione statica: MUST NOT essere usati funzioni server, route
+  handler, middleware, azioni server né rendering a ogni richiesta, perché un server di mezzo
+  vedrebbe i dati dei pazienti (principio VII). Login e controllo dell'accesso avvengono nel
+  browser con Supabase e Row Level Security; ogni pagina protetta MUST reindirizzare al login
+  se non c'è una sessione con secondo fattore valido. Libreria di test: Vitest. Il motore fiscale
+  MUST essere un modulo TypeScript puro, senza dipendenze da UI, browser o rete, eseguibile e
+  testabile da riga di comando. Versioni esatte di Next.js, React, Fluent UI 9 e Vitest,
+  gestore di pacchetti e versione di Node: da fissare nel piano (e bloccate nel file di lock).
+  Calcoli, PDF, file Excel e pacchetti cifrati MUST essere generati nel browser dell'utente, non
+  in funzioni server. TODO(PWA_NEXT): scegliere nel piano come gestire il service worker con
+  l'esportazione statica di Next.js.
   Roadmap: la release successiva alla prima prevede job schedulati lato server (notifiche e
-  salvataggi automatici); il piano della prima versione MUST non precluderli.
-  TODO(NOTIFICHE_JOB): scegliere nel piano della release successiva il meccanismo di job e
-  notifiche (per esempio funzioni pianificate di Supabase).
-- **Hosting**: l'app (file statici) MUST essere pubblicata su Vercel in HTTPS, collegato al
-  repository GitHub `stefanopaterno/fiscal` (pubblicazione a ogni push su `main`). Il repository
-  è pubblico e MUST NOT contenere dati personali né chiavi segrete (principio VII). Le variabili
-  di ambiente di Vercel MUST contenere solo l'indirizzo del progetto e la chiave pubblica.
+  salvataggi automatici); il piano della prima versione MUST non precluderli. Preferenza
+  indicata per quei job: funzioni pianificate di Supabase (pg_cron ed Edge Functions), perché i
+  dati restano dentro il solo progetto Supabase; i Cron Job di Vercel MUST NOT elaborare dati
+  personali. TODO(NOTIFICHE_JOB): confermare nel piano della release successiva meccanismo e
+  canale delle notifiche.
+- **Hosting**: l'app (solo file statici prodotti dall'esportazione statica di Next.js, cartella `out`) MUST essere
+  pubblicata su Vercel in HTTPS, collegato al repository GitHub `stefanopaterno/fiscal`
+  (pubblicazione a ogni push su `main`). Vercel MUST servire solo il codice dell'app: nessuna
+  funzione server (Serverless, Edge o Cron) di Vercel MUST ricevere, elaborare o conservare dati
+  fiscali o personali; i dati viaggiano solo tra il browser e Supabase. Il repository è pubblico
+  e MUST NOT contenere dati personali né chiavi segrete (principio VII). Le variabili di ambiente
+  di Vercel (prefisso `VITE_`, incorporate nel codice pubblico) MUST contenere solo l'indirizzo
+  del progetto e la chiave pubblica di Supabase; la chiave di servizio (`service_role`) MUST NOT
+  essere mai su Vercel né nel repository. La configurazione di Vercel (`vercel.json`) MUST
+  riportare: percorsi con barra finale coerenti con le pagine esportate, intestazioni di sicurezza
+  (HSTS, Content-Security-Policy limitata alla propria origine e al progetto Supabase,
+  X-Content-Type-Options, X-Frame-Options o frame-ancestors, Referrer-Policy, Permissions-Policy)
+  e intestazioni di cache che non conservino mai a lungo `index.html` e il service worker. Il
+  service worker MUST NOT memorizzare risposte con dati dell'utente. Le anteprime di Vercel per
+  rami e richieste di modifica MUST essere disattivate o protette e MUST NOT usare il database di
+  produzione. TODO(VERCEL_PIANO): verificare che il piano gratuito Hobby di Vercel (previsto per
+  uso personale non commerciale) sia ammesso per questo uso professionale personale; in caso
+  contrario valutare il piano a pagamento o un altro hosting statico.
+- **Pagina di cortesia**: la pagina `index.html` alla radice ("Soarlyai project") MUST restare
+  invariata finché l'utente non decide diversamente; l'app non la sostituisce né la modifica.
+  TODO(ACCESSO_APP): decidere più avanti come si raggiunge l'app dalla pagina di cortesia
+  (percorso dedicato o altro); fino ad allora l'app non è collegata alla pagina di cortesia.
 - **Database**: Supabase, progetto `https://aldiyymgvngvdrroluus.supabase.co`. L'indirizzo è
   pubblico per natura, ma l'accesso ai dati MUST dipendere solo da login, 2FA e Row Level
   Security. TODO(REGIONE): verificare la regione del progetto, preferibilmente UE.
@@ -222,4 +254,4 @@ principi o sezioni, PATCH per chiarimenti. Ogni piano e ogni revisione MUST veri
 conformità ai principi; le deroghe MUST essere giustificate per iscritto nel piano. Il file
 `CLAUDE.md` resta la guida di ruolo e contesto per lo sviluppo quotidiano.
 
-**Version**: 2.4.7 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-20
+**Version**: 2.6.1 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-21
