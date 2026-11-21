@@ -95,6 +95,10 @@ rischio residuo (dati leggibili dal gestore del progetto) accettato dall'utente.
 
 ## Vincoli di Dominio e Tecnici
 
+- **Nome mostrato**: nell'interfaccia l'app si chiama **Fiscal**, con sotto la scritta **Soarlyai Project**
+  (senza "parte di"); "My Fiscal" resta solo il nome interno del progetto. Gli aiuti contestuali
+  (principio VI, specifica 011) MUST comparire con un pulsante "?" accanto a ogni sezione, numero e
+  campo, scritti per chi non è commercialista: frasi brevi, parole di tutti i giorni, un esempio.
 - **Natura dell'app**: My Fiscal è uno strumento personale di simulazione e organizzazione, non
   sostituisce il commercialista né le dichiarazioni ufficiali. L'app MUST mostrare in modo
   visibile che i risultati sono stime fino a verifica.
@@ -254,4 +258,4 @@ principi o sezioni, PATCH per chiarimenti. Ogni piano e ogni revisione MUST veri
 conformità ai principi; le deroghe MUST essere giustificate per iscritto nel piano. Il file
 `CLAUDE.md` resta la guida di ruolo e contesto per lo sviluppo quotidiano.
 
-**Version**: 2.6.1 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-21
+**Version**: 2.6.2 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-21
