@@ -34,3 +34,6 @@ blob-report/
 .vercel/
 *.log
 .playwright-mcp/
+
+# cartelle di lavoro degli agenti
+.claude/worktrees/
