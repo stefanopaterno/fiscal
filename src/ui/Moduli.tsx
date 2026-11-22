@@ -49,11 +49,17 @@ const useStili = makeStyles({
     whiteSpace: 'nowrap',
   },
   campo: { minWidth: 0 },
+  // da tablet in su le etichette hanno la stessa altezza (2 righe): i campi affiancati restano allineati
+  etichettaCampo: {
+    '@media (min-width: 481px)': { minHeight: '40px', display: 'flex', alignItems: 'flex-end' },
+  },
   griglia: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
     gap: tokens.spacingVerticalM,
     minWidth: 0,
+    // ogni campo parte dall'alto: note sotto un campo non spostano quelli accanto
+    alignItems: 'start',
   },
 });
 
@@ -106,10 +112,11 @@ export function CampoTesto(
     lunghezzaMax?: number;
   },
 ) {
+  const s = useStili();
   return (
     <ConAiuto aiuto={props.aiuto}>
       <Field
-        label={props.etichetta}
+        label={{ children: props.etichetta, className: s.etichettaCampo }}
         required={props.obbligatorio}
         validationState={props.errore ? 'error' : 'none'}
         validationMessage={props.errore}
@@ -150,7 +157,7 @@ export function CampoScelta<T extends string>(
   return (
     <ConAiuto aiuto={props.aiuto}>
       <Field
-        label={props.etichetta}
+        label={{ children: props.etichetta, className: s.etichettaCampo }}
         required={props.obbligatorio}
         validationState={props.errore ? 'error' : 'none'}
         validationMessage={props.errore}
@@ -301,10 +308,11 @@ export function testoInData(t: string): Date | null {
 export function CampoData(
   props: Comuni & { valore: string; onChange: (iso: string) => void; min?: string; max?: string },
 ) {
+  const s = useStili();
   return (
     <ConAiuto aiuto={props.aiuto}>
       <Field
-        label={props.etichetta}
+        label={{ children: props.etichetta, className: s.etichettaCampo }}
         required={props.obbligatorio}
         validationState={props.errore ? 'error' : 'none'}
         validationMessage={props.errore}

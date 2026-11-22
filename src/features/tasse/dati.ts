@@ -2,6 +2,20 @@ import type { AliquoteAddizionali, InputAnno } from '@/engine/irpef/anno';
 import { redditoDiCassa, type RedditoDiCassa } from '@/engine/irpef/cassa';
 import { contributiEnpap } from '@/engine/irpef/enpap';
 import { anniConRegoleIrpef } from '@/engine/regole/irpef';
+import { anniConRegoleSpese } from '@/engine/regole/spese';
+import type { BeneInput } from '@/engine/spese/ammortamento';
+import { totaleSpeseAnno, type SpesaInput, type TotaleSpese } from '@/engine/spese/deducibilita';
+import { oneriAnno, type EsitoOneri, type OnereInput } from '@/engine/spese/oneri';
+import {
+  benePerMotore,
+  leggiBeni,
+  leggiImpostazioniSpese,
+  leggiOneri,
+  leggiSpese,
+  onerePerMotore,
+  spesaPerMotore,
+  type ImpostazioniSpese,
+} from '@/features/spese/dati';
 import { getSupabase } from '@/lib/supabase/client';
 import {
   ErroreFatturazione,
@@ -31,6 +45,7 @@ export type Cu = Metadati & {
   detrazioni_lavoro_fruite: number | null;
   detrazioni_familiari_fruite: number | null;
   contributi_previdenziali: number | null;
+  previdenza_complementare: number | null;
 };
 
 export type DatiAnno = Metadati & {
@@ -95,6 +110,7 @@ export const nuovaCu = (anno: number, id: string): Cu => ({
   detrazioni_lavoro_fruite: null,
   detrazioni_familiari_fruite: null,
   contributi_previdenziali: null,
+  previdenza_complementare: null,
 });
 
 export const nuoviDatiAnno = (anno: number, id: string): DatiAnno => ({
@@ -172,6 +188,12 @@ export type DatiRaccolti = {
   annoInizio: number | null;
   /** Reddito professionale inserito a mano invece che dalle fatture. */
   manuale: boolean;
+  /** Spese e oneri della 008 già applicati all'input (null se l'anno non ha regole delle spese). */
+  spese: TotaleSpese | null;
+  oneri: EsitoOneri | null;
+  registrati: { spese: SpesaInput[]; oneri: OnereInput[]; beni: BeneInput[] };
+  impostazioniSpese: ImpostazioniSpese | null;
+  previdenzaInCu: number;
 };
 
 const aliquoteMotore = (a: AliquoteRiga | null): AliquoteAddizionali | null =>
@@ -207,7 +229,21 @@ function contributiPrevisti(
 }
 
 export async function raccogliAnno(anno: number): Promise<DatiRaccolti> {
-  const [cu, dati, aliquote, versPrev, versImp, fatture, incassi, profilo, datiPrima] = await Promise.all([
+  const [
+    cu,
+    dati,
+    aliquote,
+    versPrev,
+    versImp,
+    fatture,
+    incassi,
+    profilo,
+    datiPrima,
+    speseR,
+    beniR,
+    oneriR,
+    impSpese,
+  ] = await Promise.all([
     leggiCu(anno),
     leggiDatiAnno(anno),
     leggiAliquote(anno),
@@ -217,12 +253,45 @@ export async function raccogliAnno(anno: number): Promise<DatiRaccolti> {
     leggiIncassi(),
     leggiProfilo(),
     leggiDatiAnno(anno - 1),
+    leggiSpese(anno),
+    leggiBeni(),
+    leggiOneri(anno),
+    leggiImpostazioniSpese(),
   ]);
   const cassa = redditoDiCassa(anno, fatture, incassi);
   const manuale = dati?.reddito_professionale_manuale != null;
+
+  // Spese professionali della 008 (deducibile dell'anno + quote di ammortamento), oltre alle "altre spese"
+  const registrati = {
+    spese: speseR.map(spesaPerMotore),
+    oneri: oneriR.map(onerePerMotore),
+    beni: beniR.map(benePerMotore),
+  };
+  const conRegoleSpese = anniConRegoleSpese().includes(anno);
+  const spese = conRegoleSpese
+    ? totaleSpeseAnno(registrati.spese, registrati.beni, { anno, compensi: cassa.compensi })
+    : null;
   const redditoProfessionale = manuale
     ? dati!.reddito_professionale_manuale!
-    : cassa.compensi - (dati?.spese_professionali ?? 0);
+    : cassa.compensi - (dati?.spese_professionali ?? 0) - (spese?.deducibile ?? 0);
+
+  // Oneri personali: deduzioni e detrazioni (il contributo ENPAP volontario sta già nei versamenti ENPAP)
+  const previdenzaInCu = cu.reduce((t, c) => t + (c.previdenza_complementare ?? 0), 0);
+  const redditoComplessivoStimato = Math.max(
+    0,
+    cu.reduce((t, c) => t + c.reddito_lavoro, 0) + redditoProfessionale,
+  );
+  const oneri = conRegoleSpese
+    ? oneriAnno(
+        registrati.oneri.filter((o) => o.voce !== 'enpap_volontario'),
+        {
+          anno,
+          redditoComplessivo: redditoComplessivoStimato,
+          figli: impSpese?.figli_a_carico ?? 0,
+          previdenzaInCu,
+        },
+      )
+    : null;
 
   // anno prima: c'è attività professionale solo se ci sono incassi o un reddito inserito a mano
   const cassaPrima = redditoDiCassa(anno - 1, fatture, incassi);
@@ -267,8 +336,8 @@ export async function raccogliAnno(anno: number): Promise<DatiRaccolti> {
       cassa: v.cassa,
     })),
     contributiPrevisti: previsti,
-    oneriDeducibili: dati?.oneri_deducibili ?? 0,
-    altreDetrazioni: dati?.altre_detrazioni ?? 0,
+    oneriDeducibili: (dati?.oneri_deducibili ?? 0) + (oneri?.deduzioni ?? 0),
+    altreDetrazioni: (dati?.altre_detrazioni ?? 0) + (oneri?.detrazioni ?? 0),
     addizionali: aliquoteMotore(aliquote),
     accontiVersati: {
       irpef: somma(['irpef_acconto_1', 'irpef_acconto_2']),
@@ -276,5 +345,19 @@ export async function raccogliAnno(anno: number): Promise<DatiRaccolti> {
     },
   };
   const annoInizio = profilo?.inizio_attivita ? Number(profilo.inizio_attivita.slice(0, 4)) : null;
-  return { anno, input, cu, dati, aliquote, cassa, annoInizio, manuale };
+  return {
+    anno,
+    input,
+    cu,
+    dati,
+    aliquote,
+    cassa,
+    annoInizio,
+    manuale,
+    spese,
+    oneri,
+    registrati,
+    impostazioniSpese: impSpese,
+    previdenzaInCu,
+  };
 }

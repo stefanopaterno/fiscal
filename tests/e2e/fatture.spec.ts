@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { expect, test } from '@playwright/test';
 import { admin, eliminaUtente, type UtenteProva } from '../integration/_supabase-locale';
-import { entraNelBrowser, utenteConTelefono } from './_aiuti';
+import { entraNelBrowser, utenteConTelefono, vaiA } from './_aiuti';
 
 // T017 (003, US2, SC-001, SC-005): caso 1 di quickstart.md dal telefono e dal PC — seduta da 80 € nel 2027:
 // contributo 3,20 €, bollo 2 €, totale 85,20 €; numero 1, poi 2; documento con le diciture obbligatorie.
@@ -122,10 +122,7 @@ test('emetto una fattura per una seduta, la stampo e la numerazione prosegue', a
   await expect(page.getByRole('region', { name: 'Totali della selezione' })).toContainText('Emesso85,20 €');
 
   // Adempimenti: due spese da comunicare al Sistema Tessera Sanitaria; ne segno una come inviata
-  await page
-    .getByRole('navigation', { name: 'Sezioni di Fiscal' })
-    .getByRole('link', { name: 'Adempimenti' })
-    .click();
+  await vaiA(page, 'Adempimenti');
   await expect(page.getByText('Da inviare', { exact: true })).toHaveCount(2);
   await page.getByRole('checkbox', { name: 'Scegli Fattura n. 1/2027' }).check();
   await page.getByRole('button', { name: 'Segna le scelte come inviate' }).click();

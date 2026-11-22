@@ -3,7 +3,7 @@
 import { makeStyles, mergeClasses, Text, tokens } from '@fluentui/react-components';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
-import { centesimiInTesto, euroInCentesimi, formattaEuro } from '@/engine/importi';
+import { euroInCentesimi, formattaEuro } from '@/engine/importi';
 import { anniConRegoleIrpef } from '@/engine/regole/irpef';
 import { BollaAiuto, ConAiuto, type ContenutoAiuto } from '@/ui/AiutoContestuale';
 import { ImportoNascosto } from '@/ui/ImportoNascosto';
@@ -38,6 +38,14 @@ export function SceltaAnno({ anno, onChange }: { anno: number; onChange: (a: num
   );
 }
 
+/** "38.000,00": come si legge un importo in italiano (il campo accetta anche "38000"). */
+const importoConMigliaia = (c: number) =>
+  new Intl.NumberFormat('it-IT', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    useGrouping: 'always',
+  }).format(c / 100);
+
 /** Campo in euro: l'utente scrive "1.234,56", il valore è in centesimi. */
 export function CampoEuro(props: {
   etichetta: string;
@@ -48,7 +56,7 @@ export function CampoEuro(props: {
   negativo?: boolean;
   suggerimento?: string;
 }) {
-  const [testo, setTesto] = useState(props.valore == null ? '' : centesimiInTesto(props.valore));
+  const [testo, setTesto] = useState(props.valore == null ? '' : importoConMigliaia(props.valore));
   const negativo = props.negativo && testo.trim().startsWith('-');
   const pulito = negativo ? testo.trim().slice(1) : testo;
   const c = euroInCentesimi(pulito);

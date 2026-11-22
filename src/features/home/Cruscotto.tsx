@@ -46,6 +46,7 @@ import {
   type Profilo,
 } from '@/features/fatturazione/dati';
 import { dataItaliana, ETICHETTA_STATO, titoloDocumento } from '@/features/fatturazione/DettaglioFattura';
+import { BoxConsigli } from '@/features/spese/BoxConsigli';
 import { raccogliAnno, type DatiRaccolti } from '@/features/tasse/dati';
 import { GrigliaKpi, Kpi } from '@/features/tasse/componenti';
 import { ConAiuto } from '@/ui/AiutoContestuale';
@@ -251,6 +252,8 @@ export function Cruscotto() {
       ) : null}
 
       {dati ? <Evidenza tasse={dati.tasse} anno={anno} /> : <Caricamento />}
+
+      {dati ? <BoxConsigli tasse={dati.tasse} anno={anno} /> : null}
 
       {dati ? <NumeriChiave dati={dati} anno={anno} /> : null}
 

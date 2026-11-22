@@ -40,10 +40,11 @@ export const ULTERIORE_DETRAZIONE: Regola<ParametriUlterioreDetrazione> = {
   stato: 'da_verificare',
 };
 
-export const ULTERIORE_NON_RAGGUAGLIATA: Regola<boolean> = {
-  valore: false,
-  fonte: 'Interpretazione della L. 207/2024: nessun rapporto ai giorni di lavoro previsto nel testo',
-  stato: 'da_verificare',
+export const ULTERIORE_RAGGUAGLIATA: Regola<boolean> = {
+  valore: true,
+  fonte:
+    'Istruzioni CU 2026 (Agenzia delle Entrate), punto 368: l\'ulteriore detrazione "deve essere rapportata al periodo di lavoro nell\'anno"',
+  stato: 'verificata',
 };
 
 export const ADDIZIONALI_SOLO_CON_IRPEF: Regola<boolean> = {

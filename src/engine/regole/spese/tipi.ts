@@ -45,6 +45,8 @@ export type VoceOnere = {
   natura: 'comunque' | 'risparmio';
   /** Denaro vincolato (previdenza): compare nei consigli solo con l'accantonamento coperto. */
   vincolata: boolean;
+  /** È una scelta da consigliare (fondo pensione, donazioni)? Spese mediche e mutuo no: non si fanno per le tasse. */
+  consigliabile: boolean;
   regola: Regola<true>;
 };
 

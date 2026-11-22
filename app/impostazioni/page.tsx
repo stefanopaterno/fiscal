@@ -51,6 +51,12 @@ const VOCI = [
     testo: 'I tuoi dati per le fatture, la sede, il bollo e le attività che svolgi.',
   },
   {
+    href: '/impostazioni/spese/',
+    titolo: 'Spese e consigli',
+    testo:
+      "Studio fisico, figli a carico per i limiti delle detrazioni e regole per l'affitto di un ufficio.",
+  },
+  {
     href: '/impostazioni/modalita/',
     titolo: 'Prova e produzione',
     testo: 'Fai prove e cancellale; quando sei pronto passi alle fatture vere (senza ritorno).',

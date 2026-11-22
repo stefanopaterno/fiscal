@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { eliminaUtente, type UtenteProva } from '../integration/_supabase-locale';
-import { entraNelBrowser, utenteConTelefono } from './_aiuti';
+import { entraNelBrowser, utenteConTelefono, vaiA } from './_aiuti';
 
 // T011-T012 (003, US1): configurazione della partita IVA, indicatore "pronto a fatturare", attività.
 // Codice fiscale di esempio costruito a pezzi per non farlo scambiare per un dato vero dalla scansione.
@@ -18,10 +18,7 @@ test('configuro la partita IVA e divento pronto a fatturare', async ({ page }) =
   await entraNelBrowser(page, u.utente, u.codice);
 
   // dalla navigazione alle impostazioni
-  await page
-    .getByRole('navigation', { name: 'Sezioni di Fiscal' })
-    .getByRole('link', { name: 'Impostazioni' })
-    .click();
+  await vaiA(page, 'Impostazioni');
   await page.getByRole('link', { name: /Partita IVA e attività/ }).click();
   await expect(page.getByText('Non ancora.')).toBeVisible();
   await expect(page.getByText("Almeno un'attività")).toBeVisible();

@@ -46,7 +46,7 @@ ancora in vigore). Ogni valore sta nel set di regole dell'anno con fonte e stato
     1.000 × (40.000 − R) / 8.000 se 32.000 < R ≤ 40.000; 0 oltre. Spetta a chi ha reddito di lavoro
     dipendente.
   - Ragguaglio ai giorni di lavoro (art. 13): input facoltativo "giorni di lavoro" della CU (365 di default).
-    Se l'ulteriore detrazione vada ragguagliata è (D).
+    L'ulteriore detrazione va rapportata al periodo di lavoro (istruzioni CU 2026, punto 368) (V, aggiornato 2026-11-22).
   - Il coefficiente si calcola con 4 decimali, la detrazione si arrotonda al centesimo (prassi delle
     istruzioni ministeriali, (D)).
 - **Motivo**: è la voce che rende il "costo vero" della P.IVA più alto dell'aliquota marginale: superando

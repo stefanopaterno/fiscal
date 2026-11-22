@@ -115,6 +115,12 @@ test('tutte le pagine: niente scorrimento laterale, aree da 44 px sul telefono, 
     ['/app/tasse/dati/', "Dati dell'anno"],
     ['/app/tasse/versamenti/', 'Versamenti'],
     ['/app/tasse/strategia/', 'Strategia dei versamenti'],
+    ['/app/spese/', 'Spese'],
+    ['/app/spese/scheda/', 'Spesa'],
+    ['/app/spese/beni/', 'Beni durevoli'],
+    ['/app/spese/oneri/', 'Spese personali'],
+    ['/app/spese/consigli/', 'Come abbassare le tasse'],
+    ['/app/impostazioni/spese/', 'Spese e consigli'],
   ] as const) {
     await page.goto(percorso);
     await expect(page.getByRole('heading', { name: titolo, level: 1 })).toBeVisible();

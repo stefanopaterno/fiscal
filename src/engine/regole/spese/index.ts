@@ -32,3 +32,8 @@ export function regoleSpesePerAnno(anno: number): RegoleSpese {
 
 export const categoria = (r: RegoleSpese, codice: string) => r.categorie.find((c) => c.codice === codice);
 export const voceOnere = (r: RegoleSpese, codice: string) => r.oneri.find((o) => o.codice === codice);
+
+export const anniConRegoleSpese = (): number[] =>
+  Object.keys(PER_ANNO)
+    .map(Number)
+    .sort((a, b) => a - b);

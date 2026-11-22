@@ -33,3 +33,12 @@ export async function righeDiProva(utente: UtenteProva) {
   const { data } = await admin.from('prove_sincronizzazione').select('id, testo').eq('owner_id', utente.id);
   return data ?? [];
 }
+
+/** Apre una sezione dalla navigazione: sul telefono le ultime voci stanno nel menu "Altro". */
+export async function vaiA(page: Page, sezione: string) {
+  const nav = page.getByRole('navigation', { name: 'Sezioni di Fiscal' });
+  const link = nav.getByRole('link', { name: sezione });
+  if (await link.isVisible()) return link.click();
+  await nav.getByRole('button', { name: 'Altro' }).click();
+  await page.getByRole('menuitem', { name: sezione }).click();
+}

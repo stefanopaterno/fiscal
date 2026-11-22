@@ -217,6 +217,12 @@ describe('calcolaAnno — invarianti', () => {
     expect(r.detrazioneLavoro).toBe(519_53);
   });
 
+  it('ulteriore detrazione rapportata ai giorni di lavoro (istruzioni CU, punto 368)', () => {
+    // 38.000 €: ulteriore 250,00 € pieni; 182 giorni su 365 ⇒ 124,66 €
+    const r = calcolaAnno(base({ cu: [cu38({ giorniLavoro: 182 })] }));
+    expect(r.ulterioreDetrazione).toBe(124_66);
+  });
+
   it('più CU nello stesso anno si sommano', () => {
     const r = calcolaAnno(
       base({

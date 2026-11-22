@@ -117,6 +117,12 @@ describe('beni durevoli (casi C, D)', () => {
     expect(d.avvisi.join(' ')).toMatch(/commercialista/);
   });
 
+  it('la spesa di un bene durevole non si deduce due volte: conta solo la quota', () => {
+    const beni = [{ costo: 1_500_00, dataAcquisto: '2027-02-01', categoria: 'computer' }];
+    const r = totaleSpeseAnno([spesa('altro', 1_500_00, { beneDurevole: true })], beni, ctx);
+    expect(r.deducibile).toBe(300_00);
+  });
+
   it("quote dell'anno nel totale delle spese", () => {
     const beni = [{ costo: 1_500_00, dataAcquisto: '2026-05-01', categoria: 'computer' }];
     expect(quoteAmmortamentoAnno(beni, 2027)).toBe(300_00);
@@ -215,6 +221,9 @@ describe('consigli e simulazione (casi J, K)', () => {
       expect(c.costoNetto).toBeGreaterThanOrEqual(0);
       expect(c.scadenza).toBe('2026-12-31');
       expect(c.avvertenze.join(' ')).toMatch(/gratis|costo netto/);
+      // nessun importo nel testo: con l'occhio chiuso resterebbe visibile
+      expect(c.avvertenze.join(' ')).not.toMatch(/\d/);
+      expect(['interessi_mutuo', 'spese_sanitarie', 'altre_19']).not.toContain(c.codice);
     }
     // mai consigli su incassi o fatture
     expect(JSON.stringify(con)).not.toMatch(/incass|fattur/i);

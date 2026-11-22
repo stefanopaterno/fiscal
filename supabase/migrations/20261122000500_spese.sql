@@ -104,7 +104,7 @@ alter table public.certificazioni_uniche
 -- ---------------------------------------------------------------------------
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('giustificativi', 'giustificativi', false, 10485760,
-        array['image/jpeg', 'image/png', 'image/heic', 'image/webp', 'application/pdf'])
+        array['image/jpeg', 'image/png', 'image/heic', 'image/webp', 'application/pdf', 'text/xml', 'application/xml'])
 on conflict (id) do nothing;
 
 create policy giustificativi_proprietario on storage.objects

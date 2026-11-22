@@ -1,10 +1,23 @@
 'use client';
 
-import { makeStyles, mergeClasses, tokens } from '@fluentui/react-components';
+import {
+  makeStyles,
+  Menu,
+  MenuItem,
+  MenuList,
+  MenuPopover,
+  MenuTrigger,
+  mergeClasses,
+  tokens,
+} from '@fluentui/react-components';
 import {
   Calculator24Filled,
   Calculator24Regular,
   ClipboardTaskListLtr24Filled,
+  MoreHorizontal24Filled,
+  MoreHorizontal24Regular,
+  Receipt24Filled,
+  Receipt24Regular,
   ClipboardTaskListLtr24Regular,
   DocumentText24Filled,
   DocumentText24Regular,
@@ -16,7 +29,7 @@ import {
   Settings24Regular,
 } from '@fluentui/react-icons';
 import NextLink from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import type { ReactElement } from 'react';
 
 /**
@@ -35,6 +48,7 @@ export const VOCI: Voce[] = [
     iconaAttiva: <DocumentText24Filled />,
   },
   { href: '/clienti/', etichetta: 'Clienti', icona: <People24Regular />, iconaAttiva: <People24Filled /> },
+  { href: '/spese/', etichetta: 'Spese', icona: <Receipt24Regular />, iconaAttiva: <Receipt24Filled /> },
   {
     href: '/tasse/',
     etichetta: 'Tasse',
@@ -114,6 +128,15 @@ const useStili = makeStyles({
     },
   },
   etichetta: { maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  // sul telefono ci stanno 5 voci più "Altro"; su PC tutte nella barra laterale
+  soloPc: { display: 'none', [PC]: { display: 'flex' } },
+  soloTelefono: {
+    border: 'none',
+    backgroundColor: 'transparent',
+    fontFamily: 'inherit',
+    cursor: 'pointer',
+    [PC]: { display: 'none' },
+  },
   // sul telefono la voce attiva si riconosce da colore e icona piena (il grassetto non ci starebbe)
   attiva: {
     color: tokens.colorBrandForeground1,
@@ -127,18 +150,24 @@ export function voceAttiva(percorso: string, href: string): boolean {
   return p === href || p.startsWith(href);
 }
 
+/** Voci visibili nella barra in basso del telefono; le altre finiscono in "Altro". */
+export const VOCI_TELEFONO = 5;
+
 export function Navigazione() {
   const s = useStili();
+  const router = useRouter();
   const percorso = usePathname() ?? '';
+  const altre = VOCI.slice(VOCI_TELEFONO);
+  const altraAttiva = altre.some((v) => voceAttiva(percorso, v.href));
   return (
     <nav className={s.barra} aria-label="Sezioni di Fiscal">
-      {VOCI.map((v) => {
+      {VOCI.map((v, i) => {
         const attiva = voceAttiva(percorso, v.href);
         return (
           <NextLink
             key={v.href}
             href={v.href}
-            className={mergeClasses(s.voce, attiva && s.attiva)}
+            className={mergeClasses(s.voce, attiva && s.attiva, i >= VOCI_TELEFONO && s.soloPc)}
             aria-current={attiva ? 'page' : undefined}
           >
             <span aria-hidden="true">{attiva ? v.iconaAttiva : v.icona}</span>
@@ -146,6 +175,25 @@ export function Navigazione() {
           </NextLink>
         );
       })}
+      <Menu positioning={{ position: 'above', align: 'end' }}>
+        <MenuTrigger disableButtonEnhancement>
+          <button type="button" className={mergeClasses(s.voce, s.soloTelefono, altraAttiva && s.attiva)}>
+            <span aria-hidden="true">
+              {altraAttiva ? <MoreHorizontal24Filled /> : <MoreHorizontal24Regular />}
+            </span>
+            <span className={s.etichetta}>Altro</span>
+          </button>
+        </MenuTrigger>
+        <MenuPopover>
+          <MenuList>
+            {altre.map((v) => (
+              <MenuItem key={v.href} icon={v.icona} onClick={() => router.push(v.href)}>
+                {v.etichetta}
+              </MenuItem>
+            ))}
+          </MenuList>
+        </MenuPopover>
+      </Menu>
     </nav>
   );
 }

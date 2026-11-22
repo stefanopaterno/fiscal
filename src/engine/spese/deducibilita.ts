@@ -20,6 +20,8 @@ export type SpesaInput = {
   modalita: ModalitaPagamento;
   rimborsata?: boolean;
   haGiustificativo?: boolean;
+  /** Acquisto di un bene durevole del registro: si deduce con l'ammortamento, non qui. */
+  beneDurevole?: boolean;
 };
 
 export type DeducibileCategoria = {
@@ -64,6 +66,7 @@ export function totaleSpeseAnno(
     x.speso += s.importo;
     perCodice.set(cat.codice, x);
     if (s.rimborsata) continue; // rimborso analitico dal cliente: né reddito né costo
+    if (s.beneDurevole) continue; // dedotto con le quote di ammortamento del registro dei beni
     if (cat.richiedeTracciabilita && s.modalita === 'contanti') {
       avvisi.push(
         `${cat.nome}: ${e(s.importo)} pagati in contanti non sono deducibili (serve un pagamento tracciabile).`,

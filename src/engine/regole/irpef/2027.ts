@@ -6,7 +6,7 @@ import {
   RATEIZZAZIONE,
   SCADENZA_SALDO_ENPAP,
   ULTERIORE_DETRAZIONE,
-  ULTERIORE_NON_RAGGUAGLIATA,
+  ULTERIORE_RAGGUAGLIATA,
 } from './comuni';
 import type { RegoleIrpef } from './tipi';
 
@@ -28,7 +28,7 @@ export const regoleIrpef2027: RegoleIrpef = {
   },
   detrazioneLavoro: DETRAZIONE_LAVORO,
   ulterioreDetrazione: ULTERIORE_DETRAZIONE,
-  ulterioreRagguagliata: ULTERIORE_NON_RAGGUAGLIATA,
+  ulterioreRagguagliata: ULTERIORE_RAGGUAGLIATA,
   addizionaliSoloConIrpefDovuta: ADDIZIONALI_SOLO_CON_IRPEF,
   acconti: ACCONTI,
   rateizzazione: RATEIZZAZIONE,

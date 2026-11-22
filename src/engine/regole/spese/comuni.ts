@@ -220,6 +220,7 @@ export const ONERI: VoceOnere[] = [
     fuoriTetto16ter: true,
     natura: 'risparmio',
     vincolata: true,
+    consigliabile: true,
     regola: v(
       "Art. 10 c. 1 lett. e-bis TUIR: deducibili fino a 5.164,57 € l'anno, compresi i versamenti tramite il datore",
     ),
@@ -233,6 +234,7 @@ export const ONERI: VoceOnere[] = [
     fuoriTetto16ter: true,
     natura: 'risparmio',
     vincolata: true,
+    consigliabile: true,
     regola: d('Art. 10 c. 1 lett. e TUIR; aliquota volontaria fino al 30% (bozza ENPAP 02/2026)'),
   },
   {
@@ -244,6 +246,7 @@ export const ONERI: VoceOnere[] = [
     fuoriTetto16ter: true,
     natura: 'risparmio',
     vincolata: false,
+    consigliabile: true,
     regola: d('Art. 83 D.Lgs. 117/2017: deducibili fino al 10% del reddito'),
   },
   {
@@ -256,6 +259,7 @@ export const ONERI: VoceOnere[] = [
     fuoriTetto16ter: true,
     natura: 'comunque',
     vincolata: false,
+    consigliabile: false,
     regola: v('Art. 15 c. 1 lett. c TUIR: 19% oltre 129,11 €; tracciabile salvo farmaci e dispositivi'),
   },
   {
@@ -268,6 +272,7 @@ export const ONERI: VoceOnere[] = [
     fuoriTetto16ter: true,
     natura: 'comunque',
     vincolata: false,
+    consigliabile: false,
     regola: d('Art. 15 c. 1 lett. b TUIR: 19% fino a 4.000 € di interessi'),
   },
   {
@@ -279,6 +284,7 @@ export const ONERI: VoceOnere[] = [
     fuoriTetto16ter: false,
     natura: 'comunque',
     vincolata: false,
+    consigliabile: false,
     regola: d('Art. 15 TUIR: istruzione, sport dei figli e altre voci, ciascuna con i suoi limiti'),
   },
 ];

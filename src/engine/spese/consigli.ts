@@ -1,4 +1,3 @@
-import { formattaEuro as e } from '../importi';
 import { calcolaAnno, type InputAnno, type RisultatoAnno } from '../irpef/anno';
 import { perAliquota } from '../irpef/aritmetica';
 import { contributiEnpap } from '../irpef/enpap';
@@ -160,7 +159,7 @@ export function consigli(
     previdenzaInCu: opzioni.previdenzaInCu,
   };
   const oneri = oneriAnno(registrati.oneri, contesto);
-  for (const v of regole.oneri) {
+  for (const v of regole.oneri.filter((o) => o.consigliabile)) {
     let limite = limiteVoce(v, contesto);
     if (v.aliquotaMassimaVolontaria != null && anniConRegoleIrpef().includes(anno)) {
       const obbligatoria = regoleIrpefPerAnno(anno).enpap.aliquotaSoggettivo.valore;
@@ -202,7 +201,7 @@ export function consigli(
     const perEuro = Math.round((risparmio(c.ipotesi(prova)) / prova) * 10_000) / 10_000;
     const massimo = risparmio(c.ipotesi(c.residuo));
     const avvertenze = [
-      `Deducibile non vuol dire gratis: spendendo ${e(c.residuo)} risparmi ${e(massimo)} di tasse, il costo netto è ${e(c.residuo - massimo)}.`,
+      'Deducibile non vuol dire gratis: conta il costo netto, cioè quanto spendi meno le tasse che risparmi.',
     ];
     if (c.natura === 'risparmio')
       avvertenze.push('Conviene solo se ti serve davvero: non è una spesa da fare per forza.');

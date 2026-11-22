@@ -213,23 +213,27 @@ function SchedaCu({
           suggerimento="Facoltativo, solo per riconoscerla"
           aiuto={{
             argomento: 'datore di lavoro',
-            testo: 'Il nome di chi ti ha pagato lo stipendio. Serve solo a te per distinguere le CU.',
+            testo:
+              "Il nome di chi ti ha pagato lo stipendio, come in cima alla CU (dati del sostituto d'imposta). Serve solo a te per distinguere le CU.",
           }}
         />
         <CampoEuro
-          etichetta="Reddito di lavoro dipendente (punto 1)"
+          etichetta="Reddito di lavoro dipendente"
+          suggerimento="CU, punto 1 (+ punto 2)"
           valore={cu.reddito_lavoro}
           onChange={(v) => cambia('reddito_lavoro')(v ?? 0)}
           aiuto={{
             argomento: 'reddito di lavoro dipendente',
             testo:
-              "Il punto 1 della CU (se hai un contratto a termine, il punto 2): lo stipendio dell'anno già senza i contributi INPS trattenuti. È più basso del lordo in busta paga.",
+              'Nella CU, parte "Dati fiscali", punto 1: i redditi di lavoro dipendente con contratto a tempo indeterminato. Se c\'è un importo anche nel punto 2 (tempo determinato), somma i due. È lo stipendio dell\'anno già senza i contributi INPS trattenuti, quindi più basso del lordo.',
             esempio:
               "Con 40.000 € lordi l'anno il punto 1 è di solito intorno ai 36.300 € (circa il 9% va all'INPS).",
+            daDove: "Istruzioni CU 2026 dell'Agenzia delle Entrate, punti 1 e 2.",
           }}
         />
         <CampoTesto
-          etichetta="Giorni di lavoro (punto 6)"
+          etichetta="Giorni di lavoro"
+          suggerimento="CU, punto 6"
           lunghezzaMax={3}
           valore={String(cu.giorni_lavoro)}
           inputMode="numeric"
@@ -237,75 +241,109 @@ function SchedaCu({
           onChange={(v) => cambia('giorni_lavoro')(Number(v.replace(/\D/g, '')) || 0)}
           aiuto={{
             argomento: 'giorni di lavoro',
-            testo: "I giorni per cui spetta la detrazione: 365 se hai lavorato tutto l'anno.",
+            testo:
+              "Punto 6 della CU: i giorni del rapporto di lavoro per cui spetta la detrazione per lavoro dipendente. 365 se hai lavorato tutto l'anno. Servono a rapportare le detrazioni.",
+            daDove: 'Istruzioni CU 2026, punto 6.',
           }}
         />
         <CampoEuro
-          etichetta="Ritenute IRPEF (punto 21)"
+          etichetta="Ritenute IRPEF"
+          suggerimento="CU, punto 21"
           valore={cu.ritenute_irpef}
           onChange={(v) => cambia('ritenute_irpef')(v ?? 0)}
           aiuto={{
             argomento: 'ritenute IRPEF',
-            testo: "L'IRPEF che il datore ti ha già trattenuto in busta paga nell'anno.",
+            testo:
+              "Punto 21 della CU: l'IRPEF che il datore ti ha trattenuto nell'anno, dopo il conguaglio di fine anno.",
+            daDove: 'Istruzioni CU 2026, punto 21.',
           }}
         />
         <CampoEuro
-          etichetta="Addizionale regionale (punto 22)"
+          etichetta="Addizionale regionale"
+          suggerimento="CU, punto 22"
           valore={cu.addizionale_regionale}
           onChange={(v) => cambia('addizionale_regionale')(v ?? 0)}
           aiuto={{
             argomento: 'addizionale regionale trattenuta',
-            testo: "L'addizionale regionale dell'anno trattenuta dal datore.",
+            testo:
+              "Punto 22 della CU: l'addizionale regionale dell'anno calcolata dal datore (te la trattiene a rate l'anno dopo).",
+            daDove: 'Istruzioni CU 2026, punto 22.',
           }}
         />
         <CampoEuro
-          etichetta="Addizionale comunale, acconto (punto 26)"
+          etichetta="Addizionale comunale, acconto"
+          suggerimento="CU, punto 26"
           valore={cu.addizionale_comunale_acconto}
           onChange={(v) => cambia('addizionale_comunale_acconto')(v ?? 0)}
           aiuto={{
             argomento: 'acconto addizionale comunale',
-            testo: "La parte di addizionale comunale dell'anno trattenuta come acconto.",
+            testo:
+              "Punto 26 della CU: l'acconto dell'addizionale comunale dell'anno, trattenuto durante l'anno.",
+            daDove: 'Istruzioni CU 2026, punto 26.',
           }}
         />
         <CampoEuro
-          etichetta="Addizionale comunale, saldo (punto 27)"
+          etichetta="Addizionale comunale, saldo"
+          suggerimento="CU, punto 27"
           valore={cu.addizionale_comunale_saldo}
           onChange={(v) => cambia('addizionale_comunale_saldo')(v ?? 0)}
           aiuto={{
             argomento: 'saldo addizionale comunale',
-            testo: "Il saldo dell'addizionale comunale dell'anno trattenuto dal datore.",
+            testo:
+              "Punto 27 della CU: il saldo dell'addizionale comunale dell'anno (te lo trattiene a rate l'anno dopo).",
+            daDove: 'Istruzioni CU 2026, punto 27.',
           }}
         />
         <CampoEuro
-          etichetta="Acconto comunale anno dopo (punto 29)"
+          etichetta="Acconto comunale anno dopo"
+          suggerimento="CU, punto 29 · facoltativo"
           facoltativo
           valore={cu.addizionale_comunale_acconto_anno_dopo}
           onChange={cambia('addizionale_comunale_acconto_anno_dopo')}
           aiuto={{
             argomento: 'punto 29',
             testo:
-              "L'acconto dell'addizionale comunale dell'anno dopo che il datore ti tratterrà. Con questo numero l'acconto da versare a giugno è preciso; senza, l'app lo stima.",
+              "Punto 29 della CU: l'acconto dell'addizionale comunale dell'anno dopo, che il datore ti tratterrà. Con questo numero l'acconto da versare a giugno è preciso; senza, l'app lo stima.",
+            daDove: 'Istruzioni CU 2026, punto 29.',
           }}
         />
         <CampoEuro
-          etichetta="Detrazioni per lavoro dipendente riconosciute"
+          etichetta="Detrazioni per lavoro"
+          suggerimento="CU, punti 367 + 368 · facoltativo"
           facoltativo
           valore={cu.detrazioni_lavoro_fruite}
           onChange={cambia('detrazioni_lavoro_fruite')}
           aiuto={{
             argomento: 'detrazioni fruite',
             testo:
-              'Quanto ti ha riconosciuto il datore come detrazione per lavoro dipendente. Serve solo per spiegarti quanta ne perdi con la partita IVA.',
+              "Somma il punto 367 (detrazione per lavoro dipendente) e il punto 368 (ulteriore detrazione, se c'è). Serve solo a spiegarti quanta detrazione perdi con la partita IVA: il calcolo la rifà da solo.",
+            daDove: 'Istruzioni CU 2026, punti 367 e 368.',
           }}
         />
         <CampoEuro
-          etichetta="Detrazioni per familiari riconosciute"
+          etichetta="Detrazioni per familiari"
+          suggerimento="CU, punto 362 · facoltativo"
           facoltativo
           valore={cu.detrazioni_familiari_fruite}
           onChange={cambia('detrazioni_familiari_fruite')}
           aiuto={{
             argomento: 'detrazioni familiari fruite',
-            testo: 'Le detrazioni per familiari a carico applicate in busta paga, se ci sono.',
+            testo:
+              'Punto 362 della CU: le detrazioni per coniuge e familiari a carico che il datore ti ha riconosciuto.',
+            daDove: 'Istruzioni CU 2026, punto 362.',
+          }}
+        />
+        <CampoEuro
+          etichetta="Previdenza complementare"
+          suggerimento="CU, punto 412 · facoltativo"
+          facoltativo
+          valore={cu.previdenza_complementare}
+          onChange={cambia('previdenza_complementare')}
+          aiuto={{
+            argomento: 'previdenza complementare in CU',
+            testo:
+              "Punto 412 della CU: i contributi al fondo pensione già dedotti dal datore. Contano nel limite annuo di 5.164,57 €: l'app calcola quanto puoi ancora versare con vantaggio. Se c'è un importo nel punto 413 (non dedotto), registralo nelle spese personali.",
+            daDove: 'Istruzioni CU 2026, punti 412 e 413.',
           }}
         />
       </Griglia>
