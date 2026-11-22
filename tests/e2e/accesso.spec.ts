@@ -39,7 +39,7 @@ test('prima configurazione, uscita, accesso con password e codice', async ({ pag
   await page.getByRole('button', { name: 'Lo faccio dopo dalle impostazioni' }).click();
 
   await expect(page).toHaveURL(/\/app\/home\/$/);
-  await expect(page.getByRole('heading', { name: 'Home', level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /^Ciao/, level: 1 })).toBeVisible();
   const larghezze = await page.evaluate(() => [document.documentElement.scrollWidth, window.innerWidth]);
   expect(larghezze[0]).toBeLessThanOrEqual(larghezze[1]!);
 
@@ -55,13 +55,13 @@ test('prima configurazione, uscita, accesso con password e codice', async ({ pag
 
   await page.goto('/app/home/');
   await expect(page).toHaveURL(/\/app\/accesso\/secondo-fattore\/$/);
-  await expect(page.getByRole('heading', { name: 'Home', level: 1 })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: /^Ciao/, level: 1 })).toHaveCount(0);
 
   // Codice a 6 cifre: si entra
   await page.getByLabel(/^Codice a 6 cifre/).fill(await app.codiceStabile());
   await page.getByRole('button', { name: 'Verifica ed entra' }).click();
   await expect(page).toHaveURL(/\/app\/home\/$/);
-  await expect(page.getByRole('heading', { name: 'Home', level: 1 })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /^Ciao/, level: 1 })).toBeVisible();
 });
 
 test('password sbagliata: messaggio generico e nessun accesso', async ({ page }) => {

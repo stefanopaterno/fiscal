@@ -5,6 +5,7 @@ import { Eye24Regular, EyeOff24Regular } from '@fluentui/react-icons';
 import { useOcchio } from '@/features/lock/useOcchio';
 import { FasciaProva } from '@/features/modalita/FasciaProva';
 import { StatoCoda } from '@/features/offline-queue/StatoCoda';
+import { Logo } from '@/ui/Logo';
 import { LARGHEZZA_PC, Navigazione } from '@/ui/Navigazione';
 import type { ReactNode } from 'react';
 
@@ -35,23 +36,6 @@ const useStili = makeStyles({
     alignItems: 'center',
     gap: tokens.spacingHorizontalM,
     padding: `${tokens.spacingVerticalL} ${tokens.spacingHorizontalL}`,
-  },
-  logo: {
-    width: '36px',
-    height: '36px',
-    borderRadius: tokens.borderRadiusLarge,
-    backgroundColor: tokens.colorBrandBackground,
-    color: tokens.colorNeutralForegroundOnBrand,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: tokens.fontWeightBold,
-    fontSize: tokens.fontSizeBase500,
-    flexShrink: 0,
-  },
-  logoSuBlu: {
-    backgroundColor: tokens.colorNeutralBackground1,
-    color: tokens.colorBrandForeground1,
   },
   // nei pannelli il marchio si allinea al bordo del testo sotto (nessun margine proprio)
   testataAllineata: { padding: 0 },
@@ -88,9 +72,7 @@ export function Marchio({ suSfondoBlu = false }: { suSfondoBlu?: boolean }) {
   const s = useStili();
   return (
     <div className={mergeClasses(s.testata, suSfondoBlu && s.testataAllineata)}>
-      <div className={mergeClasses(s.logo, suSfondoBlu && s.logoSuBlu)} aria-hidden="true">
-        F
-      </div>
+      <Logo dimensione={36} chiaro={suSfondoBlu} />
       <div className={s.marchio}>
         <Text weight="semibold" size={400}>
           Fiscal

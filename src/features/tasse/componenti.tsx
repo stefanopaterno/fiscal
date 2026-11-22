@@ -86,7 +86,7 @@ export const percentualeInTestoModulo = (x: number) =>
 const useStili = makeStyles({
   kpi: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 170px), 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))',
     gap: tokens.spacingVerticalM,
   },
   carta: {

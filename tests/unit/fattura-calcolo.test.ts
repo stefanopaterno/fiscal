@@ -196,13 +196,22 @@ describe('calcolaFattura: contributo integrativo compreso nel prezzo (scorporo)'
 
   it('seduta da 80,00 €: compenso 76,92 + integrativo 3,08 = 80,00; il bollo resta a parte', () => {
     const r = calcolaFattura({ ...compreso, righe: [{ compenso: 8000, natura: 'esente_sanitaria' }] });
-    expect(r).toMatchObject({ totaleCompensi: 7692, totaleIntegrativo: 308, importoEsente: 8000, bollo: 200, totale: 8200 });
+    expect(r).toMatchObject({
+      totaleCompensi: 7692,
+      totaleIntegrativo: 308,
+      importoEsente: 8000,
+      bollo: 200,
+      totale: 8200,
+    });
     expect(r.righe[0]).toMatchObject({ compenso: 7692, prezzo: 8000, integrativo: 308 });
     expect(r.spiegazioni[0]).toMatch(/compreso nel prezzo/);
   });
 
   it('4 sedute da 80,00 €: il totale torna esatto a 320,00 €', () => {
-    const r = calcolaFattura({ ...compreso, righe: [{ compenso: 8000, quantita: 4, natura: 'esente_sanitaria' }] });
+    const r = calcolaFattura({
+      ...compreso,
+      righe: [{ compenso: 8000, quantita: 4, natura: 'esente_sanitaria' }],
+    });
     expect(r.importoEsente).toBe(32000);
     expect(r.totaleCompensi + r.totaleIntegrativo).toBe(32000);
   });
