@@ -6,7 +6,7 @@ TypeScript puro (principio I). Importi in centesimi interi. Nessun accesso a ret
 
 `InputAnno`:
 - `anno`
-- `cu: { redditoLavoro, giorniLavoro?, ritenuteIrpef, addRegionale, addComunaleAcconto, addComunaleSaldo, detrazioniFamiliariFruite? }[]` (almeno una, assunzione della spec)
+- `cu: { redditoLavoro, giorniLavoro?, ritenuteIrpef, addRegionale, addComunaleAcconto, addComunaleSaldo, addComunaleAccontoAnnoDopo?, detrazioniFamiliariFruite? }[]` (almeno una, assunzione della spec)
 - `redditoProfessionale` (anche negativo, R-08), `ritenuteSubite`
 - `versamentiPrevidenza: { data, importo, tipo, cassa }[]`, `contributiPrevisti?` (anno in corso)
 - `oneriDeducibili`, `altreDetrazioni`
@@ -14,8 +14,9 @@ TypeScript puro (principio I). Importi in centesimi interi. Nessun accesso a ret
 - `accontiVersati: { irpef, addComunale }`
 
 `RisultatoAnno`:
-- `redditoLavoro`, `redditoProfessionale`, `contributiDedotti` (solo soggettivo e maternità con data
-  nell'anno; integrativo escluso), `contributiPrevisti`, `redditoComplessivo`
+- `redditoLavoro`, `redditoProfessionale`, `redditoComplessivo` (base delle detrazioni), `contributiDedotti`
+  (solo soggettivo e maternità con data nell'anno; integrativo escluso), `contributiPrevisti`,
+  `redditoImponibile` (complessivo − contributi − oneri: base di scaglioni e addizionali)
 - `irpefLorda` con `perScaglione: { da, a, aliquota, imponibile, imposta }[]`
 - `detrazioneLavoro`, `ulterioreDetrazione`, `altreDetrazioni`, `irpefNetta`, `incapienza`
 - `scaglione: { aliquotaMarginale, sogliaSuccessiva | null, mancaAlProssimo | null }`

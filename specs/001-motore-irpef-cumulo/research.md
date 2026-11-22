@@ -9,9 +9,22 @@ ancora in vigore). Ogni valore sta nel set di regole dell'anno con fonte e stato
 
 - **Decisione**: 2026 = 23% fino a 28.000 €, 33% da 28.000 a 50.000 €, 43% oltre (art. 11 TUIR come
   modificato dalla L. 199/2025, Legge di Bilancio 2026; la seconda aliquota passa dal 35% al 33%).
-  Stato (D) fino a riscontro sul testo in Gazzetta. **2027**: stessi valori del 2026, stato (D): il DDL di
-  Bilancio 2027 propone di estendere il 33% fino a 55.000 €; non è legge. Quando sarà approvato si
-  aggiorna `regole/irpef/2027.ts` e i casi di prova 2027.
+  Stato (D) fino a riscontro sul testo in Gazzetta. **2027** (aggiornato 2026-11-22): 23% fino a 28.000 €,
+  **33% fino a 55.000 €**, 43% oltre, come nel DDL di Bilancio 2027 approvato dal Consiglio dei ministri il
+  28/10/2026 e ora in Parlamento; misura **solo per il 2027** (dal 2028 si torna a 50.000 €, salvo nuove
+  norme). Stato (D) finché la legge non è pubblicata. Scelta: per l'anno della partita IVA il valore del DDL
+  è più probabile di quello attuale; se il testo finale cambia si aggiorna `regole/irpef/2027.ts` e i casi
+  7–8. Il DDL non tocca le detrazioni (soglia 50.000 € dell'art. 13 invariata). Fonti:
+  [studiopizzano](https://www.studiopizzano.it/taglio-irpef-2027-33-per-cento-fino-55000-euro),
+  [commercialistatelematico](https://www.commercialistatelematico.com/articoli/2026/11/ddl-bilancio-2027-irpef-detassazione.html),
+  [fiscomania](https://fiscomania.com/manovra-simulazioni-stipendi/).
+- **Effetto per chi ha la CU tra 50.000 e 55.000 €**: nel 2027 i primi euro di partita IVA fino a 55.000 € di
+  imponibile sono al 33% invece che al 43% (fino a 500 € di imposta in meno); il datore applica già lo
+  scaglione 2027 in busta paga, quindi il conguaglio misura solo la parte professionale (caso 7).
+- **Acconti 2028 dopo un taglio temporaneo**: se la legge prevede (come in passato per i tagli IRPEF) che
+  l'acconto dell'anno dopo si calcoli con le regole precedenti, il motore dovrà ricalcolare la "differenza"
+  2027 con gli scaglioni 2026. Il DDL letto non ne parla: (D), regola `accontoConScaglioniPrecedenti`
+  falsa finché non risulta dal testo.
 - **Motivo**: fonti concordi ([diritto.it](https://www.diritto.it/irpef-2026-aliquote-detrazioni-riduzioni-imposta/),
   [informazionefiscale.it](https://www.informazionefiscale.it/IRPEF-scaglioni-aliquote-calcolo),
   [fiscoetasse](https://www.fiscoetasse.com/new-rassegna-stampa/2990-irpef-2027-come-cambiano-aliquote-e-scaglioni-chi-paga-meno-tasse.html)).
@@ -22,6 +35,9 @@ ancora in vigore). Ogni valore sta nel set di regole dell'anno con fonte e stato
 ## R-02 — Detrazioni per lavoro dipendente (art. 13 TUIR) e ulteriore detrazione (L. 207/2024)
 
 - **Decisione**: sul **reddito complessivo** R (al netto della deduzione per abitazione principale):
+  è il reddito **prima** degli oneri deducibili (rigo RN1 del Modello Redditi). I contributi ENPAP e gli altri
+  oneri deducibili (art. 10 TUIR) abbassano il **reddito imponibile** (RN4, base di scaglioni e addizionali)
+  ma **non** aumentano le detrazioni (correzione 2026-11-22 del caso 5).
   - R ≤ 15.000: 1.955 € (minimi di 690 € / 1.380 € fuori ambito: l'utente supera i 35.000 €);
   - 15.000 < R ≤ 28.000: 1.910 + 1.190 × (28.000 − R) / 13.000;
   - 28.000 < R ≤ 50.000: 1.910 × (50.000 − R) / 22.000;
@@ -58,11 +74,14 @@ ancora in vigore). Ogni valore sta nel set di regole dell'anno con fonte e stato
 - **Decisione**: aliquote inserite dall'utente per anno (profilo, non repository, chiarimento 2026-11-20):
   regionale a scaglioni (progressiva per scaglioni come l'IRPEF, (D) per regioni con aliquota unica sul
   totale), comunale = aliquota × reddito imponibile se superiore alla soglia di esenzione (se la soglia è
-  superata si tassa tutto il reddito, (D)). Base: reddito complessivo − oneri deducibili.
-  Trattenute dalla CU: regionale; comunale saldo dell'anno; comunale acconto dell'anno.
+  superata si tassa tutto il reddito, (D)). Base: reddito imponibile (complessivo − oneri deducibili).
+  **Non dovute se l'IRPEF netta è zero** (art. 50 c. 2 D.Lgs. 446/1997: "dovuta se ... l'imposta ... al netto
+  delle detrazioni ... risulta dovuta"; stessa regola per la comunale, D.Lgs. 360/1998).
+  Trattenute dalla CU: regionale (punto 22); comunale acconto dell'anno (punto 26) e saldo (punto 27).
   Conguaglio = dovuta − trattenute.
-- **Acconto addizionale comunale** (30%): l'app stima la parte che il datore non tratterrà:
-  30% × (comunale dovuta − comunale sul solo reddito della CU). Approssimazione documentata (D).
+- **Acconto addizionale comunale** (30%) per l'anno dopo: 30% × comunale dovuta − acconto già trattenuto dal
+  datore per l'anno dopo (punto 29 della CU). Se il punto 29 non è inserito l'app lo stima come 30% della
+  comunale sul solo reddito della CU (approssimazione segnalata, (D)).
   La regionale non ha acconto.
 
 ## R-05 — Acconti IRPEF (FR-013, FR-024)
@@ -81,9 +100,13 @@ ancora in vigore). Ogni valore sta nel set di regole dell'anno con fonte e stato
 - **Decisione**: il motore genera i versamenti per mese di ciascun piano a partire dagli stessi totali:
   1. minimo storico; 2. previsionale (reddito atteso inserito, rischio se < stima aggiornata);
   3. acconto volontario (importo e mese scelti, scalato dal saldo); 4. rateizzazione di saldo e primo acconto
-  fino a 7 rate mensili con interessi 4% annuo (≈ 0,33% al mese) dalla seconda rata; 5. differimento di
-  30 giorni con maggiorazione 0,40%. Il secondo acconto non è rateizzabile. Totale d'imposta identico
-  tra i piani (test). Valori (D) nelle regole dell'anno.
+  fino a 7 rate mensili con interessi 4% annuo dalla seconda rata, secondo la tabella dei titolari di
+  partita IVA (rata 2: 0,18%; poi +0,33% al mese: 0,51%, 0,84%, 1,17%, 1,50%, 1,83%); 5. differimento di
+  30 giorni con maggiorazione 0,40%. Il **secondo acconto non è rateizzabile**: la rateizzazione in 5 rate
+  da gennaio a maggio per le partite IVA fino a 170.000 € valeva solo per il 2023 e il 2024 e non risulta
+  riaperta ([informazionefiscale](https://www.informazionefiscale.it/irpef-scadenza-secondo-acconto-2026));
+  se tornasse, si aggiunge come piano. Totale d'imposta identico tra i piani (test). Valori (D) nelle
+  regole dell'anno.
 - **Motivo**: l'imposta non cambia, cambia quando si paga (storia 5). Nessuna strategia che sposti
   incassi o fatture (FR-029).
 
@@ -131,7 +154,9 @@ ancora in vigore). Ogni valore sta nel set di regole dell'anno con fonte e stato
 ## R-11 — Rinvii
 
 - Oneri deducibili e detraibili da 004/008 (FR-023): il motore accetta già l'input (totali per aliquota),
-  il calcolo delle franchigie e dei limiti per reddito (art. 16-ter) arriva con la 008.
+  il calcolo delle franchigie e dei limiti per reddito (art. 16-ter) arriva con la 008. Promemoria per la
+  008: con reddito complessivo oltre 75.000 € (CU oltre 50.000 € più partita IVA) scattano i tetti agli oneri
+  detraibili dell'art. 16-ter (L. 207/2024); va calcolato, non ignorato.
 - Gestione Separata INPS per attività diverse (FR-022): tipo di previdenza nell'input, aliquote (D) vuote
   ⇒ segnalazione.
 - Familiari a carico automatici: rinviati (FR-032).

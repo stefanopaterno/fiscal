@@ -18,6 +18,7 @@ Le aliquote delle addizionali sono dati personali (residenza): stanno solo nel d
 | addizionale_regionale | bigint ≥ 0 | punto 22 |
 | addizionale_comunale_acconto | bigint ≥ 0 | punto 26 |
 | addizionale_comunale_saldo | bigint ≥ 0 | punto 27 |
+| addizionale_comunale_acconto_anno_dopo | bigint null | punto 29 (acconto dell'anno dopo già trattenuto) |
 | detrazioni_lavoro_fruite | bigint ≥ 0 | solo informativo (spiegazione) |
 | detrazioni_familiari_fruite | bigint ≥ 0 | confronto con FR-032 |
 | contributi_previdenziali | bigint ≥ 0 | già esclusi dal reddito_lavoro (informativo) |
