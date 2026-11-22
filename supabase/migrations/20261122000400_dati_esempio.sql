@@ -463,6 +463,10 @@ declare
   n int;
   tolti int := 0;
 begin
+  -- security definer: le regole di accesso non valgono, quindi le controlla da sé (come carica_dati_esempio)
+  if io is null or (select auth.jwt() ->> 'aal') is distinct from 'aal2' or not private.accesso_completo_valido() then
+    raise exception 'accesso_negato' using errcode = '42501';
+  end if;
   perform private.richiedi_prova();
   delete from public.versamenti_previdenza v using private.dati_esempio m
     where m.owner_id = io and m.tabella = 'versamenti_previdenza' and v.id = m.riga_id and v.owner_id = io;

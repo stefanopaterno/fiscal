@@ -1,7 +1,7 @@
 -- pgTAP (specifica 003, FR-032): «Carica dati d'esempio» solo in prova, una volta sola, totali coerenti,
 -- isolamento tra utenti e pulizia con cancella_dati_prova (le CU dell'utente restano).
 begin;
-select plan(32);
+select plan(33);
 
 insert into auth.users (id, email) values
   ('a1111111-1111-1111-1111-111111111111', 'esempio@example.test'),
@@ -112,6 +112,13 @@ select set_config('request.jwt.claims', (select altro from t_claims), true);
 set local role authenticated;
 select is((select count(*)::int from public.fatture) + (select count(*)::int from public.clienti)
           + (select count(*)::int from public.versamenti_previdenza), 0, 'un altro utente non vede gli esempi');
+
+-- Senza il codice del telefono (aal1) la pulizia dei dati d'esempio è rifiutata
+reset role;
+select set_config('request.jwt.claims', (select io_aal1 from t_claims), true);
+set local role authenticated;
+select throws_ok($$select public.cancella_dati_prova(false)$$, '42501', null,
+  'senza secondo fattore la pulizia degli esempi è rifiutata');
 
 -- Pulizia: cancella_dati_prova toglie tutto l'esempio, la CU resta
 reset role;
