@@ -27,7 +27,7 @@ import { Shell } from '@/ui/Shell';
  * codici e frase di recupero (US4), blocco e sblocco rapido (US5), password (US6) arrivano dopo.
  */
 const useStili = makeStyles({
-  colonna: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL, maxWidth: '760px' },
+  colonna: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL },
   sezione: {
     backgroundColor: tokens.colorNeutralBackground1,
     borderRadius: tokens.borderRadiusXLarge,

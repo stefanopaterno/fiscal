@@ -13,7 +13,6 @@ const useStili = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     gap: tokens.spacingVerticalL,
-    maxWidth: '860px',
     minWidth: 0,
   },
 });

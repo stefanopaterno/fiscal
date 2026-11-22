@@ -8,7 +8,7 @@ import { Shell } from '@/ui/Shell';
 
 /** /app/adempimenti/ — Sistema Tessera Sanitaria e fattura elettronica (T021, US5). */
 const useStili = makeStyles({
-  colonna: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL, maxWidth: '860px' },
+  colonna: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL },
 });
 
 export default function PaginaAdempimenti() {

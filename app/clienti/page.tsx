@@ -8,7 +8,7 @@ import { Shell } from '@/ui/Shell';
 
 /** /app/clienti/ — clienti e pazienti (T014, FR-017). */
 const useStili = makeStyles({
-  colonna: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL, maxWidth: '860px' },
+  colonna: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL },
 });
 
 export default function PaginaClienti() {

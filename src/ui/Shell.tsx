@@ -69,12 +69,13 @@ const useStili = makeStyles({
   fascia: { marginBottom: tokens.spacingVerticalL },
   contenuto: {
     flexGrow: 1,
+    // liquido: occupa tutto lo spazio accanto alla navigazione, senza colonna centrata
     width: '100%',
-    maxWidth: '1100px',
-    marginLeft: 'auto',
-    marginRight: 'auto',
     boxSizing: 'border-box',
     padding: `0 ${tokens.spacingHorizontalL} ${tokens.spacingVerticalXXL}`,
+    [`@media (min-width: ${LARGHEZZA_PC}px)`]: {
+      padding: `0 ${tokens.spacingHorizontalXXXL} ${tokens.spacingVerticalXXL} ${tokens.spacingHorizontalXL}`,
+    },
     minWidth: 0,
   },
 });

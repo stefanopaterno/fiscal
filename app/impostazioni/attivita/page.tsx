@@ -9,7 +9,7 @@ import { Shell } from '@/ui/Shell';
 
 /** /app/impostazioni/attivita/ — configurazione della partita IVA e delle attività (T011-T012, US1). */
 const useStili = makeStyles({
-  colonna: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL, maxWidth: '860px' },
+  colonna: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL },
   indietro: {
     color: tokens.colorBrandForegroundLink,
     minHeight: '44px',

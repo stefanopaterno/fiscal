@@ -14,7 +14,7 @@ import { Shell } from '@/ui/Shell';
  * arriva con le prossime specifiche (spese, accantonamento). Visibile solo con password e codice (aal2).
  */
 const useStili = makeStyles({
-  colonna: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL, maxWidth: '720px' },
+  colonna: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL },
   esci: { alignSelf: 'flex-start', minHeight: '44px' },
   scorciatoie: { display: 'flex', gap: tokens.spacingHorizontalM, flexWrap: 'wrap', alignItems: 'center' },
   link: {

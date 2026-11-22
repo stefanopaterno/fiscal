@@ -9,7 +9,7 @@ import { Shell } from '@/ui/Shell';
 
 /** /app/impostazioni/modalita/ — prova e produzione (FR-027..FR-030). */
 const useStili = makeStyles({
-  colonna: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL, maxWidth: '760px' },
+  colonna: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL },
   indietro: {
     color: tokens.colorBrandForegroundLink,
     minHeight: '44px',
