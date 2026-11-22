@@ -7,18 +7,17 @@ import {
   RendererProvider,
   renderToStyleElements,
   SSRProvider,
-  webDarkTheme,
-  webLightTheme,
 } from '@fluentui/react-components';
 import { useServerInsertedHTML } from 'next/navigation';
 import { OcchioProvider } from '@/features/lock/useOcchio';
+import { temaChiaro, temaScuro } from '@/ui/tema';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 /**
  * Provider dell'interfaccia (T022, prova S5).
  * - Griffel (il motore di stili di Fluent UI 9) raccoglie gli stili durante l'esportazione statica
  *   e li scrive nell'HTML: la pagina si vede già formattata, senza "sfarfallio".
- * - Tema chiaro o scuro secondo l'impostazione del dispositivo.
+ * - Tema "Grafite e ottone" (src/ui/tema.ts), chiaro o scuro secondo l'impostazione del dispositivo.
  * - In produzione registra il service worker dell'app (solo file dell'app, mai dati).
  */
 /**
@@ -72,7 +71,7 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <RendererProvider renderer={renderer}>
       <SSRProvider>
-        <FluentProvider theme={scuro ? webDarkTheme : webLightTheme} style={{ minHeight: '100vh' }}>
+        <FluentProvider theme={scuro ? temaScuro : temaChiaro} style={{ minHeight: '100vh' }}>
           <StiliTouch />
           <OcchioProvider>{children}</OcchioProvider>
         </FluentProvider>

@@ -24,6 +24,7 @@ import {
   type Profilo,
 } from '@/features/fatturazione/dati';
 import { CampoScelta, CampoSiNo, CampoTesto, Griglia, Scheda, CampoData } from '@/ui/Moduli';
+import { annoCorrente } from '@/lib/oggi';
 
 /**
  * Configurazione della partita IVA (T011-T012, US1, FR-001, FR-002, FR-022).
@@ -189,7 +190,7 @@ export function ConfigurazioneAttivita() {
   );
   const sogliaValida =
     /^\d+$/.test(modulo.soglia) && Number(modulo.soglia) >= 1 && Number(modulo.soglia) <= 100;
-  const anno = new Date().getFullYear();
+  const anno = annoCorrente();
   const regole = regolePerAnnoSicuro(Math.max(anno, 2026));
 
   const cambia =

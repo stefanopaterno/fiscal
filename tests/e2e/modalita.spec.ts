@@ -34,8 +34,8 @@ test("FR-032: in prova carico i dati d'esempio, li vedo in fatture e rubrica e l
   await expect(page.getByText(/I dati d'esempio ci sono già/)).toBeVisible();
 
   await page.goto('/app/fatture/');
-  await expect(page.getByText('Fattura n. 43/2026')).toBeVisible();
-  await expect(page.getByText('Nota di credito n. 12/2026')).toBeVisible();
+  await expect(page.getByText('Fattura n. 43/2027')).toBeVisible();
+  await expect(page.getByText('Nota di credito n. 12/2027')).toBeVisible();
   await expect(page.getByText('Fattura (bozza)')).toHaveCount(2);
 
   await page.goto('/app/clienti/');

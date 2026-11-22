@@ -38,6 +38,7 @@ import {
 import { ConAiuto } from '@/ui/AiutoContestuale';
 import { ImportoNascosto } from '@/ui/ImportoNascosto';
 import { CampoScelta, CampoTesto, Collegamento, Griglia, Scheda, CampoData } from '@/ui/Moduli';
+import { oggiIso } from '@/lib/oggi';
 
 /**
  * Nuova fattura (T015, US2; righe miste T019, già incassata T018).
@@ -55,10 +56,8 @@ const MODALITA: { valore: ModalitaIncasso; etichetta: string }[] = [
   { valore: 'altro', etichetta: 'Altro (assegno, app di pagamento…)' },
 ];
 
-export const oggi = () => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-};
+/** Data proposta per la fattura: oggi (o la data di prova, in modalità prova). */
+export const oggi = () => oggiIso();
 
 const nuovaRiga = (natura: NaturaIva): RigaModulo => ({
   id: nuovoId(),

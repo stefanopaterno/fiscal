@@ -9,6 +9,7 @@ import { regoleSpesePerAnno } from '@/engine/regole/spese';
 import type { DatiRaccolti } from '@/features/tasse/dati';
 import { ConAiuto } from '@/ui/AiutoContestuale';
 import { ImportoNascosto } from '@/ui/ImportoNascosto';
+import { oggiIso } from '@/lib/oggi';
 
 /**
  * Box "Come abbassare le tasse" della home (US7, US5; FR-019..FR-021): le prime 3 azioni per impatto con
@@ -41,7 +42,7 @@ export function BoxConsigli({ tasse, anno }: { tasse: DatiRaccolti | null; anno:
   const s = useStili();
   const router = useRouter();
   if (!tasse || tasse.cu.length === 0) return null;
-  const oggi = new Date().toISOString().slice(0, 10);
+  const oggi = oggiIso();
   let esito;
   try {
     esito = consigli(tasse.input, tasse.registrati, {

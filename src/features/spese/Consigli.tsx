@@ -27,6 +27,7 @@ import {
   salva,
   type ImpostazioniSpese,
 } from './dati';
+import { annoCorrente, oggiData, oggiIso } from '@/lib/oggi';
 
 /**
  * Consigli per abbassare le tasse dell'anno (US3, US4, US8): lista per risparmio calcolato dal motore
@@ -75,7 +76,7 @@ type Stato = {
 
 export function Consigli() {
   const s = useStili();
-  const anno = new Date().getFullYear();
+  const anno = annoCorrente();
   const [stato, setStato] = useState<Stato | null>(null);
   const [errore, setErrore] = useState(false);
   const [ipotesi, setIpotesi] = useState<{ tipo: Ipotesi['tipo']; importo: number | null }>({
@@ -94,7 +95,7 @@ export function Consigli() {
       .then(([tasse, imp, incassi, fatture]) => {
         if (!vivo) return;
         // incassi degli ultimi 12 mesi, mese per mese (proxy della previsione finché manca la 006)
-        const oggi = new Date();
+        const oggi = oggiData();
         const mesi = Array.from({ length: 12 }, (_, i) => {
           const d = new Date(oggi.getFullYear(), oggi.getMonth() - 11 + i, 1);
           return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
@@ -147,7 +148,7 @@ export function Consigli() {
     try {
       esito = consigli(t.input, t.registrati, {
         accantonamentoCoperto: stato.imp.accantonamento_coperto,
-        oggi: new Date().toISOString().slice(0, 10),
+        oggi: oggiIso(),
         figli: stato.imp.figli_a_carico,
         previdenzaInCu: t.previdenzaInCu,
         compensi: t.cassa.compensi,

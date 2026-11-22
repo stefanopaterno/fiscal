@@ -8,6 +8,7 @@ import { anniConRegoleIrpef } from '@/engine/regole/irpef';
 import { BollaAiuto, ConAiuto, type ContenutoAiuto } from '@/ui/AiutoContestuale';
 import { ImportoNascosto } from '@/ui/ImportoNascosto';
 import { CampoScelta, CampoTesto } from '@/ui/Moduli';
+import { annoCorrente } from '@/lib/oggi';
 
 /** Mattoni delle pagine Tasse (specifica 001): ogni numero con il suo "?" e rispetto dell'occhio. */
 
@@ -17,7 +18,7 @@ export function useAnno(): [number, (a: number) => void] {
   const router = useRouter();
   const anni = anniConRegoleIrpef();
   const daQuery = Number(p.get('anno'));
-  const corrente = new Date().getFullYear();
+  const corrente = annoCorrente();
   const anno = anni.includes(daQuery) ? daQuery : anni.includes(corrente) ? corrente : anni.at(-1)!;
   return [anno, (a: number) => router.replace(`?anno=${a}`)];
 }

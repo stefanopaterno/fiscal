@@ -19,7 +19,7 @@ import {
   Text,
   tokens,
 } from '@fluentui/react-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useVerificaRecente } from '@/features/auth/useVerificaRecente';
 import {
   cancellaDatiProva,
@@ -29,7 +29,8 @@ import {
 } from '@/features/fatturazione/dati';
 import { aggiornaModalita, useModalita } from '@/features/modalita/useModalita';
 import { ConAiuto } from '@/ui/AiutoContestuale';
-import { Scheda } from '@/ui/Moduli';
+import { annoCorrente, dataProva, EVENTO_DATA_PROVA, impostaDataProva } from '@/lib/oggi';
+import { CampoData, Scheda } from '@/ui/Moduli';
 
 /**
  * Prova e produzione (FR-027..FR-030). In prova: caricare dati d'esempio (FR-032) e cancellare le prove.
@@ -121,6 +122,7 @@ export function GestioneModalita() {
     setInCorso(true);
     try {
       await passaAProduzione(conferma.trim(), tieni);
+      impostaDataProva(null); // in produzione vale solo la data vera
       await aggiornaModalita();
     } catch (e) {
       setMessaggio({ tipo: 'errore', testo: spiegaErrore(e) });
@@ -176,13 +178,16 @@ export function GestioneModalita() {
         </Button>
       </Scheda>
 
+      <DataProva />
+
       <Scheda
         titolo="Dati d'esempio"
         aiuto={{
           argomento: "dati d'esempio",
           testo:
-            "Riempio l'app con un anno di lavoro inventato, così vedi come appare piena: 12 clienti finti, circa 40 fatture del 2026 (sedute, qualche pacchetto, consulenze a un ente), incassi e versamenti ENPAP. La tua Certificazione Unica non la tocco: quella la inserisci tu.",
-          esempio: 'Una seduta da 80 €: 1,60 € di contributo ENPAP e 2 € di bollo, totale 83,60 €.',
+            "Riempio l'app con un anno di lavoro inventato, così vedi come appare piena: 12 clienti finti, circa 40 fatture del 2027 (sedute, qualche pacchetto, consulenze a un ente), incassi e versamenti ENPAP. La tua Certificazione Unica non la tocco: quella la inserisci tu.",
+          esempio:
+            'Una seduta da 80 €: 3,20 € di contributo ENPAP (4% dal 2027) e 2 € di bollo, totale 85,20 €.',
           perche:
             'Per provare elenchi, totali e tasse senza scrivere niente. Quando hai finito, «Cancella i dati di prova» li toglie tutti.',
         }}
@@ -274,3 +279,44 @@ export function GestioneModalita() {
     </div>
   );
 }
+
+/**
+ * Data di prova: in modalità prova l'app ragiona come se oggi fosse la data scelta (anno corrente, date
+ * proposte, consigli, scadenze). Solo su questo dispositivo; il blocco e la sicurezza usano l'orario vero.
+ */
+function DataProva() {
+  const sd = useStiliData();
+  const [data, setData] = useState<string | null>(null);
+  useEffect(() => {
+    const leggi = () => setData(dataProva());
+    leggi();
+    window.addEventListener(EVENTO_DATA_PROVA, leggi);
+    return () => window.removeEventListener(EVENTO_DATA_PROVA, leggi);
+  }, []);
+  return (
+    <Scheda
+      titolo="Data di prova"
+      aiuto={{
+        argomento: 'data di prova',
+        testo:
+          'Fai finta che oggi sia un altro giorno, per esempio il 22 novembre 2027: home, tasse, consigli e date proposte nelle fatture seguono quella data. Vale solo in prova e solo su questo dispositivo; quando passi alla produzione torna la data vera.',
+        esempio: "Scegli il 22/11/2027 per vedere l'anno 2027 quasi finito, con i consigli di fine anno.",
+      }}
+    >
+      <CampoData
+        etichetta="Oggi è il"
+        valore={data ?? ''}
+        onChange={(v) => impostaDataProva(v || null)}
+        suggerimento={data ? `Anno di lavoro: ${annoCorrente()}` : 'Vuoto: si usa la data vera'}
+        aiuto={{ argomento: 'oggi è il', testo: 'Lascia vuoto per usare la data di oggi.' }}
+      />
+      {data ? (
+        <Button className={sd.pulsante} onClick={() => impostaDataProva(null)}>
+          Torna alla data vera
+        </Button>
+      ) : null}
+    </Scheda>
+  );
+}
+
+const useStiliData = makeStyles({ pulsante: { minHeight: '44px', alignSelf: 'flex-start' } });

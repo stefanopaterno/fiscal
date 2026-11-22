@@ -41,7 +41,7 @@ select set_config('request.jwt.claims', (select io from t_claims), true);
 set local role authenticated;
 -- una CU dell'utente: non va mai toccata
 insert into public.certificazioni_uniche (id, anno, reddito_lavoro, ritenute_irpef)
-values ('c1000000-0000-0000-0000-0000000000a1', 2026, 3000000, 600000);
+values ('c1000000-0000-0000-0000-0000000000a1', 2027, 3000000, 600000);
 
 create temp table t_esito as select * from public.carica_dati_esempio();
 select is((select clienti from t_esito), 12, '12 clienti creati');
@@ -67,7 +67,7 @@ select is((select count(*)::int from public.fatture f join public.fatture n on n
 select is(
   (select array_agg(numero order by numero) from public.fatture where numero is not null),
   (select array_agg(g) from generate_series(1, 43) g),
-  'numerazione 2026 da 1 a 43 senza salti');
+  'numerazione 2027 da 1 a 43 senza salti');
 select is(
   (select count(*)::int from (select numero, data, lag(data) over (order by numero) as prima
                               from public.fatture where numero is not null) x where data < prima),
@@ -94,7 +94,7 @@ select is((select count(*)::int from public.fatture f join public.clienti c on c
               or (not c.sostituto_imposta and f.ritenuta <> 0)), 0, 'ritenuta del 20% sul solo compenso');
 select is((select row(totale_compensi, totale_integrativo, imponibile_iva, iva, ritenuta, totale, netto)::text
            from public.fatture where tipo = 'fattura' and totale_compensi = 60000),
-  '(60000,1200,61200,13464,12000,74664,62664)', 'consulenza da 600 € all''ente: totali al centesimo');
+  '(60000,2400,62400,13728,12000,76128,64128)', 'consulenza da 600 € all''ente: totali al centesimo');
 
 -- Incassi: mai oltre il netto, cinque fatture da incassare
 select is((select count(*)::int from public.fatture f where f.tipo = 'fattura' and f.stato = 'emessa'

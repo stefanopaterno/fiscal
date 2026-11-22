@@ -52,9 +52,9 @@ async function confrontaColMotore(db: SupabaseClient) {
     const sue = (righe.data as Riga[]).filter((r) => r.fattura_id === f.id);
     // il prezzo che l'utente avrebbe scritto: con l'integrativo compreso è compenso + contributo unitario
     const r = calcolaFattura({
-      anno: 2026,
+      anno: 2027,
       righe: sue.map((x) => ({
-        compenso: p.integrativo_compreso ? x.compenso + percentuale(x.compenso, 0.02) : x.compenso,
+        compenso: p.integrativo_compreso ? x.compenso + percentuale(x.compenso, 0.04) : x.compenso,
         quantita: x.quantita,
         natura: x.natura,
       })),

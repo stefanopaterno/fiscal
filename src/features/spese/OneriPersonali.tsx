@@ -31,6 +31,7 @@ import {
   spiegaErrore,
   type OnerePersonale,
 } from './dati';
+import { oggiIso } from '@/lib/oggi';
 
 /**
  * Spese personali deducibili e detraibili (US2; data-model.md oneri_personali.*): per ogni voce limite,
@@ -75,7 +76,7 @@ function OneriPerAnno({ anno, setAnno }: { anno: number; setAnno: (a: number) =>
   const [oneri, setOneri] = useState<OnerePersonale[] | null>(null);
   const [contesto, setContesto] = useState({ redditoComplessivo: 0, figli: 0, previdenzaInCu: 0 });
   const [errore, setErrore] = useState<string | null>(null);
-  const oggi = new Date().toISOString().slice(0, 10);
+  const oggi = oggiIso();
   const [nuovo, setNuovo] = useState({
     voce: 'spese_sanitarie',
     importo: null as number | null,

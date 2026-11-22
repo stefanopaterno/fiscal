@@ -35,6 +35,7 @@ import {
   spiegaErrore,
   type Spesa,
 } from './dati';
+import { annoCorrente, oggiIso } from '@/lib/oggi';
 
 /**
  * Scheda di una spesa professionale (US1, US6; data-model.md spese.*). Propone la deducibilità della
@@ -57,7 +58,7 @@ const useStili = makeStyles({
   grande: { fontSize: tokens.fontSizeBase500, fontWeight: tokens.fontWeightSemibold },
 });
 
-const oggi = () => new Date().toISOString().slice(0, 10);
+const oggi = () => oggiIso();
 
 const vuota = (id: string): Spesa => ({
   id,
@@ -116,7 +117,7 @@ export function SchedaSpesa({ id }: { id: string | null }) {
 
   if (!spesa) return esito ? <Text>{esito.testo}</Text> : <Spinner label="Un momento…" />;
 
-  const anno = Number(spesa.data.slice(0, 4)) || new Date().getFullYear();
+  const anno = Number(spesa.data.slice(0, 4)) || annoCorrente();
   const regole = regoleOVicine(anno);
   const categorie = categorieAttive(regole, attivate);
   const cat = regole.categorie.find((c) => c.codice === spesa.categoria);

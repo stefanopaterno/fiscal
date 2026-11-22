@@ -1,11 +1,12 @@
 'use client';
 
 import { useId } from 'react';
+import { COLORI } from '@/ui/tema';
 
 /**
  * Marchio di Fiscal: una F stilizzata fatta di tre lame affusolate che salgono verso destra (crescita),
  * con la lama in alto staccata dall'asta. Disegno originale; stesse forme di public/icons/icon.svg.
- * `chiaro`: riquadro bianco con lame blu, per i pannelli blu.
+ * Grafite con lame in ottone; `chiaro`: riquadro bianco con lame grafite, per i pannelli scuri.
  */
 export const LAME_LOGO = [
   'M26 28.5 C42 21.5 59 18 76 18.5 L74 28 C58 27.5 44 30 29 35.5 Z',
@@ -26,12 +27,16 @@ export function Logo({ dimensione = 36, chiaro = false }: { dimensione?: number;
     >
       <defs>
         <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#2B88D8" />
-          <stop offset="1" stopColor="#0B4F8F" />
+          <stop offset="0" stopColor={COLORI.grafiteChiara} />
+          <stop offset="1" stopColor={COLORI.grafiteScura} />
+        </linearGradient>
+        <linearGradient id={`${id}-ottone`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor={COLORI.ottoneChiaro} />
+          <stop offset="1" stopColor={COLORI.ottoneScuro} />
         </linearGradient>
       </defs>
       <rect width="100" height="100" rx="24" fill={chiaro ? '#FFFFFF' : `url(#${id})`} />
-      <g fill={chiaro ? `url(#${id})` : '#FFFFFF'}>
+      <g fill={chiaro ? `url(#${id})` : `url(#${id}-ottone)`}>
         {LAME_LOGO.map((d) => (
           <path key={d} d={d} />
         ))}

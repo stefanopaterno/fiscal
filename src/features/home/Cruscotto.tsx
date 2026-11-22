@@ -52,6 +52,8 @@ import { GrigliaKpi, Kpi } from '@/features/tasse/componenti';
 import { ConAiuto } from '@/ui/AiutoContestuale';
 import { ImportoNascosto } from '@/ui/ImportoNascosto';
 import { Collegamento } from '@/ui/Moduli';
+import { COLORI } from '@/ui/tema';
+import { oggiData } from '@/lib/oggi';
 
 /**
  * Home (cruscotto): saluto, quanto mettere da parte per le tasse, numeri chiave dell'anno, azioni rapide
@@ -64,7 +66,7 @@ const useStili = makeStyles({
   evidenza: {
     borderRadius: tokens.borderRadiusXLarge,
     padding: `${tokens.spacingVerticalXL} ${tokens.spacingHorizontalXXL}`,
-    backgroundImage: 'linear-gradient(135deg, #2B88D8 0%, #0B4F8F 100%)',
+    backgroundImage: `linear-gradient(135deg, ${COLORI.grafiteChiara} 0%, ${COLORI.grafiteScura} 100%)`,
     color: '#FFFFFF',
     display: 'flex',
     flexWrap: 'wrap',
@@ -75,7 +77,9 @@ const useStili = makeStyles({
     '@media (max-width: 480px)': { padding: tokens.spacingHorizontalL },
   },
   evidenzaTesto: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalXS, minWidth: 0 },
+  evidenzaTitolo: { color: COLORI.ottoneChiaro },
   evidenzaImporto: {
+    color: COLORI.ottoneChiaro,
     fontSize: tokens.fontSizeHero800,
     lineHeight: tokens.lineHeightHero800,
     fontWeight: tokens.fontWeightBold,
@@ -176,7 +180,7 @@ export function Cruscotto() {
   const esci = useEsci();
   const [dati, setDati] = useState<Dati | null>(null);
   const [errore, setErrore] = useState(false);
-  const oggi = new Date();
+  const oggi = oggiData();
   const anno = oggi.getFullYear();
 
   useEffect(() => {
@@ -356,7 +360,9 @@ function Evidenza({ tasse, anno }: { tasse: DatiRaccolti | null; anno: number })
   return (
     <div className={s.evidenza}>
       <div className={s.evidenzaTesto}>
-        <Text weight="semibold">Da mettere da parte per il {anno + 1}</Text>
+        <Text weight="semibold" className={s.evidenzaTitolo}>
+          Da mettere da parte per il {anno + 1}
+        </Text>
         <span className={s.evidenzaImporto}>
           <ImportoNascosto valore={formattaEuro(totale)} />
         </span>

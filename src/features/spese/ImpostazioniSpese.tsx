@@ -21,6 +21,7 @@ import {
   spiegaErrore,
   type ImpostazioniSpese as Imp,
 } from './dati';
+import { annoCorrente } from '@/lib/oggi';
 
 /**
  * Impostazioni delle spese (FR-026, FR-027, US8; data-model.md impostazioni_spese.*): categorie dello studio
@@ -58,7 +59,7 @@ export function ImpostazioniSpese() {
   }, []);
 
   if (!imp) return esito ? <Text>{esito.testo}</Text> : <Spinner label="Un momento…" />;
-  const studio = regoleOVicine(new Date().getFullYear()).categorie.filter((c) => !c.attivaDiDefault);
+  const studio = regoleOVicine(annoCorrente()).categorie.filter((c) => !c.attivaDiDefault);
 
   async function salvaTutto() {
     const figli = Number(testi.figli);

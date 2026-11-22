@@ -20,6 +20,7 @@ import { ImportoNascosto } from '@/ui/ImportoNascosto';
 import { CampoData, CampoScelta, CampoTesto, Griglia, Scheda } from '@/ui/Moduli';
 import { percento, regoleOVicine } from './comuni';
 import { benePerMotore, elimina, leggiBeni, nuovoId, salva, spiegaErrore, type Bene } from './dati';
+import { annoCorrente, oggiIso } from '@/lib/oggi';
 
 /**
  * Registro dei beni durevoli (US1, FR-003; data-model.md beni.*): sotto 516,46 € si deducono subito,
@@ -38,7 +39,7 @@ const useStili = makeStyles({
   },
 });
 
-const oggi = () => new Date().toISOString().slice(0, 10);
+const oggi = () => oggiIso();
 
 export function RegistroBeni() {
   const s = useStili();
@@ -60,7 +61,7 @@ export function RegistroBeni() {
     void ricarica();
   }, []);
 
-  const regole = regoleOVicine(new Date().getFullYear());
+  const regole = regoleOVicine(annoCorrente());
 
   async function aggiungi() {
     if (!nuovo.descrizione.trim() || !nuovo.costo) return setErrore('Scrivi descrizione e costo del bene.');

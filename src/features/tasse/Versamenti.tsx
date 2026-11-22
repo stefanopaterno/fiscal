@@ -27,6 +27,7 @@ import {
   type VersamentoPrevidenzaRiga,
   type VoceImposta,
 } from './dati';
+import { oggiIso } from '@/lib/oggi';
 
 /**
  * Versamenti realmente fatti (T018; data-model.md versamenti_previdenza.*, versamenti_imposte.*):
@@ -60,7 +61,7 @@ const ETICHETTA_VOCE: Record<VoceImposta, string> = {
   add_comunale_acconto: 'Addizionale comunale, acconto',
 };
 
-const oggi = () => new Date().toISOString().slice(0, 10);
+const oggi = () => oggiIso();
 const dataValida = (d: string) => /^\d{4}-\d{2}-\d{2}$/.test(d) && !Number.isNaN(Date.parse(d));
 
 export function Versamenti() {
