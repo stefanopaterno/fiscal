@@ -1,6 +1,14 @@
 'use client';
 
-import { Button, makeStyles, MessageBar, MessageBarBody, Spinner, tokens } from '@fluentui/react-components';
+import {
+  Button,
+  makeStyles,
+  MessageBar,
+  MessageBarBody,
+  Spinner,
+  tokens,
+  mergeClasses,
+} from '@fluentui/react-components';
 import { ArrowLeft20Regular, Print20Regular } from '@fluentui/react-icons';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -201,7 +209,10 @@ export function StampaFattura({ id }: { id: string }) {
         </ConAiuto>
       </div>
 
-      <article className={prova ? `${s.foglio} ${s.foglioProva}` : s.foglio} aria-label={titoloDocumento(f)}>
+      <article
+        className={prova ? mergeClasses(s.foglio, s.foglioProva) : s.foglio}
+        aria-label={titoloDocumento(f)}
+      >
         {prova ? (
           <>
             <div className={s.filigrana} aria-hidden="true">
@@ -257,20 +268,20 @@ export function StampaFattura({ id }: { id: string }) {
           <thead>
             <tr>
               <th className={s.th}>Descrizione</th>
-              <th className={`${s.th} ${s.num}`}>Q.tà</th>
-              <th className={`${s.th} ${s.num}`}>Prezzo</th>
-              <th className={`${s.th} ${s.num}`}>IVA</th>
-              <th className={`${s.th} ${s.num}`}>Importo</th>
+              <th className={mergeClasses(s.th, s.num)}>Q.tà</th>
+              <th className={mergeClasses(s.th, s.num)}>Prezzo</th>
+              <th className={mergeClasses(s.th, s.num)}>IVA</th>
+              <th className={mergeClasses(s.th, s.num)}>Importo</th>
             </tr>
           </thead>
           <tbody>
             {righe.map((r) => (
               <tr key={r.id}>
                 <td className={s.td}>{r.descrizione}</td>
-                <td className={`${s.td} ${s.num}`}>{r.quantita}</td>
-                <td className={`${s.td} ${s.num}`}>{formattaEuro(r.compenso)}</td>
-                <td className={`${s.td} ${s.num}`}>{r.natura === 'imponibile' ? '22%' : 'Esente'}</td>
-                <td className={`${s.td} ${s.num}`}>{euro(r.compenso * r.quantita)}</td>
+                <td className={mergeClasses(s.td, s.num)}>{r.quantita}</td>
+                <td className={mergeClasses(s.td, s.num)}>{formattaEuro(r.compenso)}</td>
+                <td className={mergeClasses(s.td, s.num)}>{r.natura === 'imponibile' ? '22%' : 'Esente'}</td>
+                <td className={mergeClasses(s.td, s.num)}>{euro(r.compenso * r.quantita)}</td>
               </tr>
             ))}
           </tbody>
@@ -339,7 +350,7 @@ function Riga(props: { etichetta: string; valore: string; forte?: boolean; s: Re
   return (
     <tr className={props.forte ? s.totale : undefined}>
       <td className={s.td}>{props.etichetta}</td>
-      <td className={`${s.td} ${s.num}`}>{props.valore}</td>
+      <td className={mergeClasses(s.td, s.num)}>{props.valore}</td>
     </tr>
   );
 }

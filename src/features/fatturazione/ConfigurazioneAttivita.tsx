@@ -9,6 +9,7 @@ import {
   Spinner,
   Text,
   tokens,
+  mergeClasses,
 } from '@fluentui/react-components';
 import { Add20Regular, CheckmarkCircle20Filled, Warning20Filled } from '@fluentui/react-icons';
 import { useEffect, useMemo, useState } from 'react';
@@ -232,12 +233,12 @@ export function ConfigurazioneAttivita() {
         }}
       >
         {controllo.pronto ? (
-          <Text className={`${s.stato} ${s.ok}`} weight="semibold">
+          <Text className={mergeClasses(s.stato, s.ok)} weight="semibold">
             <CheckmarkCircle20Filled /> Sì, puoi emettere fatture.
           </Text>
         ) : (
           <>
-            <Text className={`${s.stato} ${s.attenzione}`} weight="semibold">
+            <Text className={mergeClasses(s.stato, s.attenzione)} weight="semibold">
               <Warning20Filled /> Non ancora.
             </Text>
             {controllo.mancanti.length > 0 ? (

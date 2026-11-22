@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, makeStyles, Text, tokens } from '@fluentui/react-components';
+import { Button, makeStyles, Text, tokens, mergeClasses } from '@fluentui/react-components';
 import { useId, useState, type ReactNode } from 'react';
 
 /**
@@ -129,7 +129,7 @@ export function ConAiuto(props: {
   const { aperto, alterna, idPannello } = useAiuto(props.apertoAllInizio);
   return (
     <div className={s.blocco}>
-      <div className={`${s.riga} ${props.allineamento === 'centro' ? s.centro : s.fine}`}>
+      <div className={mergeClasses(s.riga, props.allineamento === 'centro' ? s.centro : s.fine)}>
         <div className={s.contenuto}>{props.children}</div>
         <PulsanteAiuto
           argomento={props.aiuto.argomento}

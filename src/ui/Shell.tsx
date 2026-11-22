@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, makeStyles, Text, tokens } from '@fluentui/react-components';
+import { Button, makeStyles, mergeClasses, Text, tokens } from '@fluentui/react-components';
 import { Eye24Regular, EyeOff24Regular } from '@fluentui/react-icons';
 import { useOcchio } from '@/features/lock/useOcchio';
 import { FasciaProva } from '@/features/modalita/FasciaProva';
@@ -53,6 +53,8 @@ const useStili = makeStyles({
     backgroundColor: tokens.colorNeutralBackground1,
     color: tokens.colorBrandForeground1,
   },
+  // nei pannelli il marchio si allinea al bordo del testo sotto (nessun margine proprio)
+  testataAllineata: { padding: 0 },
   marchio: { display: 'flex', flexDirection: 'column' },
   corpo: {
     flexGrow: 1,
@@ -77,12 +79,15 @@ const useStili = makeStyles({
   },
 });
 
-/** Logo e nome. `suSfondoBlu`: riquadro bianco con la F blu, per i pannelli blu. */
+/**
+ * Logo e nome. `suSfondoBlu`: riquadro bianco con la F blu e nessun margine, per allinearsi al testo
+ * del pannello blu. Le classi si uniscono con mergeClasses (con una stringa vince una regola a caso).
+ */
 export function Marchio({ suSfondoBlu = false }: { suSfondoBlu?: boolean }) {
   const s = useStili();
   return (
-    <div className={s.testata}>
-      <div className={suSfondoBlu ? `${s.logo} ${s.logoSuBlu}` : s.logo} aria-hidden="true">
+    <div className={mergeClasses(s.testata, suSfondoBlu && s.testataAllineata)}>
+      <div className={mergeClasses(s.logo, suSfondoBlu && s.logoSuBlu)} aria-hidden="true">
         F
       </div>
       <div className={s.marchio}>
@@ -120,7 +125,7 @@ export function Shell({ children, navigazione = false }: { children: ReactNode; 
         <Marchio />
         <PulsanteOcchio />
       </div>
-      <div className={navigazione ? `${s.corpo} ${s.conBarraInBasso}` : s.corpo}>
+      <div className={navigazione ? mergeClasses(s.corpo, s.conBarraInBasso) : s.corpo}>
         {navigazione ? <Navigazione /> : null}
         <main className={s.contenuto}>
           <StatoCoda />
