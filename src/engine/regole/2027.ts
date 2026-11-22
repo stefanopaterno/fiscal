@@ -10,14 +10,15 @@ import type { RegoleFatturazione } from './tipi';
 
 /**
  * Regole di fatturazione 2027 (primo anno della partita IVA).
- * TODO(ENPAP_2027) nella costituzione: confermare con ENPAP la decorrenza del 4%.
+ * Integrativo 4% dal 1° gennaio 2027 approvato dai Ministeri vigilanti (notizia ENPAP del 10/11/2026).
  */
 export const regole2027: RegoleFatturazione = {
   anno: 2027,
   aliquotaIntegrativo: {
     valore: 0.04,
-    fonte: 'Regolamento ENPAP, contributo integrativo 4% dal 2027',
-    stato: 'da_verificare',
+    fonte:
+      'ENPAP, riforma approvata dai Ministeri vigilanti: integrativo dal 2% al 4% dal 1° gennaio 2027 (enpap.it, 10/11/2026)',
+    stato: 'verificata',
   },
   aliquotaIva: IVA_ORDINARIA,
   sogliaBollo: SOGLIA_BOLLO,

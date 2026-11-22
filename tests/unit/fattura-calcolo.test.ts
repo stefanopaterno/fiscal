@@ -169,7 +169,15 @@ describe('calcolaFattura: regole e invarianti', () => {
     const r = calcolaFattura({ ...base, righe: [{ compenso: 8000, natura: 'esente_sanitaria' }] });
     expect(r.spiegazioni.length).toBeGreaterThan(0);
     expect(r.spiegazioni.join(' ')).toMatch(/ENPAP/);
-    expect(r.regoleDaVerificare).toContain('aliquotaIntegrativo');
+    // integrativo 4% 2027 verificato sulla fonte ENPAP (10/11/2026)
+    expect(r.regoleDaVerificare).not.toContain('aliquotaIntegrativo');
+    // con ritenuta resta da verificare l'esclusione dell'integrativo dalla base
+    const conRitenuta = calcolaFattura({
+      ...base,
+      sostitutoImposta: true,
+      righe: [{ compenso: 8000, natura: 'esente_sanitaria' }],
+    });
+    expect(conRitenuta.regoleDaVerificare).toContain('integrativoFuoriRitenuta');
   });
 
   it('righe vuote, compensi negativi e anni senza regole sono rifiutati', () => {
