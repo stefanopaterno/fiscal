@@ -1,11 +1,11 @@
 'use client';
 
 import { Button, makeStyles, Text, Title1, tokens } from '@fluentui/react-components';
-import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { BannerRipristinoAnnullato } from '@/features/auth/BannerRipristino';
 import { useEsci } from '@/features/auth/useSessione';
 import { ConAiuto } from '@/ui/AiutoContestuale';
+import { Collegamento } from '@/ui/Moduli';
 import { ProtectedPage } from '@/ui/ProtectedPage';
 import { Shell } from '@/ui/Shell';
 
@@ -59,9 +59,7 @@ export default function PaginaHome() {
             <Button className={s.esci} onClick={() => router.push('/tasse/')}>
               Le mie tasse
             </Button>
-            <NextLink href="/impostazioni/attivita/" className={s.link}>
-              Configura la partita IVA
-            </NextLink>
+            <Collegamento href="/impostazioni/attivita/">Configura la partita IVA</Collegamento>
           </div>
           <Button className={s.esci} onClick={() => void esci()}>
             Esci

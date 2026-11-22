@@ -1,9 +1,9 @@
 'use client';
 
 import { makeStyles, Title1, tokens } from '@fluentui/react-components';
-import NextLink from 'next/link';
 import { ConfigurazioneAttivita } from '@/features/fatturazione/ConfigurazioneAttivita';
 import { ConAiuto } from '@/ui/AiutoContestuale';
+import { Collegamento } from '@/ui/Moduli';
 import { ProtectedPage } from '@/ui/ProtectedPage';
 import { Shell } from '@/ui/Shell';
 
@@ -24,9 +24,9 @@ export default function PaginaAttivita() {
     <ProtectedPage>
       <Shell navigazione>
         <div className={s.colonna}>
-          <NextLink href="/impostazioni/" className={s.indietro}>
-            ← Impostazioni
-          </NextLink>
+          <Collegamento href="/impostazioni/" indietro>
+            Impostazioni
+          </Collegamento>
           <ConAiuto
             allineamento="centro"
             aiuto={{

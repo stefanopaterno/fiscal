@@ -14,12 +14,12 @@ import {
   Text,
   tokens,
 } from '@fluentui/react-components';
-import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, type FormEvent } from 'react';
 import { chiamaRecupero, type RichiestaRipristino } from '@/features/recupero/api';
 import { getSupabase } from '@/lib/supabase/client';
 import { ConAiuto } from '@/ui/AiutoContestuale';
+import { Collegamento } from '@/ui/Moduli';
 
 /**
  * Recupero dell'accesso (T071, storia 4). Si arriva qui dopo la password (sessione aal1).
@@ -244,9 +244,7 @@ export function Recupero() {
           in due passaggi del tuo account Supabase. Poi colleghi un telefono nuovo.
         </MessageBarBody>
       </MessageBar>
-      <NextLink href="/" className={s.link}>
-        Torna indietro
-      </NextLink>
+      <Collegamento href="/">Torna indietro</Collegamento>
     </div>
   );
 }

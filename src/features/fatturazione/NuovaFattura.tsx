@@ -347,7 +347,10 @@ export function NuovaFattura(props: { id: string | null; clienteIniziale: string
             <MessageBarBody>
               <MessageBarTitle>Configurazione da completare</MessageBarTitle>
               Puoi preparare la bozza, ma per emetterla completa prima i tuoi dati in{' '}
-              <Collegamento href="/impostazioni/attivita/">Partita IVA e attività</Collegamento>.
+              <Collegamento inLinea href="/impostazioni/attivita/">
+                Partita IVA e attività
+              </Collegamento>
+              .
             </MessageBarBody>
           </MessageBar>
         ) : null}
@@ -363,7 +366,9 @@ export function NuovaFattura(props: { id: string | null; clienteIniziale: string
             <MessageBar intent="info">
               <MessageBarBody>
                 Non hai ancora clienti.{' '}
-                <Collegamento href="/clienti/scheda/?ritorno=/fatture/nuova/">Aggiungi il primo</Collegamento>
+                <Collegamento inLinea href="/clienti/scheda/?ritorno=/fatture/nuova/">
+                  Aggiungi il primo
+                </Collegamento>
                 .
               </MessageBarBody>
             </MessageBar>

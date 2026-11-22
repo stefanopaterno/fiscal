@@ -109,7 +109,9 @@ function QuadroAnnoPerAnno({ anno, setAnno }: { anno: number; setAnno: (a: numbe
           <MessageBarBody>
             <MessageBarTitle>Manca la Certificazione Unica {anno}</MessageBarTitle>
             Il calcolo parte dal tuo reddito da dipendente: inserisci i numeri della CU (bastano 5 minuti).{' '}
-            <Collegamento href={`/tasse/dati/?anno=${anno}`}>Inserisci la CU</Collegamento>
+            <Collegamento inLinea href={`/tasse/dati/?anno=${anno}`}>
+              Inserisci la CU
+            </Collegamento>
           </MessageBarBody>
         </MessageBar>
       ) : null}

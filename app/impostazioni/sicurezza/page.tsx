@@ -10,7 +10,6 @@ import {
   Title3,
   tokens,
 } from '@fluentui/react-components';
-import NextLink from 'next/link';
 import { SezioneSbloccoRapido } from '@/features/lock/SezioneSbloccoRapido';
 import { ElencoSessioni } from '@/features/sessions/ElencoSessioni';
 import { RegistroEventi } from '@/features/sessions/RegistroEventi';
@@ -18,6 +17,7 @@ import { SezioneAccesso } from '@/features/sicurezza/SezioneAccesso';
 import { SezioneTempi } from '@/features/sicurezza/SezioneTempi';
 import { SezioneRecupero } from '@/features/recupero/SezioneRecupero';
 import { ConAiuto } from '@/ui/AiutoContestuale';
+import { Collegamento } from '@/ui/Moduli';
 import { ProtectedPage } from '@/ui/ProtectedPage';
 import { Shell } from '@/ui/Shell';
 
@@ -58,9 +58,9 @@ export default function PaginaSicurezza() {
     <ProtectedPage>
       <Shell navigazione>
         <div className={s.colonna}>
-          <NextLink href="/impostazioni/" className={s.indietro}>
-            ← Impostazioni
-          </NextLink>
+          <Collegamento href="/impostazioni/" indietro>
+            Impostazioni
+          </Collegamento>
           <Title1 as="h1">Sicurezza</Title1>
 
           <section className={s.sezione} aria-labelledby="dove-dati">

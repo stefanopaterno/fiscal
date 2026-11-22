@@ -1,11 +1,11 @@
 'use client';
 
 import { makeStyles, Title1, tokens } from '@fluentui/react-components';
-import NextLink from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { SchedaCliente } from '@/features/fatturazione/SchedaCliente';
 import { ConAiuto } from '@/ui/AiutoContestuale';
+import { Collegamento } from '@/ui/Moduli';
 import { ProtectedPage } from '@/ui/ProtectedPage';
 import { Shell } from '@/ui/Shell';
 
@@ -26,9 +26,9 @@ function Contenuto() {
   const id = parametri.get('id');
   return (
     <div className={s.colonna}>
-      <NextLink href="/clienti/" className={s.indietro}>
-        ← Clienti
-      </NextLink>
+      <Collegamento href="/clienti/" indietro>
+        Clienti
+      </Collegamento>
       <ConAiuto
         allineamento="centro"
         aiuto={{

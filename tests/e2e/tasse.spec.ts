@@ -53,7 +53,7 @@ test('inserisco la CU, vedo il conguaglio, simulo +5.000 € e confronto i piani
   await expect(page.getByText('Salvato.', { exact: true })).toHaveCount(3);
 
   // Quadro
-  await page.getByRole('link', { name: '← Tasse' }).click();
+  await page.getByRole('link', { name: 'Tasse', exact: true }).last().click();
   await expect(page.getByRole('heading', { name: 'Il calcolo del 2026' })).toBeVisible();
   await page.getByRole('button', { name: 'Mostra gli importi' }).click();
   await expect(page.getByText('4.621,29 €').first()).toBeVisible(); // conguaglio totale

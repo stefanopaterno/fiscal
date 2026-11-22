@@ -10,13 +10,13 @@ import {
   Text,
   tokens,
 } from '@fluentui/react-components';
-import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, type FormEvent } from 'react';
 import { messaggi } from '@/lib/messaggi';
 import { getSupabase } from '@/lib/supabase/client';
 import { ConAiuto } from '@/ui/AiutoContestuale';
 import { messaggioErroreAccesso } from './errori';
+import { Collegamento } from '@/ui/Moduli';
 
 /** T033: secondo passo, il codice a 6 cifre dell'app di autenticazione (mfa.challengeAndVerify). */
 const useStili = makeStyles({
@@ -108,9 +108,7 @@ export function FormCodice() {
       >
         {invio ? 'Controllo…' : 'Verifica ed entra'}
       </Button>
-      <NextLink href="/accesso/recupero/" className={s.link}>
-        Usa un codice di recupero
-      </NextLink>
+      <Collegamento href="/accesso/recupero/">Usa un codice di recupero</Collegamento>
       <Text size={200} className={s.nota}>
         {messaggi.accesso.orologioSbagliato}
       </Text>

@@ -3,20 +3,23 @@
 import {
   Field,
   Input,
+  type InputProps,
+  Link,
   makeStyles,
+  mergeClasses,
   Select,
   Switch,
   Textarea,
   Title3,
   tokens,
-  type InputProps,
 } from '@fluentui/react-components';
 import {
   DatePicker,
   defaultDatePickerStrings,
   type CalendarStrings,
 } from '@fluentui/react-datepicker-compat';
-import NextLink from 'next/link';
+import { ArrowLeft16Regular } from '@fluentui/react-icons';
+import { useRouter } from 'next/navigation';
 import { useId, type ReactNode } from 'react';
 import { ConAiuto, type ContenutoAiuto } from '@/ui/AiutoContestuale';
 
@@ -190,18 +193,52 @@ const useStiliCollegamento = makeStyles({
   collegamento: {
     display: 'inline-flex',
     alignItems: 'center',
+    gap: tokens.spacingHorizontalXS,
     minHeight: '44px',
-    color: tokens.colorBrandForegroundLink,
+    // stile moderno: sottolineato solo al passaggio o con il focus, anche dentro un testo
+    textDecorationLine: 'none',
+    ':hover': { textDecorationLine: 'underline' },
+    ':focus-visible': { textDecorationLine: 'underline' },
   },
+  // dentro una frase: area toccabile di 44 px senza allargare la riga di testo
+  inLinea: { marginTop: '-12px', marginBottom: '-12px', verticalAlign: 'middle' },
 });
 
-/** Collegamento con area toccabile di 44 px (anche dentro i messaggi). */
-export function Collegamento({ href, children }: { href: string; children: ReactNode }) {
+/** basePath di next.config: le pagine dell'app stanno sotto /app. */
+const BASE = '/app';
+
+/**
+ * Collegamento interno con il Link di Fluent UI 9 (niente sottolineatura a riposo, solo al passaggio
+ * o con il focus) e la navigazione veloce di Next.js. Area toccabile di 44 px; `inLinea` dentro un testo.
+ * `indietro` aggiunge la freccia per tornare alla pagina sopra.
+ */
+export function Collegamento({
+  href,
+  children,
+  indietro = false,
+  inLinea = false,
+}: {
+  href: string;
+  children: ReactNode;
+  indietro?: boolean;
+  inLinea?: boolean;
+}) {
   const s = useStiliCollegamento();
+  const router = useRouter();
   return (
-    <NextLink href={href} className={s.collegamento}>
+    <Link
+      href={`${BASE}${href}`}
+      className={mergeClasses(s.collegamento, inLinea && s.inLinea)}
+      onClick={(e) => {
+        // Ctrl/Cmd/Maiusc + clic o tasto centrale: lascia fare al browser (nuova scheda)
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        e.preventDefault();
+        router.push(href);
+      }}
+    >
+      {indietro ? <ArrowLeft16Regular aria-hidden="true" /> : null}
       {children}
-    </NextLink>
+    </Link>
   );
 }
 

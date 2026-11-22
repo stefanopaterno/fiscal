@@ -13,7 +13,9 @@ export function FasciaProva() {
       <MessageBarBody>
         <MessageBarTitle>Modalità prova</MessageBarTitle>
         Puoi provare tutto e cancellare: le fatture non hanno valore fiscale.{' '}
-        <Collegamento href="/impostazioni/modalita/">Prova e produzione</Collegamento>
+        <Collegamento inLinea href="/impostazioni/modalita/">
+          Prova e produzione
+        </Collegamento>
       </MessageBarBody>
     </MessageBar>
   );
