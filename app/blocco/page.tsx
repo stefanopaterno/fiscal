@@ -1,14 +1,6 @@
 'use client';
 
-import {
-  Button,
-  makeStyles,
-  MessageBar,
-  MessageBarBody,
-  Text,
-  Title2,
-  tokens,
-} from '@fluentui/react-components';
+import { Button, makeStyles, MessageBar, MessageBarBody, Title2, tokens } from '@fluentui/react-components';
 import { LockClosed48Regular } from '@fluentui/react-icons';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -126,7 +118,6 @@ export default function PaginaBlocco() {
             Fiscal è bloccato
           </Title2>
         </ConAiuto>
-        <Text>Gli importi sono nascosti.</Text>
         {messaggio ? (
           <MessageBar intent="warning">
             <MessageBarBody>{messaggio}</MessageBarBody>
