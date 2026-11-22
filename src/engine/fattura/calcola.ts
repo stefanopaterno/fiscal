@@ -15,9 +15,15 @@ export type InputFattura = {
   sostitutoImposta: boolean;
   bolloACarico: 'paziente' | 'professionista';
   opposizioneSts?: boolean;
+  /**
+   * Il prezzo scritto comprende già il contributo integrativo ENPAP (scorporo): il paziente paga il prezzo
+   * e il contributo resta a carico del professionista. In fattura il contributo compare comunque.
+   */
+  integrativoCompreso?: boolean;
 };
 
-export type RigaCalcolata = RigaInput & { totaleCompenso: number; integrativo: number };
+/** Riga calcolata: con l'integrativo compreso `compenso` è quello scorporato (unitario). */
+export type RigaCalcolata = RigaInput & { totaleCompenso: number; integrativo: number; prezzo: number };
 
 export type RisultatoFattura = {
   righe: RigaCalcolata[];
@@ -43,6 +49,23 @@ export function percentuale(centesimi: number, aliquota: number): number {
   const quoziente = Math.floor(prodotto / 10000);
   const resto = prodotto - quoziente * 10000;
   return resto * 2 >= 10000 ? quoziente + 1 : quoziente;
+}
+
+/**
+ * Scorporo: dal prezzo comprensivo ricava il compenso unitario tale che compenso + integrativo = prezzo.
+ * Se nessun compenso al centesimo dà esattamente il prezzo, usa il più vicino (scarto di 1 centesimo).
+ */
+export function scorporaIntegrativo(
+  prezzo: number,
+  aliquota: number,
+): { compenso: number; integrativo: number } {
+  const puntiBase = Math.round(aliquota * 10000);
+  const stima = Math.round((prezzo * 10000) / (10000 + puntiBase));
+  for (const c of [stima, stima - 1, stima + 1]) {
+    if (c >= 0 && c + percentuale(c, aliquota) === prezzo)
+      return { compenso: c, integrativo: percentuale(c, aliquota) };
+  }
+  return { compenso: stima, integrativo: percentuale(stima, aliquota) };
 }
 
 const euro = (centesimi: number) =>
@@ -73,10 +96,23 @@ export function calcolaFattura(input: InputFattura): RisultatoFattura {
       throw new Error('Il compenso deve essere un importo in centesimi non negativo.');
     }
     if (!Number.isInteger(quantita) || quantita < 1) throw new Error('La quantità deve essere almeno 1.');
+    if (input.integrativoCompreso) {
+      const u = scorporaIntegrativo(riga.compenso, aliquotaIntegrativo);
+      return {
+        ...riga,
+        compenso: u.compenso,
+        quantita,
+        prezzo: riga.compenso,
+        totaleCompenso: u.compenso * quantita,
+        // contributo per prestazione × quantità: il totale torna esatto (4 sedute da 80 € = 320 €)
+        integrativo: u.integrativo * quantita,
+      };
+    }
     const totaleCompenso = riga.compenso * quantita;
     return {
       ...riga,
       quantita,
+      prezzo: riga.compenso,
       totaleCompenso,
       integrativo: percentuale(totaleCompenso, aliquotaIntegrativo),
     };
@@ -108,7 +144,9 @@ export function calcolaFattura(input: InputFattura): RisultatoFattura {
   if (input.opposizioneSts) diciture.push(regole.diciture.opposizioneSts);
 
   const spiegazioni: string[] = [
-    `Contributo integrativo ENPAP ${percento(aliquotaIntegrativo)} sui compensi: ${euro(totaleIntegrativo)}. È un contributo che chiedi in più al paziente e versi all'ENPAP: non è tuo reddito.`,
+    input.integrativoCompreso
+      ? `Contributo integrativo ENPAP ${percento(aliquotaIntegrativo)} compreso nel prezzo: dal prezzo togli il contributo (${euro(totaleIntegrativo)}) e il tuo compenso è ${euro(totaleCompensi)}. Il paziente paga il prezzo pieno; il contributo compare in fattura e lo versi all'ENPAP, quindi è a carico tuo.`
+      : `Contributo integrativo ENPAP ${percento(aliquotaIntegrativo)} sui compensi: ${euro(totaleIntegrativo)}. È un contributo che chiedi in più al paziente e versi all'ENPAP: non è tuo reddito.`,
   ];
   if (importoEsente > 0) {
     spiegazioni.push(

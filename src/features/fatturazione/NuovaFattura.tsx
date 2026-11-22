@@ -166,7 +166,12 @@ export function NuovaFattura(props: { id: string | null; clienteIniziale: string
               id: r.id,
               descrizione: r.descrizione,
               quantita: String(r.quantita),
-              compenso: centesimiInTesto(r.compenso),
+              // con l'integrativo compreso si mostra di nuovo il prezzo pieno (compenso + contributo)
+              compenso: centesimiInTesto(
+                profilo?.integrativo_compreso
+                  ? r.compenso + Math.round(r.integrativo / r.quantita)
+                  : r.compenso,
+              ),
               natura: r.natura,
             })),
           );
@@ -209,6 +214,7 @@ export function NuovaFattura(props: { id: string | null; clienteIniziale: string
           righe: righeLette.map((x) => ({ compenso: x.centesimi!, quantita: x.q!, natura: x.natura })),
           sostitutoImposta: cliente?.sostituto_imposta ?? false,
           bolloACarico: dati.profilo.bollo_a_carico,
+          integrativoCompreso: dati.profilo.integrativo_compreso,
           opposizioneSts: cliente?.opposizione_sts ?? false,
         }),
         errore: null,
@@ -292,7 +298,8 @@ export function NuovaFattura(props: { id: string | null; clienteIniziale: string
         posizione: i + 1,
         descrizione: x.descrizione.trim(),
         quantita: x.q!,
-        compenso: x.centesimi!,
+        // compenso calcolato dal motore: con l'integrativo compreso è quello scorporato
+        compenso: r.righe[i]?.compenso ?? x.centesimi!,
         natura: x.natura,
         integrativo: r.righe[i]?.integrativo ?? 0,
         iva: 0, // l'IVA si calcola sul totale imponibile della fattura
@@ -507,8 +514,9 @@ export function NuovaFattura(props: { id: string | null; clienteIniziale: string
                   }
                   aiuto={{
                     argomento: 'importo unitario',
-                    testo:
-                      'Il tuo compenso per una prestazione, senza contributo ENPAP, IVA e bollo: quelli li aggiunge Fiscal.',
+                    testo: dati?.profilo?.integrativo_compreso
+                      ? 'Il prezzo per una prestazione con il contributo ENPAP già dentro (scelta nelle impostazioni): Fiscal ne ricava il tuo compenso. IVA e bollo li aggiunge Fiscal.'
+                      : 'Il tuo compenso per una prestazione, senza contributo ENPAP, IVA e bollo: quelli li aggiunge Fiscal.',
                   }}
                 />
                 <CampoScelta

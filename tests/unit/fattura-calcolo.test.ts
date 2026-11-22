@@ -190,3 +190,38 @@ describe('calcolaFattura: regole e invarianti', () => {
     ).toThrow(/regole/);
   });
 });
+
+describe('calcolaFattura: contributo integrativo compreso nel prezzo (scorporo)', () => {
+  const compreso = { ...base, integrativoCompreso: true };
+
+  it('seduta da 80,00 €: compenso 76,92 + integrativo 3,08 = 80,00; il bollo resta a parte', () => {
+    const r = calcolaFattura({ ...compreso, righe: [{ compenso: 8000, natura: 'esente_sanitaria' }] });
+    expect(r).toMatchObject({ totaleCompensi: 7692, totaleIntegrativo: 308, importoEsente: 8000, bollo: 200, totale: 8200 });
+    expect(r.righe[0]).toMatchObject({ compenso: 7692, prezzo: 8000, integrativo: 308 });
+    expect(r.spiegazioni[0]).toMatch(/compreso nel prezzo/);
+  });
+
+  it('4 sedute da 80,00 €: il totale torna esatto a 320,00 €', () => {
+    const r = calcolaFattura({ ...compreso, righe: [{ compenso: 8000, quantita: 4, natura: 'esente_sanitaria' }] });
+    expect(r.importoEsente).toBe(32000);
+    expect(r.totaleCompensi + r.totaleIntegrativo).toBe(32000);
+  });
+
+  it('ritenuta calcolata sul compenso scorporato', () => {
+    const r = calcolaFattura({
+      ...compreso,
+      sostitutoImposta: true,
+      righe: [{ compenso: 104000, natura: 'esente_sanitaria' }],
+    });
+    // 1.040,00 = 1.000,00 + 40,00 di integrativo; ritenuta 20% su 1.000,00
+    expect(r).toMatchObject({ totaleCompensi: 100000, totaleIntegrativo: 4000, ritenuta: 20000 });
+  });
+
+  it('per ogni prezzo da 1 a 300 € compenso + integrativo differisce dal prezzo al massimo di 1 centesimo', () => {
+    for (let p = 100; p <= 30000; p += 1) {
+      const r = calcolaFattura({ ...compreso, righe: [{ compenso: p, natura: 'esente_sanitaria' }] });
+      expect(Math.abs(r.totaleCompensi + r.totaleIntegrativo - p)).toBeLessThanOrEqual(1);
+      expect(r.totaleIntegrativo).toBe(Math.round(r.totaleCompensi * 0.04 + 1e-9));
+    }
+  });
+});

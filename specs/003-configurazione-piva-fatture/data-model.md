@@ -21,6 +21,7 @@ proprietario e restrittiva aal2. Importi in **centesimi** (`bigint`), mai decima
 | albo_ordine, albo_numero | text | iscrizione all'Albo |
 | enpap_matricola | text | facoltativo |
 | bollo_a_carico | enum `paziente` / `professionista` | valore iniziale `paziente` (FR-008) |
+| integrativo_compreso | boolean | default false: contributo integrativo in aggiunta; true = compreso nel prezzo (FR-031) |
 | gia_incassata_predefinita | boolean | valore iniziale false (FR-010) |
 | soglia_attenzione_imponibile | int (percento 1–100) | valore iniziale 10 (FR-025) |
 

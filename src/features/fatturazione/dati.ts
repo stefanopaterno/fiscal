@@ -28,6 +28,7 @@ export type Profilo = Metadati & {
   albo_numero: string | null;
   enpap_matricola: string | null;
   bollo_a_carico: 'paziente' | 'professionista';
+  integrativo_compreso: boolean;
   gia_incassata_predefinita: boolean;
   soglia_attenzione_imponibile: number;
 };

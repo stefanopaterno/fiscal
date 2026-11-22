@@ -189,6 +189,7 @@ L'utente può emettere fatture per attività che non sono quella di psicologo (p
 - **FR-028**: Finché l'account è in prova, ogni pagina protetta MUST mostrarlo con una fascia ben visibile.
 - **FR-029**: Il passaggio alla **produzione** MUST cancellare fatture e incassi di prova (clienti, attività e configurazione solo se l'utente non sceglie di tenerli), MUST richiedere la parola di conferma «PRODUZIONE» e password e codice inseriti da non più di 5 minuti, e MUST essere registrato nel registro di sicurezza.
 - **FR-030**: Il passaggio alla produzione MUST essere irreversibile: nessuna funzione dell'app né modifica diretta del database (nemmeno dell'amministratore) può riportare l'account in prova. In produzione valgono numerazione legale e immutabilità (FR-003, FR-013).
+- **FR-031**: Il professionista MUST poter scegliere nelle impostazioni se il contributo integrativo ENPAP si aggiunge al prezzo (lo paga il paziente) o è compreso nel prezzo (scorporo: compenso = prezzo / (1 + aliquota), al centesimo, con compenso + contributo = prezzo; il contributo resta a carico del professionista). In entrambi i casi il contributo MUST comparire in fattura ed essere versato all'ENPAP; ritenuta e reddito si calcolano sul compenso. La regola ENPAP sull'obbligo di addebito è da confermare (T024).
 - **FR-026**: Il sistema MUST segnalare che la presenza di operazioni imponibili comporta liquidazioni, registri e dichiarazione IVA, fuori ambito di questa specifica (TODO nella costituzione).
 
 ### Key Entities *(include if feature involves data)*

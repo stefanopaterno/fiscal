@@ -49,6 +49,7 @@ type CampiTesto =
 
 type Modulo = Record<CampiTesto, string> & {
   bollo_a_carico: Profilo['bollo_a_carico'];
+  integrativo: 'in_aggiunta' | 'compreso';
   gia_incassata_predefinita: boolean;
   soglia: string;
 };
@@ -70,6 +71,7 @@ const VUOTO: Modulo = {
   albo_numero: '',
   enpap_matricola: '',
   bollo_a_carico: 'paziente',
+  integrativo: 'in_aggiunta',
   gia_incassata_predefinita: false,
   soglia: '10',
 };
@@ -81,6 +83,7 @@ function daProfilo(p: Profilo): Modulo {
     if (typeof v === 'string') (m as Record<string, unknown>)[k] = v;
   }
   m.bollo_a_carico = p.bollo_a_carico;
+  m.integrativo = p.integrativo_compreso ? 'compreso' : 'in_aggiunta';
   m.gia_incassata_predefinita = p.gia_incassata_predefinita;
   m.soglia = String(p.soglia_attenzione_imponibile);
   return m;
@@ -108,6 +111,7 @@ function inRiga(m: Modulo) {
     albo_numero: testo(m.albo_numero),
     enpap_matricola: testo(m.enpap_matricola),
     bollo_a_carico: m.bollo_a_carico,
+    integrativo_compreso: m.integrativo === 'compreso',
     gia_incassata_predefinita: m.gia_incassata_predefinita,
     soglia_attenzione_imponibile: Number(m.soglia),
   };
@@ -510,6 +514,25 @@ export function ConfigurazioneAttivita() {
             testo: `Sulle fatture senza IVA sopra ${(regole?.sogliaBollo.valore ?? 7747) / 100} € c'è un'imposta di bollo da 2 €. Lo versi tu allo Stato in ogni caso: qui scegli se farlo pagare al paziente aggiungendolo alla fattura.`,
             esempio: 'Seduta da 80 €: con «il paziente» la fattura diventa 80 + contributo + 2 € di bollo.',
             daDove: 'DPR 642/1972, Tariffa parte I, art. 13.',
+          }}
+        />
+        <CampoScelta
+          etichetta="Contributo integrativo ENPAP"
+          valore={modulo.integrativo}
+          onChange={cambia('integrativo')}
+          opzioni={[
+            { valore: 'in_aggiunta', etichetta: 'In aggiunta al prezzo (lo paga il paziente)' },
+            { valore: 'compreso', etichetta: 'Compreso nel prezzo (a carico mio)' },
+          ]}
+          aiuto={{
+            argomento: 'contributo integrativo',
+            testo: `Il contributo integrativo ENPAP (${Math.round((regole?.aliquotaIntegrativo.valore ?? 0.04) * 100)}% dal 2027) va sempre scritto in fattura e versato all'ENPAP. Puoi farlo pagare in più al paziente oppure tenerlo dentro il tuo prezzo: in quel caso Fiscal ricava il compenso dal prezzo (scorporo) e il contributo lo paghi tu.`,
+            esempio:
+              'Seduta da 80 €. In aggiunta: il paziente paga 80 + 3,20 = 83,20 €. Compreso: il paziente paga 80 €, il tuo compenso è 76,92 € e 3,08 € sono il contributo.',
+            perche:
+              'Cambia quanto paga il paziente e quanto resta a te: il reddito su cui paghi le tasse è il compenso, senza contributo.',
+            daDove:
+              "Regolamento ENPAP sul contributo integrativo, dovuto sul volume d'affari anche se non lo incassi dal paziente (da confermare con ENPAP).",
           }}
         />
         <CampoSiNo
