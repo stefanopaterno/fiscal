@@ -3,6 +3,12 @@
 import {
   Button,
   Checkbox,
+  Dialog,
+  DialogActions,
+  DialogBody,
+  DialogContent,
+  DialogSurface,
+  DialogTitle,
   Field,
   Input,
   makeStyles,
@@ -15,14 +21,20 @@ import {
 } from '@fluentui/react-components';
 import { useState } from 'react';
 import { useVerificaRecente } from '@/features/auth/useVerificaRecente';
-import { cancellaDatiProva, passaAProduzione, spiegaErrore } from '@/features/fatturazione/dati';
+import {
+  cancellaDatiProva,
+  caricaDatiEsempio,
+  passaAProduzione,
+  spiegaErrore,
+} from '@/features/fatturazione/dati';
 import { aggiornaModalita, useModalita } from '@/features/modalita/useModalita';
 import { ConAiuto } from '@/ui/AiutoContestuale';
 import { Scheda } from '@/ui/Moduli';
 
 /**
- * Prova e produzione (FR-027..FR-030). In prova: cancellare le prove. Passaggio alla produzione:
- * irreversibile, cancella fatture e incassi di prova, chiede PRODUZIONE e password+codice.
+ * Prova e produzione (FR-027..FR-030). In prova: caricare dati d'esempio (FR-032) e cancellare le prove.
+ * Passaggio alla produzione: irreversibile, cancella fatture e incassi di prova, chiede PRODUZIONE e
+ * password+codice.
  */
 const useStili = makeStyles({
   colonna: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL, minWidth: 0 },
@@ -45,6 +57,7 @@ export function GestioneModalita() {
   const [conferma, setConferma] = useState('');
   const [capito, setCapito] = useState(false);
   const [inCorso, setInCorso] = useState(false);
+  const [chiediEsempio, setChiediEsempio] = useState(false);
   const [messaggio, setMessaggio] = useState<{ tipo: 'ok' | 'errore'; testo: string } | null>(null);
 
   if (!modalita) return <Spinner label="Un momento…" />;
@@ -75,7 +88,25 @@ export function GestioneModalita() {
       const r = await cancellaDatiProva(anagraficheProva);
       setMessaggio({
         tipo: 'ok',
-        testo: `Cancellati: ${r.fatture} documenti, ${r.incassi} incassi${anagraficheProva ? `, ${r.anagrafiche} tra clienti e attività` : ''}.`,
+        // clienti e attività d'esempio si cancellano sempre: il conteggio compare anche senza spunta
+        testo: `Cancellati: ${r.fatture} documenti, ${r.incassi} incassi${anagraficheProva || r.anagrafiche > 0 ? `, ${r.anagrafiche} tra clienti e attività` : ''}.`,
+      });
+    } catch (e) {
+      setMessaggio({ tipo: 'errore', testo: spiegaErrore(e) });
+    } finally {
+      setInCorso(false);
+    }
+  }
+
+  async function caricaEsempio() {
+    setChiediEsempio(false);
+    setMessaggio(null);
+    setInCorso(true);
+    try {
+      const r = await caricaDatiEsempio();
+      setMessaggio({
+        tipo: 'ok',
+        testo: `Caricati ${r.clienti} clienti, ${r.fatture} documenti (fatture, bozze e una nota di credito), ${r.incassi} incassi e ${r.versamenti} versamenti ENPAP. Sono tutti finti: li trovi in Fatture e Clienti.`,
       });
     } catch (e) {
       setMessaggio({ tipo: 'errore', testo: spiegaErrore(e) });
@@ -131,7 +162,7 @@ export function GestioneModalita() {
           aiuto={{
             argomento: 'cancella anche clienti e attività',
             testo:
-              'Se spunti, cancello anche i clienti, le attività e i tuoi dati della partita IVA. Se no, restano e cancello solo fatture e incassi.',
+              "Se spunti, cancello anche i clienti, le attività e i tuoi dati della partita IVA. Se no, restano e cancello solo fatture e incassi. I dati d'esempio (clienti finti e versamenti ENPAP) li tolgo comunque.",
           }}
         >
           <Checkbox
@@ -144,6 +175,47 @@ export function GestioneModalita() {
           Cancella i dati di prova
         </Button>
       </Scheda>
+
+      <Scheda
+        titolo="Dati d'esempio"
+        aiuto={{
+          argomento: "dati d'esempio",
+          testo:
+            "Riempio l'app con un anno di lavoro inventato, così vedi come appare piena: 12 clienti finti, circa 40 fatture del 2026 (sedute, qualche pacchetto, consulenze a un ente), incassi e versamenti ENPAP. La tua Certificazione Unica non la tocco: quella la inserisci tu.",
+          esempio: 'Una seduta da 80 €: 1,60 € di contributo ENPAP e 2 € di bollo, totale 83,60 €.',
+          perche:
+            'Per provare elenchi, totali e tasse senza scrivere niente. Quando hai finito, «Cancella i dati di prova» li toglie tutti.',
+        }}
+      >
+        <Text>
+          Nomi, codici fiscali e importi sono inventati. Si caricano una volta sola e spariscono con «Cancella
+          i dati di prova» o con il passaggio alla produzione.
+        </Text>
+        <Button className={s.pulsante} disabled={inCorso} onClick={() => setChiediEsempio(true)}>
+          Carica dati d&apos;esempio
+        </Button>
+      </Scheda>
+
+      <Dialog open={chiediEsempio} onOpenChange={(_, d) => setChiediEsempio(d.open)}>
+        <DialogSurface>
+          <DialogBody>
+            <DialogTitle>Caricare i dati d&apos;esempio?</DialogTitle>
+            <DialogContent>
+              Aggiungo clienti, fatture, incassi e versamenti finti del 2026. Se non hai ancora inserito i
+              tuoi dati della partita IVA, ne metto di finti anche lì. Potrai toglierli tutti con «Cancella i
+              dati di prova».
+            </DialogContent>
+            <DialogActions>
+              <Button className={s.pulsante} onClick={() => setChiediEsempio(false)}>
+                No
+              </Button>
+              <Button appearance="primary" className={s.pulsante} onClick={() => void caricaEsempio()}>
+                Sì, carica
+              </Button>
+            </DialogActions>
+          </DialogBody>
+        </DialogSurface>
+      </Dialog>
 
       <Scheda
         titolo="Passa alla produzione"

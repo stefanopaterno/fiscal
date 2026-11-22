@@ -15,6 +15,7 @@ Tutte con **sicurezza dell'invocante** (soggette alla RLS: aal2 e proprietario),
 
 | `elimina_fattura_prova(p_id uuid)` | solo in prova: cancella una fattura (anche emessa) con incassi e note di credito collegate | `non_in_prova` |
 | `cancella_dati_prova(p_anagrafiche boolean) → (fatture, incassi, anagrafiche)` | solo in prova: cancella fatture e incassi, e se richiesto clienti, attività e profilo | `non_in_prova` |
+| `carica_dati_esempio() → (clienti, fatture, incassi, versamenti)` | FR-032, solo in prova; **security definer** (scrive il registro `private.dati_esempio`), quindi controlla da sé aal2, accesso completo e prova e lavora solo su `auth.uid()`. Crea profilo e attività se mancano, 12 clienti, 45 documenti 2026 emessi con `emetti_fattura`/`crea_nota_di_credito`, incassi e versamenti ENPAP. Lo annulla `cancella_dati_prova` | `accesso_negato` (42501), `non_in_prova`, `esempio_gia_caricato`, `esempio_fatture_presenti`, `configurazione_incompleta` |
 | `passa_a_produzione(p_conferma text, p_tieni_anagrafiche boolean)` | parola «PRODUZIONE», codice TOTP da ≤ 300 s; cancella le prove, `in_prova` → false per sempre (trigger), evento `passaggio_produzione` | `non_in_prova`, `conferma_mancante`, `verifica_recente` |
 
 In prova (`user_security.in_prova`, default true) `emetti_fattura` non controlla l'inizio attività e segna `fotografia.prova = true`.

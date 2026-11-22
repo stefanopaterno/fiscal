@@ -74,6 +74,7 @@ Storie: US1 configurazione, US2 fattura sanitaria, US3 fattura non sanitaria, US
 - [x] T028 Pagina `app/impostazioni/modalita/` (cancella prove, passa alla produzione con verifica recente)
 - [x] T029 Filigrana sulla stampa e «Elimina (è una prova)» nel dettaglio
 - [x] T030 Test e2e `tests/e2e/modalita.spec.ts`; test 006 e integrazione portati in produzione
+- [x] T031 Dati d'esempio (FR-032): migrazione `supabase/migrations/20261122000400_dati_esempio.sql` (`carica_dati_esempio()`, registro `private.dati_esempio`, pulizia in `cancella_dati_prova`), pgTAP `010_dati_esempio.test.sql`, integrazione `tests/integration/dati-esempio.test.ts` (totali uguali al motore, codici validi), scheda «Dati d'esempio» in `app/impostazioni/modalita/` ed e2e in `tests/e2e/modalita.spec.ts`
 
 ## Dipendenze
 

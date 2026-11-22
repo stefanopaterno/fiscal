@@ -16,6 +16,49 @@ test.afterEach(async () => {
   utente = undefined;
 });
 
+test("FR-032: in prova carico i dati d'esempio, li vedo in fatture e rubrica e li cancello", async ({
+  page,
+}) => {
+  const u = await utenteConTelefono();
+  utente = u.utente;
+  await entraNelBrowser(page, u.utente, u.codice);
+
+  await page.goto('/app/impostazioni/modalita/');
+  await page.getByRole('button', { name: "Carica dati d'esempio" }).click();
+  await page.getByRole('button', { name: 'Sì, carica' }).click();
+  await expect(page.getByText(/Caricati 12 clienti, 45 documenti/)).toBeVisible();
+
+  // Una seconda volta: errore spiegato in italiano
+  await page.getByRole('button', { name: "Carica dati d'esempio" }).click();
+  await page.getByRole('button', { name: 'Sì, carica' }).click();
+  await expect(page.getByText(/I dati d'esempio ci sono già/)).toBeVisible();
+
+  await page.goto('/app/fatture/');
+  await expect(page.getByText('Fattura n. 43/2026')).toBeVisible();
+  await expect(page.getByText('Nota di credito n. 12/2026')).toBeVisible();
+  await expect(page.getByText('Fattura (bozza)')).toHaveCount(2);
+
+  await page.goto('/app/clienti/');
+  await expect(page.getByText('Persona', { exact: true })).toHaveCount(10);
+  await expect(page.getByText('Ente', { exact: true })).toHaveCount(2);
+
+  await page.goto('/app/impostazioni/modalita/');
+  await page.getByRole('button', { name: 'Cancella i dati di prova' }).click();
+  await expect(
+    page.getByText(/Cancellati: 45 documenti, 37 incassi, 14 tra clienti e attività/),
+  ).toBeVisible();
+
+  await page.goto('/app/fatture/');
+  await expect(page.getByText('Non hai ancora fatture.')).toBeVisible();
+  await page.goto('/app/clienti/');
+  await expect(page.getByText(/Non hai ancora clienti/)).toBeVisible();
+  const { count } = await admin
+    .from('versamenti_previdenza')
+    .select('*', { count: 'exact', head: true })
+    .eq('owner_id', u.utente.id);
+  expect(count).toBe(0);
+});
+
 test('in prova emetto, stampo con filigrana e cancello; poi passo alla produzione senza ritorno', async ({
   page,
 }) => {
