@@ -182,6 +182,7 @@ export function SchedaCliente({ id, ritorno }: { id: string | null; ritorno: str
           <Griglia>
             <CampoTesto
               etichetta="Nome"
+              lunghezzaMax={60}
               obbligatorio
               valore={modulo.nome}
               onChange={cambia('nome')}
@@ -190,6 +191,7 @@ export function SchedaCliente({ id, ritorno }: { id: string | null; ritorno: str
             />
             <CampoTesto
               etichetta="Cognome"
+              lunghezzaMax={60}
               obbligatorio
               valore={modulo.cognome}
               onChange={cambia('cognome')}
@@ -198,6 +200,7 @@ export function SchedaCliente({ id, ritorno }: { id: string | null; ritorno: str
             />
             <CampoTesto
               etichetta="Codice fiscale"
+              lunghezzaMax={16}
               obbligatorio
               maiuscolo
               valore={modulo.codice_fiscale}
@@ -215,6 +218,7 @@ export function SchedaCliente({ id, ritorno }: { id: string | null; ritorno: str
           <Griglia>
             <CampoTesto
               etichetta="Denominazione"
+              lunghezzaMax={80}
               obbligatorio
               valore={modulo.denominazione}
               onChange={cambia('denominazione')}
@@ -227,6 +231,7 @@ export function SchedaCliente({ id, ritorno }: { id: string | null; ritorno: str
             />
             <CampoTesto
               etichetta="Partita IVA"
+              lunghezzaMax={11}
               inputMode="numeric"
               valore={modulo.partita_iva}
               onChange={cambia('partita_iva')}
@@ -239,6 +244,7 @@ export function SchedaCliente({ id, ritorno }: { id: string | null; ritorno: str
             />
             <CampoTesto
               etichetta="Codice fiscale"
+              lunghezzaMax={16}
               maiuscolo
               valore={modulo.codice_fiscale}
               onChange={cambia('codice_fiscale')}
@@ -261,6 +267,7 @@ export function SchedaCliente({ id, ritorno }: { id: string | null; ritorno: str
       >
         <CampoTesto
           etichetta="Indirizzo"
+          lunghezzaMax={60}
           obbligatorio
           valore={modulo.indirizzo}
           onChange={cambia('indirizzo')}
@@ -270,6 +277,7 @@ export function SchedaCliente({ id, ritorno }: { id: string | null; ritorno: str
         <Griglia>
           <CampoTesto
             etichetta="CAP"
+            lunghezzaMax={5}
             obbligatorio={modulo.nazione === 'IT'}
             inputMode="numeric"
             valore={modulo.cap}
@@ -279,6 +287,7 @@ export function SchedaCliente({ id, ritorno }: { id: string | null; ritorno: str
           />
           <CampoTesto
             etichetta="Comune"
+            lunghezzaMax={60}
             obbligatorio
             valore={modulo.comune}
             onChange={cambia('comune')}
@@ -287,6 +296,7 @@ export function SchedaCliente({ id, ritorno }: { id: string | null; ritorno: str
           />
           <CampoTesto
             etichetta="Provincia"
+            lunghezzaMax={2}
             obbligatorio={modulo.nazione === 'IT'}
             maiuscolo
             valore={modulo.provincia}
@@ -296,6 +306,7 @@ export function SchedaCliente({ id, ritorno }: { id: string | null; ritorno: str
           />
           <CampoTesto
             etichetta="Nazione"
+            lunghezzaMax={2}
             maiuscolo
             valore={modulo.nazione}
             onChange={cambia('nazione')}
@@ -356,6 +367,7 @@ export function SchedaCliente({ id, ritorno }: { id: string | null; ritorno: str
           <Griglia>
             <CampoTesto
               etichetta="PEC"
+              lunghezzaMax={254}
               tipo="email"
               inputMode="email"
               valore={modulo.pec}
@@ -367,6 +379,7 @@ export function SchedaCliente({ id, ritorno }: { id: string | null; ritorno: str
             />
             <CampoTesto
               etichetta="Codice destinatario"
+              lunghezzaMax={7}
               maiuscolo
               valore={modulo.codice_destinatario}
               onChange={cambia('codice_destinatario')}

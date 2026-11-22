@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@fluentui/react-components": "9.75.2",
+    "@fluentui/react-datepicker-compat": "0.6.41",
     "@fluentui/react-icons": "2.0.347",
     "@supabase/supabase-js": "2.119.2",
     "idb": "8.0.4",

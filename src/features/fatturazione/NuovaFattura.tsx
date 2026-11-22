@@ -37,7 +37,7 @@ import {
 } from '@/features/fatturazione/dati';
 import { ConAiuto } from '@/ui/AiutoContestuale';
 import { ImportoNascosto } from '@/ui/ImportoNascosto';
-import { CampoScelta, CampoTesto, Collegamento, Griglia, Scheda } from '@/ui/Moduli';
+import { CampoScelta, CampoTesto, Collegamento, Griglia, Scheda, CampoData } from '@/ui/Moduli';
 
 /**
  * Nuova fattura (T015, US2; righe miste T019, già incassata T018).
@@ -386,10 +386,10 @@ export function NuovaFattura(props: { id: string | null; clienteIniziale: string
                 testo: "Il paziente (anche se minorenne o se paga un altro) o l'ente a cui fai la fattura.",
               }}
             />
-            <CampoTesto
+            <CampoData
               etichetta="Data"
               obbligatorio
-              tipo="date"
+
               valore={data}
               onChange={setData}
               aiuto={{
@@ -462,6 +462,7 @@ export function NuovaFattura(props: { id: string | null; clienteIniziale: string
               </div>
               <CampoTesto
                 etichetta="Descrizione"
+                lunghezzaMax={1000}
                 obbligatorio
                 valore={riga.descrizione}
                 onChange={(v) => cambiaRiga(riga.id, { descrizione: v })}
@@ -477,6 +478,7 @@ export function NuovaFattura(props: { id: string | null; clienteIniziale: string
               <Griglia>
                 <CampoTesto
                   etichetta="Quantità"
+                  lunghezzaMax={4}
                   inputMode="numeric"
                   valore={riga.quantita}
                   onChange={(v) => cambiaRiga(riga.id, { quantita: v })}
@@ -485,6 +487,7 @@ export function NuovaFattura(props: { id: string | null; clienteIniziale: string
                 />
                 <CampoTesto
                   etichetta="Importo unitario (€)"
+                  lunghezzaMax={12}
                   obbligatorio
                   inputMode="decimal"
                   valore={riga.compenso}

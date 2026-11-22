@@ -23,7 +23,7 @@ import {
   type Attivita,
   type Profilo,
 } from '@/features/fatturazione/dati';
-import { CampoScelta, CampoSiNo, CampoTesto, Griglia, Scheda } from '@/ui/Moduli';
+import { CampoScelta, CampoSiNo, CampoTesto, Griglia, Scheda, CampoData } from '@/ui/Moduli';
 
 /**
  * Configurazione della partita IVA (T011-T012, US1, FR-001, FR-002, FR-022).
@@ -269,6 +269,7 @@ export function ConfigurazioneAttivita() {
         <Griglia>
           <CampoTesto
             etichetta="Nome"
+            lunghezzaMax={60}
             obbligatorio
             valore={modulo.nome}
             onChange={cambia('nome')}
@@ -277,6 +278,7 @@ export function ConfigurazioneAttivita() {
           />
           <CampoTesto
             etichetta="Cognome"
+            lunghezzaMax={60}
             obbligatorio
             valore={modulo.cognome}
             onChange={cambia('cognome')}
@@ -285,6 +287,7 @@ export function ConfigurazioneAttivita() {
           />
           <CampoTesto
             etichetta="Codice fiscale"
+            lunghezzaMax={16}
             obbligatorio
             maiuscolo
             valore={modulo.codice_fiscale}
@@ -310,6 +313,7 @@ export function ConfigurazioneAttivita() {
         <Griglia>
           <CampoTesto
             etichetta="Numero di partita IVA"
+            lunghezzaMax={11}
             obbligatorio
             inputMode="numeric"
             valore={modulo.partita_iva}
@@ -321,10 +325,10 @@ export function ConfigurazioneAttivita() {
               esempio: '12345678903',
             }}
           />
-          <CampoTesto
+          <CampoData
             etichetta="Data di inizio attività"
             obbligatorio
-            tipo="date"
+
             valore={modulo.inizio_attivita}
             onChange={cambia('inizio_attivita')}
             aiuto={{
@@ -349,6 +353,7 @@ export function ConfigurazioneAttivita() {
       >
         <CampoTesto
           etichetta="Indirizzo"
+          lunghezzaMax={60}
           obbligatorio
           valore={modulo.indirizzo}
           onChange={cambia('indirizzo')}
@@ -358,6 +363,7 @@ export function ConfigurazioneAttivita() {
         <Griglia>
           <CampoTesto
             etichetta="CAP"
+            lunghezzaMax={5}
             obbligatorio
             inputMode="numeric"
             valore={modulo.cap}
@@ -368,6 +374,7 @@ export function ConfigurazioneAttivita() {
           />
           <CampoTesto
             etichetta="Comune"
+            lunghezzaMax={60}
             obbligatorio
             valore={modulo.comune}
             onChange={cambia('comune')}
@@ -375,6 +382,7 @@ export function ConfigurazioneAttivita() {
           />
           <CampoTesto
             etichetta="Provincia"
+            lunghezzaMax={2}
             obbligatorio
             maiuscolo
             valore={modulo.provincia}
@@ -399,6 +407,7 @@ export function ConfigurazioneAttivita() {
         <Griglia>
           <CampoTesto
             etichetta="PEC"
+            lunghezzaMax={254}
             tipo="email"
             inputMode="email"
             valore={modulo.pec}
@@ -412,6 +421,7 @@ export function ConfigurazioneAttivita() {
           />
           <CampoTesto
             etichetta="Codice destinatario"
+            lunghezzaMax={7}
             maiuscolo
             valore={modulo.codice_destinatario}
             onChange={cambia('codice_destinatario')}
@@ -425,6 +435,7 @@ export function ConfigurazioneAttivita() {
         </Griglia>
         <CampoTesto
           etichetta="IBAN"
+          lunghezzaMax={34}
           maiuscolo
           valore={modulo.iban}
           onChange={cambia('iban')}
@@ -513,6 +524,7 @@ export function ConfigurazioneAttivita() {
         />
         <CampoTesto
           etichetta="Avvisami se le fatture con IVA superano il (%)"
+          lunghezzaMax={3}
           inputMode="numeric"
           valore={modulo.soglia}
           onChange={cambia('soglia')}
@@ -649,6 +661,7 @@ function ElencoAttivita(props: { attivita: Attivita[]; onCambia: (a: Attivita[])
             />
             <CampoTesto
               etichetta="Codice ATECO"
+              lunghezzaMax={8}
               valore={a.codice_ateco ?? ''}
               onChange={(v) => aggiorna(a.id, { codice_ateco: v })}
               aiuto={{

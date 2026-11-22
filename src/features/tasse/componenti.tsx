@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
 import { centesimiInTesto, euroInCentesimi, formattaEuro } from '@/engine/importi';
 import { anniConRegoleIrpef } from '@/engine/regole/irpef';
-import { ConAiuto, PannelloAiuto, PulsanteAiuto, useAiuto, type ContenutoAiuto } from '@/ui/AiutoContestuale';
+import { BollaAiuto, ConAiuto, type ContenutoAiuto } from '@/ui/AiutoContestuale';
 import { ImportoNascosto } from '@/ui/ImportoNascosto';
 import { CampoScelta, CampoTesto } from '@/ui/Moduli';
 
@@ -59,6 +59,7 @@ export function CampoEuro(props: {
       aiuto={props.aiuto}
       valore={testo}
       inputMode="decimal"
+      lunghezzaMax={13}
       errore={errore}
       suggerimento={props.suggerimento ?? (props.facoltativo ? 'Facoltativo' : undefined)}
       onChange={(v) => {
@@ -150,7 +151,7 @@ export function Voci({ children }: { children: ReactNode }) {
   return <div className={useStili().voci}>{children}</div>;
 }
 
-/** Una riga "etichetta ? — importo"; la spiegazione si apre sotto, su tutta la larghezza. */
+/** Una riga "etichetta ? — importo"; la spiegazione si apre in un fumetto sopra la pagina. */
 export function Voce(props: {
   etichetta: string;
   centesimi: number;
@@ -160,35 +161,22 @@ export function Voce(props: {
   segno?: '+' | '−';
 }) {
   const s = useStili();
-  const { aperto, alterna, idPannello } = useAiuto();
   const testo = `${props.segno ? `${props.segno} ` : ''}${formattaEuro(props.centesimi)}`;
   return (
-    <div className={s.blocco}>
-      <div className={s.voce}>
-        <div className={s.sinistra}>
-          <Text className={mergeClasses(s.etichetta, props.totale && s.totale)}>{props.etichetta}</Text>
-          {props.spiegazione ? (
-            <PulsanteAiuto
-              argomento={props.etichetta.toLowerCase()}
-              aperto={aperto}
-              alterna={alterna}
-              idPannello={idPannello}
-            />
-          ) : null}
-        </div>
-        <Text className={mergeClasses(s.importo, props.totale && s.totale)}>
-          <ImportoNascosto valore={testo} />
-        </Text>
+    <div className={s.voce}>
+      <div className={s.sinistra}>
+        <Text className={mergeClasses(s.etichetta, props.totale && s.totale)}>{props.etichetta}</Text>
+        {props.spiegazione ? (
+          <BollaAiuto
+            argomento={props.etichetta.toLowerCase()}
+            testo={props.spiegazione}
+            daDove={props.regola}
+          />
+        ) : null}
       </div>
-      {props.spiegazione ? (
-        <PannelloAiuto
-          argomento={props.etichetta}
-          testo={props.spiegazione}
-          daDove={props.regola}
-          aperto={aperto}
-          idPannello={idPannello}
-        />
-      ) : null}
+      <Text className={mergeClasses(s.importo, props.totale && s.totale)}>
+        <ImportoNascosto valore={testo} />
+      </Text>
     </div>
   );
 }

@@ -153,6 +153,7 @@ function StrategiaPerAnno({ anno, setAnno }: { anno: number; setAnno: (a: number
               />
               <CampoTesto
                 etichetta="Numero di rate (2–7)"
+                lunghezzaMax={1}
                 valore={rate}
                 inputMode="numeric"
                 onChange={(v) => setRate(v.replace(/\D/g, '').slice(0, 1))}

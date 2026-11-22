@@ -42,7 +42,7 @@ import { oggi, Riepilogo } from '@/features/fatturazione/NuovaFattura';
 import { useModalita } from '@/features/modalita/useModalita';
 import { ConAiuto } from '@/ui/AiutoContestuale';
 import { ImportoNascosto } from '@/ui/ImportoNascosto';
-import { CampoScelta, CampoTesto, Collegamento, Griglia, Scheda } from '@/ui/Moduli';
+import { CampoScelta, CampoTesto, Collegamento, Griglia, Scheda, CampoData } from '@/ui/Moduli';
 
 /**
  * Dettaglio di una fattura (T016), incassi (T018, FR-010) e nota di credito (FR-012).
@@ -478,15 +478,16 @@ function Incassi(props: {
       {props.residuo > 0 && props.fattura.stato === 'emessa' ? (
         <>
           <Griglia>
-            <CampoTesto
+            <CampoData
               etichetta="Data dell'incasso"
-              tipo="date"
+
               valore={data}
               onChange={setData}
               aiuto={{ argomento: "data dell'incasso", testo: 'Il giorno in cui hai ricevuto i soldi.' }}
             />
             <CampoTesto
               etichetta="Importo (€)"
+              lunghezzaMax={12}
               inputMode="decimal"
               valore={importo}
               onChange={setImporto}

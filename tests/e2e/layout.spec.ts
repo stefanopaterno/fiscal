@@ -33,7 +33,7 @@ async function controllaPagina(page: Page, nome: string, telefono: boolean) {
         .filter((x) => x.altezza < 44),
       aiuti: document.querySelectorAll('button[aria-label^="Aiuto:"]').length,
       // nessun campo esce dalla sua scheda o dallo schermo (difetto visto su iPhone)
-      fuoriScheda: [...document.querySelectorAll('.fui-Input')]
+      fuoriScheda: [...document.querySelectorAll('.fui-Input, .fui-Select, .fui-DatePicker')]
         .filter((e) => (e as HTMLElement).offsetParent !== null)
         .filter((e) => {
           const r = e.getBoundingClientRect();

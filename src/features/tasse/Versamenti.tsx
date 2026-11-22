@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react';
 import { formattaEuro } from '@/engine/importi';
 import { dataItaliana } from '@/features/fatturazione/DettaglioFattura';
 import { ImportoNascosto } from '@/ui/ImportoNascosto';
-import { CampoScelta, CampoTesto, Griglia, Scheda } from '@/ui/Moduli';
+import { CampoScelta, CampoTesto, Griglia, Scheda, CampoData } from '@/ui/Moduli';
 import { CampoEuro, useAnno } from './componenti';
 import {
   elimina,
@@ -195,9 +195,9 @@ function NuovoContributo({ anno, onSalvato }: { anno: number; onSalvato: () => P
   return (
     <>
       <Griglia>
-        <CampoTesto
+        <CampoData
           etichetta="Data"
-          tipo="date"
+
           valore={data}
           onChange={setData}
           aiuto={{
@@ -229,6 +229,7 @@ function NuovoContributo({ anno, onSalvato }: { anno: number; onSalvato: () => P
         />
         <CampoTesto
           etichetta="Redditi dell'anno"
+          lunghezzaMax={4}
           valore={annoReddito}
           inputMode="numeric"
           onChange={setAnnoReddito}
@@ -280,9 +281,9 @@ function NuovaImposta({ anno, onSalvato }: { anno: number; onSalvato: () => Prom
   return (
     <>
       <Griglia>
-        <CampoTesto
+        <CampoData
           etichetta="Data"
-          tipo="date"
+
           valore={data}
           onChange={setData}
           aiuto={{ argomento: 'data del versamento', testo: "Il giorno dell'F24." }}
@@ -311,6 +312,7 @@ function NuovaImposta({ anno, onSalvato }: { anno: number; onSalvato: () => Prom
         />
         <CampoTesto
           etichetta="Anno d'imposta"
+          lunghezzaMax={4}
           valore={annoImposta}
           inputMode="numeric"
           onChange={setAnnoImposta}

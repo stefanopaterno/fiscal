@@ -11,6 +11,11 @@ import {
   tokens,
   type InputProps,
 } from '@fluentui/react-components';
+import {
+  DatePicker,
+  defaultDatePickerStrings,
+  type CalendarStrings,
+} from '@fluentui/react-datepicker-compat';
 import NextLink from 'next/link';
 import { useId, type ReactNode } from 'react';
 import { ConAiuto, type ContenutoAiuto } from '@/ui/AiutoContestuale';
@@ -31,6 +36,16 @@ const useStili = makeStyles({
     minWidth: 0,
     '@media (max-width: 480px)': { padding: tokens.spacingHorizontalL },
   },
+  // i menu nativi si allargano quanto l'opzione più lunga: li teniamo dentro la colonna
+  scelta: { width: '100%', minWidth: 0, maxWidth: '100%' },
+  sceltaElemento: {
+    width: '100%',
+    minWidth: 0,
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+  },
+  campo: { minWidth: 0 },
   griglia: {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
@@ -84,6 +99,8 @@ export function CampoTesto(
     segnaposto?: string;
     autoComplete?: string;
     multilinea?: boolean;
+    /** Numero massimo di caratteri, quando la lunghezza è fissata (es. 16 per il codice fiscale). */
+    lunghezzaMax?: number;
   },
 ) {
   return (
@@ -99,6 +116,7 @@ export function CampoTesto(
           <Textarea
             value={props.valore}
             placeholder={props.segnaposto}
+            maxLength={props.lunghezzaMax}
             onChange={(_, d) => props.onChange(d.value)}
             resize="vertical"
           />
@@ -110,6 +128,7 @@ export function CampoTesto(
             autoComplete={props.autoComplete ?? 'off'}
             input={{
               inputMode: props.inputMode,
+              maxLength: props.lunghezzaMax,
               autoCapitalize: props.maiuscolo ? 'characters' : undefined,
               spellCheck: false,
             }}
@@ -124,6 +143,7 @@ export function CampoTesto(
 export function CampoScelta<T extends string>(
   props: Comuni & { valore: T; onChange: (v: T) => void; opzioni: { valore: T; etichetta: string }[] },
 ) {
+  const s = useStili();
   return (
     <ConAiuto aiuto={props.aiuto}>
       <Field
@@ -133,7 +153,12 @@ export function CampoScelta<T extends string>(
         validationMessage={props.errore}
         hint={props.suggerimento}
       >
-        <Select value={props.valore} onChange={(_, d) => props.onChange(d.value as T)}>
+        <Select
+          className={s.scelta}
+          select={{ className: s.sceltaElemento }}
+          value={props.valore}
+          onChange={(_, d) => props.onChange(d.value as T)}
+        >
           {props.opzioni.map((o) => (
             <option key={o.valore} value={o.valore}>
               {o.etichetta}
@@ -177,5 +202,92 @@ export function Collegamento({ href, children }: { href: string; children: React
     <NextLink href={href} className={s.collegamento}>
       {children}
     </NextLink>
+  );
+}
+
+// --- Date -----------------------------------------------------------------
+
+/** Calendario in italiano, settimana dal lunedì. */
+const MESI = [
+  'gennaio',
+  'febbraio',
+  'marzo',
+  'aprile',
+  'maggio',
+  'giugno',
+  'luglio',
+  'agosto',
+  'settembre',
+  'ottobre',
+  'novembre',
+  'dicembre',
+];
+const GIORNI = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
+const STRINGHE_CALENDARIO: CalendarStrings = {
+  ...defaultDatePickerStrings,
+  months: MESI.map((m) => m[0]!.toUpperCase() + m.slice(1)),
+  shortMonths: MESI.map((m) => m.slice(0, 3)),
+  days: GIORNI,
+  shortDays: ['D', 'L', 'M', 'M', 'G', 'V', 'S'],
+  goToToday: 'Oggi',
+  prevMonthAriaLabel: 'Mese precedente',
+  nextMonthAriaLabel: 'Mese successivo',
+  prevYearAriaLabel: 'Anno precedente',
+  nextYearAriaLabel: 'Anno successivo',
+  closeButtonAriaLabel: 'Chiudi',
+};
+
+const due = (n: number) => String(n).padStart(2, '0');
+/** "2027-01-10" ↔ Date locale (senza fuso orario, a mezzogiorno per evitare scarti). */
+export function isoInData(iso: string): Date | undefined {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!m) return undefined;
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), 12);
+  return d.getMonth() === Number(m[2]) - 1 ? d : undefined;
+}
+export const dataInIso = (d: Date) => `${d.getFullYear()}-${due(d.getMonth() + 1)}-${due(d.getDate())}`;
+const dataInTesto = (d?: Date) =>
+  d ? `${due(d.getDate())}/${due(d.getMonth() + 1)}/${d.getFullYear()}` : '';
+/** Accetta "10/01/2027", "10-1-27", "10.01.2027" e anche "2027-01-10". */
+export function testoInData(t: string): Date | null {
+  const s = t.trim();
+  const iso = isoInData(s);
+  if (iso) return iso;
+  const m = /^(\d{1,2})[/.-](\d{1,2})[/.-](\d{2}|\d{4})$/.exec(s);
+  if (!m) return null;
+  const anno = m[3]!.length === 2 ? 2000 + Number(m[3]) : Number(m[3]);
+  const d = new Date(anno, Number(m[2]) - 1, Number(m[1]), 12);
+  return d.getMonth() === Number(m[2]) - 1 && d.getDate() === Number(m[1]) ? d : null;
+}
+
+/** Campo data con il calendario di Fluent in italiano; il valore è "aaaa-mm-gg" ('' se vuoto). */
+export function CampoData(
+  props: Comuni & { valore: string; onChange: (iso: string) => void; min?: string; max?: string },
+) {
+  return (
+    <ConAiuto aiuto={props.aiuto}>
+      <Field
+        label={props.etichetta}
+        required={props.obbligatorio}
+        validationState={props.errore ? 'error' : 'none'}
+        validationMessage={props.errore}
+        hint={props.suggerimento}
+      >
+        <DatePicker
+          value={isoInData(props.valore) ?? null}
+          onSelectDate={(d) => props.onChange(d ? dataInIso(d) : '')}
+          formatDate={dataInTesto}
+          parseDateFromString={(t) => testoInData(t)}
+          allowTextInput
+          firstDayOfWeek={1}
+          strings={STRINGHE_CALENDARIO}
+          placeholder="gg/mm/aaaa"
+          minDate={props.min ? isoInData(props.min) : undefined}
+          maxDate={props.max ? isoInData(props.max) : undefined}
+          showGoToToday
+          highlightSelectedMonth
+        />
+      </Field>
+    </ConAiuto>
   );
 }

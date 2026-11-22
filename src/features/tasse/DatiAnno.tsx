@@ -207,6 +207,7 @@ function SchedaCu({
       <Griglia>
         <CampoTesto
           etichetta="Datore di lavoro"
+          lunghezzaMax={120}
           valore={cu.sostituto ?? ''}
           onChange={(v) => cambia('sostituto')(v.trim() === '' ? null : v)}
           suggerimento="Facoltativo, solo per riconoscerla"
@@ -229,6 +230,7 @@ function SchedaCu({
         />
         <CampoTesto
           etichetta="Giorni di lavoro (punto 6)"
+          lunghezzaMax={3}
           valore={String(cu.giorni_lavoro)}
           inputMode="numeric"
           errore={giorniValidi ? undefined : 'Da 1 a 365'}
@@ -542,6 +544,7 @@ function SchedaAliquote({ iniziale }: { iniziale: AliquoteRiga }) {
             )}
             <CampoTesto
               etichetta="Aliquota %"
+              lunghezzaMax={6}
               valore={testi.regionali[i] ?? ''}
               inputMode="decimal"
               onChange={(v) =>
@@ -570,6 +573,7 @@ function SchedaAliquote({ iniziale }: { iniziale: AliquoteRiga }) {
       <Griglia>
         <CampoTesto
           etichetta="Aliquota comunale %"
+          lunghezzaMax={6}
           valore={testi.comunale}
           inputMode="decimal"
           onChange={(v) => setTesti((t) => ({ ...t, comunale: v }))}
