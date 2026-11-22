@@ -256,6 +256,11 @@ export function spiegaErrore(e: unknown): string {
       non_in_prova: 'Sei in produzione: le fatture emesse non si cancellano più.',
       conferma_mancante: 'Scrivi PRODUZIONE in maiuscolo per confermare.',
       verifica_recente: 'Per sicurezza inserisci di nuovo password e codice, poi riprova.',
+      esempio_gia_caricato:
+        "I dati d'esempio ci sono già. Per caricarli di nuovo, prima usa «Cancella i dati di prova».",
+      esempio_fatture_presenti:
+        'Hai già delle fatture del 2026: prima usa «Cancella i dati di prova», poi carica gli esempi.',
+      accesso_negato: 'Per sicurezza esci e rientra con password e codice, poi riprova.',
     };
     return noti[e.codice] ?? e.dettaglio ?? e.message;
   }
@@ -343,6 +348,17 @@ export async function cancellaDatiProva(
     anagrafiche: number;
   }[];
   return r[0] ?? { fatture: 0, incassi: 0, anagrafiche: 0 };
+}
+
+export type EsitoDatiEsempio = { clienti: number; fatture: number; incassi: number; versamenti: number };
+
+/**
+ * Solo in prova (FR-032): riempie l'account con dati finti del 2026 (clienti, fatture, incassi, versamenti
+ * ENPAP). Li toglie «Cancella i dati di prova» e il passaggio alla produzione.
+ */
+export async function caricaDatiEsempio(): Promise<EsitoDatiEsempio> {
+  const r = controlla(await getSupabase().rpc('carica_dati_esempio')) as EsitoDatiEsempio[];
+  return r[0] ?? { clienti: 0, fatture: 0, incassi: 0, versamenti: 0 };
 }
 
 /** Irreversibile: cancella le prove e passa alla produzione. Serve la verifica recente. */
