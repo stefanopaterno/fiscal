@@ -43,6 +43,14 @@ test("se nel frattempo l'app si blocca, il dato aspetta il nuovo accesso e poi p
 }) => {
   await page.clock.install();
   await entraNelBrowser(page, utente!, codice);
+  // senza rete la pagina di blocco arriva dal service worker: aspettiamo che abbia finito di installarsi
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+    if (!navigator.serviceWorker.controller)
+      await new Promise((ok) =>
+        navigator.serviceWorker.addEventListener('controllerchange', ok, { once: true }),
+      );
+  });
 
   await context.setOffline(true);
   await page.evaluate(() => window.__fiscalProve!.accoda('in attesa durante il blocco'));
