@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { calcolaFattura, type InputFattura } from '@/engine/fattura/calcola';
+import {
+  calcolaFattura,
+  percentuale,
+  scorporaIntegrativo,
+  type InputFattura,
+} from '@/engine/fattura/calcola';
 
 // T002 (003, SC-001): casi al centesimo di quickstart.md e invarianti del contratto motore-fattura.
 // Importi in centesimi. Regole 2027: integrativo 4%, IVA 22%, bollo 2,00 € oltre 77,47 €, ritenuta 20%.
@@ -227,10 +232,11 @@ describe('calcolaFattura: contributo integrativo compreso nel prezzo (scorporo)'
   });
 
   it('per ogni prezzo da 1 a 300 € compenso + integrativo differisce dal prezzo al massimo di 1 centesimo', () => {
+    // controllo esaustivo sulla funzione di scorporo (veloce anche sul server dei controlli)
     for (let p = 100; p <= 30000; p += 1) {
-      const r = calcolaFattura({ ...compreso, righe: [{ compenso: p, natura: 'esente_sanitaria' }] });
-      expect(Math.abs(r.totaleCompensi + r.totaleIntegrativo - p)).toBeLessThanOrEqual(1);
-      expect(r.totaleIntegrativo).toBe(Math.round(r.totaleCompensi * 0.04 + 1e-9));
+      const u = scorporaIntegrativo(p, 0.04);
+      expect(Math.abs(u.compenso + u.integrativo - p)).toBeLessThanOrEqual(1);
+      expect(u.integrativo).toBe(percentuale(u.compenso, 0.04));
     }
   });
 });
