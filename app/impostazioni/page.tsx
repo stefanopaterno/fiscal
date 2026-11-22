@@ -51,6 +51,11 @@ const VOCI = [
     testo: 'I tuoi dati per le fatture, la sede, il bollo e le attività che svolgi.',
   },
   {
+    href: '/impostazioni/modalita/',
+    titolo: 'Prova e produzione',
+    testo: 'Fai prove e cancellale; quando sei pronto passi alle fatture vere (senza ritorno).',
+  },
+  {
     href: '/impostazioni/sicurezza/',
     titolo: 'Sicurezza',
     testo: 'Dove sono i tuoi dati, dispositivi collegati, blocco, codici di recupero e password.',

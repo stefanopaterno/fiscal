@@ -110,6 +110,7 @@ test('tutte le pagine: niente scorrimento laterale, aree da 44 px sul telefono, 
     ['/app/fatture/', 'Fatture'],
     ['/app/fatture/nuova/', 'Nuova fattura'],
     ['/app/adempimenti/', 'Adempimenti'],
+    ['/app/impostazioni/modalita/', 'Prova e produzione'],
   ] as const) {
     await page.goto(percorso);
     await expect(page.getByRole('heading', { name: titolo, level: 1 })).toBeVisible();

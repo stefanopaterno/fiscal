@@ -66,6 +66,15 @@ Storie: US1 configurazione, US2 fattura sanitaria, US3 fattura non sanitaria, US
 - [x] T023 Test di impaginazione esteso alle pagine nuove; nessun dato clinico (SC-007); aiuti su ogni campo
 - [ ] T024 Aggiornare la costituzione e lo stato di verifica delle regole 2027 dopo conferma con ENPAP e commercialista
 
+## Phase 10: Modalità prova e produzione (richiesta del 2026-11-22)
+
+- [x] T025 Test pgTAP `supabase/tests/database/008_modalita_prova.test.sql` (prova di default, cancellazioni, conferma, verifica recente, irreversibilità)
+- [x] T026 Migrazione `supabase/migrations/20261122000100_modalita_prova.sql`: `user_security.in_prova`, `produzione_dal`, trigger di irreversibilità, `elimina_fattura_prova`, `cancella_dati_prova`, `passa_a_produzione`
+- [x] T027 Fascia «Modalità prova» in `src/features/modalita/FasciaProva.tsx` montata nella Shell
+- [x] T028 Pagina `app/impostazioni/modalita/` (cancella prove, passa alla produzione con verifica recente)
+- [x] T029 Filigrana sulla stampa e «Elimina (è una prova)» nel dettaglio
+- [x] T030 Test e2e `tests/e2e/modalita.spec.ts`; test 006 e integrazione portati in produzione
+
 ## Dipendenze
 
 Phase 2 (motore e database) prima di tutto; US1 prima di US2; US4, US3/US7, US5, US6 dopo US2.

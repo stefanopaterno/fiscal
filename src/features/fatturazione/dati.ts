@@ -249,6 +249,9 @@ export function spiegaErrore(e: unknown): string {
       non_emessa: 'Questa operazione si fa solo su una fattura emessa.',
       oltre_il_netto: "L'importo supera quanto resta da incassare.",
       fattura_immutabile: 'Una fattura emessa non si può modificare: si corregge con una nota di credito.',
+      non_in_prova: 'Sei in produzione: le fatture emesse non si cancellano più.',
+      conferma_mancante: 'Scrivi PRODUZIONE in maiuscolo per confermare.',
+      verifica_recente: 'Per sicurezza inserisci di nuovo password e codice, poi riprova.',
     };
     return noti[e.codice] ?? e.dettaglio ?? e.message;
   }
@@ -308,4 +311,42 @@ export async function leggiRighe(fatturaIds: string[]): Promise<RigaFattura[]> {
   return controlla(
     await getSupabase().from('righe_fattura').select('*').in('fattura_id', fatturaIds).order('posizione'),
   ) as RigaFattura[];
+}
+
+// --- Modalità prova (FR-027..FR-030) ----------------------------------------
+
+export type Modalita = { in_prova: boolean; produzione_dal: string | null };
+
+export async function leggiModalita(): Promise<Modalita> {
+  const r = controlla(
+    await getSupabase().from('user_security').select('in_prova, produzione_dal').maybeSingle(),
+  ) as Modalita | null;
+  // senza la riga, per prudenza si considera produzione (come il database)
+  return r ?? { in_prova: false, produzione_dal: null };
+}
+
+/** Solo in prova: cancella una fattura emessa con i suoi incassi e le note di credito collegate. */
+export async function eliminaFatturaProva(id: string): Promise<void> {
+  controlla(await getSupabase().rpc('elimina_fattura_prova', { p_id: id }));
+}
+
+export async function cancellaDatiProva(
+  anagrafiche: boolean,
+): Promise<{ fatture: number; incassi: number; anagrafiche: number }> {
+  const r = controlla(await getSupabase().rpc('cancella_dati_prova', { p_anagrafiche: anagrafiche })) as {
+    fatture: number;
+    incassi: number;
+    anagrafiche: number;
+  }[];
+  return r[0] ?? { fatture: 0, incassi: 0, anagrafiche: 0 };
+}
+
+/** Irreversibile: cancella le prove e passa alla produzione. Serve la verifica recente. */
+export async function passaAProduzione(conferma: string, tieniAnagrafiche: boolean): Promise<void> {
+  controlla(
+    await getSupabase().rpc('passa_a_produzione', {
+      p_conferma: conferma,
+      p_tieni_anagrafiche: tieniAnagrafiche,
+    }),
+  );
 }

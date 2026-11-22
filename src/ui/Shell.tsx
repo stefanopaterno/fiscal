@@ -3,6 +3,7 @@
 import { Button, makeStyles, Text, tokens } from '@fluentui/react-components';
 import { Eye24Regular, EyeOff24Regular } from '@fluentui/react-icons';
 import { useOcchio } from '@/features/lock/useOcchio';
+import { FasciaProva } from '@/features/modalita/FasciaProva';
 import { StatoCoda } from '@/features/offline-queue/StatoCoda';
 import { LARGHEZZA_PC, Navigazione } from '@/ui/Navigazione';
 import type { ReactNode } from 'react';
@@ -63,6 +64,7 @@ const useStili = makeStyles({
     paddingBottom: 'calc(64px + env(safe-area-inset-bottom))',
     [`@media (min-width: ${LARGHEZZA_PC}px)`]: { paddingBottom: 0 },
   },
+  fascia: { marginBottom: tokens.spacingVerticalL },
   contenuto: {
     flexGrow: 1,
     width: '100%',
@@ -122,6 +124,11 @@ export function Shell({ children, navigazione = false }: { children: ReactNode; 
         {navigazione ? <Navigazione /> : null}
         <main className={s.contenuto}>
           <StatoCoda />
+          {navigazione ? (
+            <div className={s.fascia}>
+              <FasciaProva />
+            </div>
+          ) : null}
           {children}
         </main>
       </div>

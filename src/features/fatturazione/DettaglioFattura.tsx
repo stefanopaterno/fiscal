@@ -25,6 +25,7 @@ import { nomeCliente, type DatiCliente } from '@/engine/validazioni/cliente';
 import {
   creaNotaDiCredito,
   eliminaBozza,
+  eliminaFatturaProva,
   eliminaIncasso,
   leggiCliente,
   leggiFattura,
@@ -38,6 +39,7 @@ import {
   type RigaFattura,
 } from '@/features/fatturazione/dati';
 import { oggi, Riepilogo } from '@/features/fatturazione/NuovaFattura';
+import { useModalita } from '@/features/modalita/useModalita';
 import { ConAiuto } from '@/ui/AiutoContestuale';
 import { ImportoNascosto } from '@/ui/ImportoNascosto';
 import { CampoScelta, CampoTesto, Collegamento, Griglia, Scheda } from '@/ui/Moduli';
@@ -99,6 +101,8 @@ export function DettaglioFattura({ id, appenaEmessa }: { id: string; appenaEmess
   );
   const [chiediNota, setChiediNota] = useState(false);
   const [inCorso, setInCorso] = useState(false);
+  const [chiediElimina, setChiediElimina] = useState(false);
+  const modalita = useModalita();
 
   const carica = useCallback(async () => {
     try {
@@ -148,6 +152,18 @@ export function DettaglioFattura({ id, appenaEmessa }: { id: string; appenaEmess
       setChiediNota(false);
       setMessaggio({ tipo: 'errore', testo: spiegaErrore(e) });
     } finally {
+      setInCorso(false);
+    }
+  }
+
+  async function eliminaProva() {
+    setInCorso(true);
+    try {
+      await eliminaFatturaProva(f.id);
+      router.push('/fatture/');
+    } catch (e) {
+      setChiediElimina(false);
+      setMessaggio({ tipo: 'errore', testo: spiegaErrore(e) });
       setInCorso(false);
     }
   }
@@ -251,6 +267,15 @@ export function DettaglioFattura({ id, appenaEmessa }: { id: string; appenaEmess
                 Annulla con nota di credito
               </Button>
             ) : null}
+            {modalita?.in_prova && f.fotografia?.prova === true ? (
+              <Button
+                className={s.pulsante}
+                icon={<Delete20Regular />}
+                onClick={() => setChiediElimina(true)}
+              >
+                Elimina (è una prova)
+              </Button>
+            ) : null}
           </>
         )}
       </div>
@@ -315,6 +340,30 @@ export function DettaglioFattura({ id, appenaEmessa }: { id: string; appenaEmess
         <Incassi key={residuo} fattura={f} incassi={incassi} residuo={residuo} onCambio={carica} />
       ) : null}
 
+      <Dialog open={chiediElimina} onOpenChange={(_, d) => setChiediElimina(d.open)}>
+        <DialogSurface>
+          <DialogBody>
+            <DialogTitle>Eliminare questa fattura di prova?</DialogTitle>
+            <DialogContent>
+              Cancello la fattura con i suoi incassi e le eventuali note di credito collegate. In modalità
+              prova si può fare; in produzione non sarà più possibile.
+            </DialogContent>
+            <DialogActions>
+              <Button className={s.pulsante} onClick={() => setChiediElimina(false)}>
+                No
+              </Button>
+              <Button
+                appearance="primary"
+                className={s.pulsante}
+                disabled={inCorso}
+                onClick={() => void eliminaProva()}
+              >
+                Sì, elimina
+              </Button>
+            </DialogActions>
+          </DialogBody>
+        </DialogSurface>
+      </Dialog>
       <Dialog open={chiediNota} onOpenChange={(_, d) => setChiediNota(d.open)}>
         <DialogSurface>
           <DialogBody>

@@ -13,6 +13,12 @@ Tutte con **sicurezza dell'invocante** (soggette alla RLS: aal2 e proprietario),
 | vista `reddito_cassa` | per anno di incasso: incassato e parte di compenso incassata (in proporzione al netto) | — |
 | vista `riepilogo_iva` | per anno: imponibile, IVA, esente delle fatture emesse, note di credito sottratte | — |
 
+| `elimina_fattura_prova(p_id uuid)` | solo in prova: cancella una fattura (anche emessa) con incassi e note di credito collegate | `non_in_prova` |
+| `cancella_dati_prova(p_anagrafiche boolean) → (fatture, incassi, anagrafiche)` | solo in prova: cancella fatture e incassi, e se richiesto clienti, attività e profilo | `non_in_prova` |
+| `passa_a_produzione(p_conferma text, p_tieni_anagrafiche boolean)` | parola «PRODUZIONE», codice TOTP da ≤ 300 s; cancella le prove, `in_prova` → false per sempre (trigger), evento `passaggio_produzione` | `non_in_prova`, `conferma_mancante`, `verifica_recente` |
+
+In prova (`user_security.in_prova`, default true) `emetti_fattura` non controlla l'inizio attività e segna `fotografia.prova = true`.
+
 Gli errori hanno codice `P0001`, messaggio = codice dell'errore, `detail` in italiano semplice.
 Le viste sono `security_invoker` (soggette alla RLS di chi legge).
 

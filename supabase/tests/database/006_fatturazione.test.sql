@@ -9,6 +9,10 @@ insert into auth.users (id, email) values
   ('31111111-1111-1111-1111-111111111111', 'professionista@example.test'),
   ('32222222-2222-2222-2222-222222222222', 'altro@example.test');
 
+-- Queste regole valgono in produzione (la modalità prova ha il suo test, 008)
+update public.user_security set in_prova = false, produzione_dal = now()
+  where owner_id in ('31111111-1111-1111-1111-111111111111', '32222222-2222-2222-2222-222222222222');
+
 create temp table t_claims as
 select
   json_build_object('sub', '31111111-1111-1111-1111-111111111111', 'role', 'authenticated', 'aal', 'aal2',

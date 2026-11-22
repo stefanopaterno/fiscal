@@ -53,6 +53,11 @@ async function bozza(data: string, compenso = 8000) {
 
 beforeAll(async () => {
   utente = await creaUtente();
+  // regole di produzione (la modalità prova è controllata nel test 008 del database)
+  await admin
+    .from('user_security')
+    .update({ in_prova: false, produzione_dal: new Date().toISOString() })
+    .eq('owner_id', utente.id);
   db = await accediConPassword(utente);
   await configuraSecondoFattore(db);
   const profilo = await db.from('profilo_professionale').insert({

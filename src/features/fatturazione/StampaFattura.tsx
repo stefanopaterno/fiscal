@@ -63,6 +63,30 @@ const useStili = makeStyles({
     '@media (max-width: 600px)': { padding: '8mm 6mm', minHeight: 'auto' },
     '@media print': { boxShadow: 'none', padding: 0, minHeight: 'auto', maxWidth: 'none' },
   },
+  foglioProva: { position: 'relative', overflow: 'hidden' },
+  filigrana: {
+    position: 'absolute',
+    inset: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    pointerEvents: 'none',
+    fontSize: '72pt',
+    fontWeight: 700,
+    color: 'rgba(200, 0, 0, 0.12)',
+    transform: 'rotate(-30deg)',
+    fontFamily: 'Arial, sans-serif',
+  },
+  avvisoProva: {
+    border: '1pt solid #c00',
+    color: '#c00',
+    padding: '2mm 3mm',
+    marginBottom: '5mm',
+    fontFamily: 'Arial, sans-serif',
+    fontSize: '9.5pt',
+    fontWeight: 700,
+    textAlign: 'center',
+  },
   intestazione: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -136,6 +160,7 @@ export function StampaFattura({ id }: { id: string }) {
   const rif = f.fotografia.fattura_stornata as { numero: number; anno: number; data: string } | undefined;
   const aliquotaIntegrativo = (f.fotografia.regole as { aliquota_integrativo?: number } | undefined)
     ?.aliquota_integrativo;
+  const prova = f.fotografia.prova === true;
   const segno = f.tipo === 'nota_credito' ? '−' : '';
   const euro = (v: number) => `${segno}${formattaEuro(v)}`;
   const sede = (x: {
@@ -176,7 +201,15 @@ export function StampaFattura({ id }: { id: string }) {
         </ConAiuto>
       </div>
 
-      <article className={s.foglio} aria-label={titoloDocumento(f)}>
+      <article className={prova ? `${s.foglio} ${s.foglioProva}` : s.foglio} aria-label={titoloDocumento(f)}>
+        {prova ? (
+          <>
+            <div className={s.filigrana} aria-hidden="true">
+              PROVA
+            </div>
+            <p className={s.avvisoProva}>DOCUMENTO DI PROVA — SENZA VALORE FISCALE</p>
+          </>
+        ) : null}
         <header className={s.intestazione}>
           <div>
             <p className={s.nome}>

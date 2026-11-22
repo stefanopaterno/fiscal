@@ -23,6 +23,7 @@ const DESCRIZIONI: Record<string, { testo: string; attenzione?: boolean }> = {
   frase_annullata: { testo: 'Ripristino annullato' },
   frase_completata: { testo: 'Ripristino completato con la frase', attenzione: true },
   frase_errata: { testo: 'Frase di recupero sbagliata', attenzione: true },
+  passaggio_produzione: { testo: 'Passaggio alla produzione: fine della modalità prova', attenzione: true },
 };
 
 type Evento = { id: string; tipo: string; avvenuto_il: string; dispositivo: string | null };

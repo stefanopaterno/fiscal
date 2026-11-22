@@ -10,6 +10,10 @@
 
 ## Clarifications
 
+### Session 2026-11-22
+
+- Q: Come si fanno le prove senza sporcare la numerazione legale? → A: Modalità prova per account, prove cancellabili; il passaggio alla produzione le cancella ed è irreversibile (FR-027..FR-030).
+
 ### Session 2026-11-20
 
 - Q: Per le fatture verso enti e aziende l'app produce il file XML conforme o solo un riepilogo dei dati? → A: Nella prima versione solo un riepilogo dei dati da ricopiare in un programma o portale esterno; il file XML conforme è rinviato a una versione successiva.
@@ -181,6 +185,10 @@ L'utente può emettere fatture per attività che non sono quella di psicologo (p
 - **FR-023**: Il sistema MUST applicare l'IVA al 22% a ogni voce non sanitaria o riferita ad attività diversa da quella di psicologo, salvo esenzione indicata, e MUST NOT includerla nelle preparazioni per il Sistema Tessera Sanitaria.
 - **FR-024**: Il sistema MUST calcolare e mostrare nell'anno la quota di operazioni imponibili sul totale (imponibili / imponibili più esenti) e il pro-rata di detraibilità dell'IVA sugli acquisti, arrotondato all'unità, con spiegazione.
 - **FR-025**: Il sistema MUST avvisare quando la quota imponibile supera una soglia di attenzione configurabile e MUST NOT bloccare l'emissione.
+- **FR-027**: Ogni account MUST partire in **modalità prova**: le fatture, anche emesse, si possono cancellare (singolarmente o tutte insieme, con o senza clienti, attività e configurazione), la data di inizio attività non è controllata e i documenti emessi riportano «PROVA — senza valore fiscale».
+- **FR-028**: Finché l'account è in prova, ogni pagina protetta MUST mostrarlo con una fascia ben visibile.
+- **FR-029**: Il passaggio alla **produzione** MUST cancellare fatture e incassi di prova (clienti, attività e configurazione solo se l'utente non sceglie di tenerli), MUST richiedere la parola di conferma «PRODUZIONE» e password e codice inseriti da non più di 5 minuti, e MUST essere registrato nel registro di sicurezza.
+- **FR-030**: Il passaggio alla produzione MUST essere irreversibile: nessuna funzione dell'app né modifica diretta del database (nemmeno dell'amministratore) può riportare l'account in prova. In produzione valgono numerazione legale e immutabilità (FR-003, FR-013).
 - **FR-026**: Il sistema MUST segnalare che la presenza di operazioni imponibili comporta liquidazioni, registri e dichiarazione IVA, fuori ambito di questa specifica (TODO nella costituzione).
 
 ### Key Entities *(include if feature involves data)*
