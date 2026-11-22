@@ -69,11 +69,14 @@ src/engine/regole/irpef/{tipi,2026,2027,index}.ts   # scaglioni, detrazioni, acc
 src/engine/irpef/
 ├── anno.ts          # calcolaAnno
 ├── scenario.ts      # confrontaScenario
-├── acconti.ts       # calcolaAcconti
+├── acconti.ts       # calcolaAcconti, stimaVersamenti
+├── enpap.ts         # contributiEnpap
+├── cassa.ts         # redditoDiCassa (incassi → reddito e ritenute)
+├── previsione.ts    # differenzaPrevista (metodo previsionale)
 └── piani.ts         # pianiVersamento
 src/features/tasse/  # quadro, dati dell'anno, versamenti, strategia
 app/tasse/{,dati,versamenti,strategia}/page.tsx
-supabase/migrations/2026112200xx_imposte.sql
+supabase/migrations/20261122000200_imposte.sql
 supabase/tests/database/009_imposte.test.sql
 tests/unit/irpef-*.test.ts, tests/e2e/tasse.spec.ts
 ```

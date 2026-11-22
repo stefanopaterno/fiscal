@@ -8,6 +8,10 @@ describe('importi in centesimi', () => {
     expect(euroInCentesimi('1.234,56')).toBe(123456);
     expect(euroInCentesimi(' 77,47 € ')).toBe(7747);
     expect(euroInCentesimi('80.50')).toBe(8050);
+    // il punto da solo con gruppi di tre cifre separa le migliaia
+    expect(euroInCentesimi('38.000')).toBe(3800000);
+    expect(euroInCentesimi('1.234.567')).toBe(123456700);
+    expect(euroInCentesimi('8.448,09')).toBe(844809);
   });
   it('rifiuta testi non validi', () => {
     for (const t of ['', 'abc', '1,234', '-5', '12,3,4']) expect(euroInCentesimi(t)).toBeNull();

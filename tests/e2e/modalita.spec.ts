@@ -35,15 +35,13 @@ test('in prova emetto, stampo con filigrana e cancello; poi passo alla produzion
     comune: 'Roma',
     provincia: 'RM',
   });
-  await admin
-    .from('attivita')
-    .insert({
-      ...owner,
-      id: randomUUID(),
-      nome: 'Psicologo',
-      natura_iva: 'esente_sanitaria',
-      predefinita: true,
-    });
+  await admin.from('attivita').insert({
+    ...owner,
+    id: randomUUID(),
+    nome: 'Psicologo',
+    natura_iva: 'esente_sanitaria',
+    predefinita: true,
+  });
   await admin.from('clienti').insert({
     ...owner,
     id: randomUUID(),

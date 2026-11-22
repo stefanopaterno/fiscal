@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { calcolaAcconti, stimaVersamenti } from '@/engine/irpef/acconti';
 import { calcolaAnno, type InputAnno } from '@/engine/irpef/anno';
 import { contributiEnpap } from '@/engine/irpef/enpap';
+import { differenzaPrevista } from '@/engine/irpef/previsione';
 import { ErroreIrpef } from '@/engine/regole/irpef';
 
 // T015 (US3, FR-013, FR-015, FR-024, FR-028): acconti storico e previsionale, primo anno, ENPAP.
@@ -85,6 +86,25 @@ describe('calcolaAcconti', () => {
     const a = calcolaAcconti(anno2026, { metodo: 'storico', soggettoIsa: false });
     expect(a.nonDovuto).toBe(true);
     expect(a.accontoAddComunale).toBe(0);
+  });
+});
+
+describe('differenzaPrevista', () => {
+  it('2026 → regole 2027: imposta in più della P.IVA a parità di CU', () => {
+    // CU 38.000 + 10.000 con gli scaglioni 2027: lorda 13.040, detrazione 173,62 ⇒ 12.866,38 − 8.448,09
+    const p = differenzaPrevista(caso2, 10_000_00);
+    expect(p).toMatchObject({
+      differenzaAttesa: 4_418_29,
+      annoRegole: 2027,
+      regoleDellAnnoDopo: true,
+      avviso: null,
+    });
+  });
+
+  it('2027 → nessuna regola 2028: usa il 2027 e avvisa', () => {
+    const p = differenzaPrevista({ ...caso2, anno: 2027 }, 10_000_00);
+    expect(p.annoRegole).toBe(2027);
+    expect(p.avviso).toMatch(/2028/);
   });
 });
 

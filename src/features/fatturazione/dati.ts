@@ -125,9 +125,12 @@ function controlla<T>(r: { data: T; error: { message: string; details?: string |
   return r.data;
 }
 
-const METADATI = ['id', 'owner_id', 'versione', 'creato_il', 'aggiornato_il', 'anno'];
-function soloDati(riga: Record<string, unknown>): Record<string, unknown> {
-  return Object.fromEntries(Object.entries(riga).filter(([k]) => !METADATI.includes(k)));
+const METADATI = ['id', 'owner_id', 'versione', 'creato_il', 'aggiornato_il'];
+/** Colonne calcolate dal database, da non inviare (nelle fatture `anno` deriva dalla data). */
+const CALCOLATE: Record<string, string[]> = { fatture: ['anno'] };
+function soloDati(tabella: string, riga: Record<string, unknown>): Record<string, unknown> {
+  const escluse = [...METADATI, ...(CALCOLATE[tabella] ?? [])];
+  return Object.fromEntries(Object.entries(riga).filter(([k]) => !escluse.includes(k)));
 }
 
 /**
@@ -145,7 +148,7 @@ export async function salva(
     tabella,
     operazione: riga.versione === 0 ? 'inserisci' : 'modifica',
     versioneBase: riga.versione === 0 ? undefined : riga.versione,
-    payload: soloDati(riga),
+    payload: soloDati(tabella, riga),
   });
   const inCoda = (await getCoda().elenco()).some((v) => v.id === riga.id);
   return inCoda

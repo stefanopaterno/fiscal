@@ -2,6 +2,8 @@
 
 import { makeStyles, mergeClasses, tokens } from '@fluentui/react-components';
 import {
+  Calculator24Filled,
+  Calculator24Regular,
   ClipboardTaskListLtr24Filled,
   ClipboardTaskListLtr24Regular,
   DocumentText24Filled,
@@ -33,6 +35,12 @@ export const VOCI: Voce[] = [
     iconaAttiva: <DocumentText24Filled />,
   },
   { href: '/clienti/', etichetta: 'Clienti', icona: <People24Regular />, iconaAttiva: <People24Filled /> },
+  {
+    href: '/tasse/',
+    etichetta: 'Tasse',
+    icona: <Calculator24Regular />,
+    iconaAttiva: <Calculator24Filled />,
+  },
   {
     href: '/adempimenti/',
     etichetta: 'Adempimenti',

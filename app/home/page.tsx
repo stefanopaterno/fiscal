@@ -10,8 +10,8 @@ import { ProtectedPage } from '@/ui/ProtectedPage';
 import { Shell } from '@/ui/Shell';
 
 /**
- * /app/home/ — home protetta (T036). Scorciatoie verso le fatture (003); i numeri del netto reale
- * arrivano con le prossime specifiche (motore IRPEF, spese). Visibile solo con password e codice (aal2).
+ * /app/home/ — home protetta (T036). Scorciatoie verso fatture (003) e tasse (001); il netto reale
+ * arriva con le prossime specifiche (spese, accantonamento). Visibile solo con password e codice (aal2).
  */
 const useStili = makeStyles({
   colonna: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL, maxWidth: '720px' },
@@ -46,8 +46,8 @@ export default function PaginaHome() {
           <BannerRipristinoAnnullato />
           <Text>
             Da qui prepari ed emetti le fatture, tieni l&apos;elenco dei pazienti e i dati per il Sistema
-            Tessera Sanitaria. Il netto reale, le tasse da mettere da parte e le scadenze arriveranno nei
-            prossimi aggiornamenti.
+            Tessera Sanitaria. In Tasse vedi quanto pagherai sul totale dei tuoi redditi e quanto mettere da
+            parte per giugno e novembre.
           </Text>
           <div className={s.scorciatoie}>
             <Button appearance="primary" className={s.esci} onClick={() => router.push('/fatture/nuova/')}>
@@ -55,6 +55,9 @@ export default function PaginaHome() {
             </Button>
             <Button className={s.esci} onClick={() => router.push('/clienti/scheda/')}>
               Nuovo cliente
+            </Button>
+            <Button className={s.esci} onClick={() => router.push('/tasse/')}>
+              Le mie tasse
             </Button>
             <NextLink href="/impostazioni/attivita/" className={s.link}>
               Configura la partita IVA

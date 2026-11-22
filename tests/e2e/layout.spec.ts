@@ -111,6 +111,10 @@ test('tutte le pagine: niente scorrimento laterale, aree da 44 px sul telefono, 
     ['/app/fatture/nuova/', 'Nuova fattura'],
     ['/app/adempimenti/', 'Adempimenti'],
     ['/app/impostazioni/modalita/', 'Prova e produzione'],
+    ['/app/tasse/', 'Tasse'],
+    ['/app/tasse/dati/', "Dati dell'anno"],
+    ['/app/tasse/versamenti/', 'Versamenti'],
+    ['/app/tasse/strategia/', 'Strategia dei versamenti'],
   ] as const) {
     await page.goto(percorso);
     await expect(page.getByRole('heading', { name: titolo, level: 1 })).toBeVisible();
