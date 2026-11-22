@@ -45,7 +45,8 @@ Nessun dato clinico (le spese sanitarie personali sono solo importi e categoria,
 | voce | text | codice delle regole (R-03), es. `previdenza_complementare`, `spese_sanitarie` |
 | modalita | enum come `spese.modalita` | |
 | ha_giustificativo | boolean | |
-| nota | text ≤ 200 | facoltativa, mai dati clinici |
+
+Nessun campo di testo libero: sulle spese sanitarie potrebbe finire un dato clinico (test 007).
 
 ### `impostazioni_spese` (una riga per utente)
 
