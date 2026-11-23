@@ -87,6 +87,7 @@ function QuadroAnnoPerAnno({ anno, setAnno }: { anno: number; setAnno: (a: numbe
 
   const collegamenti = (
     <div className={s.collegamenti}>
+      <Collegamento href={`/tasse/previsione/?anno=${anno}`}>Previsione mese per mese</Collegamento>
       <Collegamento href={`/tasse/dati/?anno=${anno}`}>Dati dell&apos;anno e CU</Collegamento>
       <Collegamento href={`/tasse/versamenti/?anno=${anno}`}>Versamenti</Collegamento>
       <Collegamento href={`/tasse/strategia/?anno=${anno}`}>Strategia dei versamenti</Collegamento>

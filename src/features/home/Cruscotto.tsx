@@ -48,6 +48,7 @@ import {
 import { dataItaliana, ETICHETTA_STATO, titoloDocumento } from '@/features/fatturazione/DettaglioFattura';
 import { BoxSalvadanaio } from '@/features/accantonamento/BoxHome';
 import { AvvisoNovita } from '@/features/novita/AvvisoNovita';
+import { quadroPrevisione, type QuadroPrevisione } from '@/features/previsione/dati';
 import { quadroAccantonamento, type QuadroAccantonamento } from '@/features/accantonamento/dati';
 import { BoxConsigli } from '@/features/spese/BoxConsigli';
 import type { DatiRaccolti } from '@/features/tasse/dati';
@@ -176,6 +177,7 @@ type Dati = {
   clienti: Map<string, Cliente>;
   tasse: DatiRaccolti | null;
   salvadanaio: QuadroAccantonamento | null;
+  previsione: QuadroPrevisione | null;
 };
 
 export function Cruscotto() {
@@ -197,8 +199,9 @@ export function Cruscotto() {
       leggiIncassi(),
       leggiClienti(),
       annoTasse ? quadroAccantonamento(annoTasse).catch(() => null) : Promise.resolve(null),
+      annoTasse ? quadroPrevisione(annoTasse).catch(() => null) : Promise.resolve(null),
     ])
-      .then(([profilo, attivita, fatture, incassi, clienti, salvadanaio]) => {
+      .then(([profilo, attivita, fatture, incassi, clienti, salvadanaio, previsione]) => {
         if (!vivo) return;
         setDati({
           profilo,
@@ -208,6 +211,7 @@ export function Cruscotto() {
           clienti: new Map(clienti.map((c) => [c.id, c])),
           tasse: salvadanaio?.raccolti ?? null,
           salvadanaio,
+          previsione,
         });
       })
       .catch(() => vivo && setErrore(true));
@@ -260,7 +264,7 @@ export function Cruscotto() {
         </MessageBar>
       ) : null}
 
-      {dati ? <Evidenza tasse={dati.tasse} anno={anno} /> : <Caricamento />}
+      {dati ? <Evidenza tasse={dati.tasse} previsione={dati.previsione} anno={anno} /> : <Caricamento />}
 
       <AvvisoNovita />
 
@@ -321,9 +325,52 @@ function Caricamento() {
 }
 
 /** Il riquadro in evidenza: quanto mettere da parte per le tasse dell'anno dopo. */
-function Evidenza({ tasse, anno }: { tasse: DatiRaccolti | null; anno: number }) {
+function Evidenza({
+  tasse,
+  previsione,
+  anno,
+}: {
+  tasse: DatiRaccolti | null;
+  previsione: QuadroPrevisione | null;
+  anno: number;
+}) {
   const s = useStili();
   const router = useRouter();
+  // FR-017 (006): tasse previste per l'anno e prossimo grande versamento, con lo scenario prudente a parte
+  const sc = previsione && !previsione.manca ? previsione.scenari : null;
+  if (sc && (sc.atteso.compensi > 0 || previsione!.proiezione.metodo)) {
+    const p = previsione!.prossimo;
+    const mese = p
+      ? new Date(Number(p.mese.slice(0, 4)), Number(p.mese.slice(5, 7)) - 1, 1).toLocaleDateString('it-IT', { month: 'long', year: 'numeric' })
+      : null;
+    return (
+      <div className={s.evidenza}>
+        <div className={s.evidenzaTesto}>
+          <Text weight="semibold">Tasse e contributi previsti per il {anno}</Text>
+          <span className={s.evidenzaImporto}>
+            <ImportoNascosto valore={formattaEuro(sc.atteso.totale)} />
+          </span>
+          <Text className={s.evidenzaDettaglio}>
+            {p && mese ? (
+              <>
+                Prossimo versamento: {mese} <ImportoNascosto valore={formattaEuro(p.totale)} /> ·{' '}
+              </>
+            ) : null}
+            prudente <ImportoNascosto valore={formattaEuro(sc.prudente.totale)} /> · stima
+          </Text>
+        </div>
+        <Button
+          className={s.evidenzaPulsante}
+          appearance="secondary"
+          icon={<ChevronRight20Regular />}
+          iconPosition="after"
+          onClick={() => router.push(`/tasse/previsione/?anno=${anno}`)}
+        >
+          Vedi la previsione
+        </Button>
+      </div>
+    );
+  }
   if (!tasse || tasse.cu.length === 0) {
     return (
       <div className={s.evidenza}>
