@@ -168,6 +168,28 @@ export async function leggiVersamentiImposte(): Promise<VersamentoImpostaRiga[]>
   ) as VersamentoImpostaRiga[];
 }
 
+/** Dichiarazione dell'anno (specifica 004): 730 dell'anno di partenza o esito del Modello Redditi. */
+export type Dichiarazione = Metadati & {
+  anno: number;
+  tipo: '730' | 'redditi';
+  imposta_netta: number | null;
+  differenza: number | null;
+  acconti_trattenuti: number | null;
+  credito: number;
+  debito: number;
+  rimborso_in_busta: boolean | null;
+  credito_scelta: 'compensazione' | 'rimborso' | null;
+  credito_stato: 'disponibile' | 'richiesto' | 'incassato' | 'utilizzato' | null;
+  credito_usato: number;
+  credito_incassato_il: string | null;
+  chiuso_il: string | null;
+};
+
+export async function leggiDichiarazione(anno: number): Promise<Dichiarazione | null> {
+  const r = await getSupabase().from('dichiarazioni').select('*').eq('anno', anno).maybeSingle();
+  return controlla(r) as Dichiarazione | null;
+}
+
 export async function elimina(
   tabella: 'certificazioni_uniche' | 'versamenti_previdenza' | 'versamenti_imposte',
   id: string,
@@ -243,6 +265,7 @@ export async function raccogliAnno(anno: number): Promise<DatiRaccolti> {
     beniR,
     oneriR,
     impSpese,
+    partenza,
   ] = await Promise.all([
     leggiCu(anno),
     leggiDatiAnno(anno),
@@ -257,6 +280,7 @@ export async function raccogliAnno(anno: number): Promise<DatiRaccolti> {
     leggiBeni(),
     leggiOneri(anno),
     leggiImpostazioniSpese(),
+    leggiDichiarazione(anno - 1).catch(() => null),
   ]);
   const cassa = redditoDiCassa(anno, fatture, incassi);
   const manuale = dati?.reddito_professionale_manuale != null;
@@ -340,7 +364,11 @@ export async function raccogliAnno(anno: number): Promise<DatiRaccolti> {
     altreDetrazioni: (dati?.altre_detrazioni ?? 0) + (oneri?.detrazioni ?? 0),
     addizionali: aliquoteMotore(aliquote),
     accontiVersati: {
-      irpef: somma(['irpef_acconto_1', 'irpef_acconto_2']),
+      // anno di partenza (004, FR-029): gli acconti trattenuti in busta paga dal 730 dell'anno prima valgono
+      // come versati, se non hai registrato a mano versamenti di acconto IRPEF per l'anno
+      irpef:
+        somma(['irpef_acconto_1', 'irpef_acconto_2']) ||
+        (partenza?.tipo === '730' ? (partenza.acconti_trattenuti ?? 0) : 0),
       addComunale: somma(['add_comunale_acconto']),
     },
   };

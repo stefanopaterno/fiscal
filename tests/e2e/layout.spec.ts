@@ -58,6 +58,7 @@ test.afterEach(async () => {
 test('tutte le pagine: niente scorrimento laterale, aree da 44 px sul telefono, aiuti presenti', async ({
   page,
 }, info) => {
+  test.setTimeout(90_000); // molte pagine da controllare
   const telefono = info.project.name !== 'pc';
 
   await page.goto('/app/accesso/');
@@ -125,6 +126,10 @@ test('tutte le pagine: niente scorrimento laterale, aree da 44 px sul telefono, 
     ['/app/documenti/', 'Documenti'],
     ['/app/salvadanaio/', 'Salvadanaio'],
     ['/app/novita/', 'Novità'],
+    ['/app/dichiarazione/', 'Dichiarazione'],
+    ['/app/dichiarazione/scadenze/', 'Scadenze'],
+    ['/app/dichiarazione/partenza/', 'Anno di partenza'],
+    ['/app/dichiarazione/riepilogo/', 'Riepilogo per il commercialista'],
   ] as const) {
     await page.goto(percorso);
     await expect(page.getByRole('heading', { name: titolo, level: 1 })).toBeVisible();

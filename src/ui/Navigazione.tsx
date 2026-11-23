@@ -15,6 +15,8 @@ import {
   Calculator24Regular,
   ClipboardTaskListLtr24Filled,
   Folder24Filled,
+  DocumentCheckmark24Filled,
+  DocumentCheckmark24Regular,
   Folder24Regular,
   News24Filled,
   News24Regular,
@@ -66,6 +68,12 @@ export const VOCI: Voce[] = [
     etichetta: 'Salvadanaio',
     icona: <Savings24Regular />,
     iconaAttiva: <Savings24Filled />,
+  },
+  {
+    href: '/dichiarazione/',
+    etichetta: 'Dichiarazione',
+    icona: <DocumentCheckmark24Regular />,
+    iconaAttiva: <DocumentCheckmark24Filled />,
   },
   {
     href: '/documenti/',
