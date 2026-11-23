@@ -6,7 +6,9 @@ import {
   EyeOff24Regular,
   WeatherMoon24Regular,
   WeatherSunny24Regular,
+  Map24Regular,
 } from '@fluentui/react-icons';
+import { useRouter } from 'next/navigation';
 import { useOcchio } from '@/features/lock/useOcchio';
 import { FasciaProva } from '@/features/modalita/FasciaProva';
 import { StatoCoda } from '@/features/offline-queue/StatoCoda';
@@ -111,6 +113,23 @@ export function PulsanteOcchio() {
   );
 }
 
+/** Pulsante del tour: apre la pagina con il giro guidato di Fiscal. */
+export function PulsanteTour() {
+  const s = useStili();
+  const router = useRouter();
+  return (
+    <Button
+      appearance="subtle"
+      shape="circular"
+      className={s.occhio}
+      icon={<Map24Regular />}
+      aria-label="Tour di Fiscal"
+      title="Tour di Fiscal"
+      onClick={() => router.push('/tour/')}
+    />
+  );
+}
+
 /** Pulsante del tema: passa da chiaro (predefinito) a scuro e viceversa; la scelta resta sul dispositivo. */
 export function PulsanteTema() {
   const s = useStili();
@@ -136,6 +155,7 @@ export function Shell({ children, navigazione = false }: { children: ReactNode; 
       <div className={s.barra}>
         <Marchio />
         <div className={s.comandi}>
+          {navigazione ? <PulsanteTour /> : null}
           <PulsanteTema />
           <PulsanteOcchio />
         </div>
