@@ -18,6 +18,10 @@
 - Q: Si avvisa quali documenti vanno conservati a norma altrove? → A: Sì: per i tipi con obbligo di conservazione digitale (per esempio le fatture elettroniche) compare un avviso con la spiegazione di cosa va conservato a norma e come (servizio gratuito dell'Agenzia delle Entrate o altro conservatore), e la checklist annuale della specifica 004 ha una voce di verifica. L'app non fa la conservazione.
 - Q: Cosa succede quando si elimina un documento? → A: Finisce in un cestino per 30 giorni, da cui si può ripristinare; dopo 30 giorni è eliminato per sempre; si può svuotare il cestino subito con conferma esplicita; per i documenti da conservare per legge compare comunque un avviso prima dell'eliminazione.
 
+### Session 2026-11-23
+
+- Richiesta dell'utente: "essendo una partita IVA ordinaria manca la parte di raccolta delle fatture in ingresso". → Decisione: importazione in blocco delle fatture ricevute scaricate dall'utente dal portale "Fatture e Corrispettivi" dell'Agenzia delle Entrate (file ZIP, XML e XML firmati .p7m): ogni fattura diventa un documento dell'archivio e una spesa proposta da confermare (FR-016, FR-017). Lo scarico automatico dal Sistema di Interscambio resta fuori ambito: richiede un canale accreditato e un server, che l'app per scelta non ha.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Archiviare un documento ricevuto (Priority: P1)
@@ -129,6 +133,9 @@ L'utente seleziona documenti o un'intera annualità e li esporta in un archivio 
 - **FR-014**: Il sistema MUST mostrare che l'archivio dell'app non è una conservazione a norma dei documenti fiscali e, per i tipi di documento con obbligo di conservazione digitale (per esempio le fatture elettroniche emesse e ricevute), MUST mostrare un avviso che spiega cosa va conservato a norma e come (servizio gratuito dell'Agenzia delle Entrate o altro conservatore); le regole di conservazione MUST stare nel set di regole dell'anno con fonte e stato di verifica.
 - **FR-015**: Quando l'utente carica un file XML di fattura elettronica ricevuta, il sistema MUST leggerne i dati strutturati (fornitore, data, numero, importo, IVA) e proporre la precompilazione della spesa nella specifica 008, MUST richiedere all'utente la conferma di categoria e deducibilità, MUST segnalare un file XML non valido o dati incoerenti e MUST NOT leggere automaticamente il contenuto di PDF e foto.
 
+- **FR-016**: Il sistema MUST permettere di importare in una volta sola più fatture elettroniche ricevute: file XML, file XML firmati (.p7m) e archivi ZIP che li contengono, come quelli scaricati dal portale "Fatture e Corrispettivi". Ogni fattura importata MUST diventare un documento dell'archivio con il file originale e MUST comparire in una lista "da classificare" con fornitore, data, numero, importo e IVA letti dal file.
+- **FR-017**: Durante l'importazione il sistema MUST riconoscere le fatture già presenti (stesso fornitore, numero e data, o stesso file) e MUST NOT crearle due volte; MUST indicare quante fatture ha importato, saltato perché già presenti e scartato perché non leggibili, con il motivo. Dalla lista "da classificare" l'utente MUST poter creare la spesa (specifica 008) confermando categoria e deducibilità, oppure segnare la fattura come "non è una spesa dell'attività".
+
 ### Key Entities *(include if feature involves data)*
 
 - **Documento**: file, tipo, anno, data, emittente, importo, note, stato, versione, impronta del file (per i duplicati).
@@ -154,4 +161,4 @@ L'utente seleziona documenti o un'intera annualità e li esporta in un archivio 
 - I consensi informati dei pazienti (specifica 005) restano gestiti nella loro specifica e non vanno in questo archivio generale.
 - Il riconoscimento automatico del testo (lettura del contenuto di PDF e foto) è rinviato; fa eccezione la lettura dei dati strutturati dei file XML delle fatture elettroniche ricevute.
 - Per i documenti con dati personali valgono le regole di riservatezza della costituzione e il rischio residuo dei dati in chiaro accettato dall'utente; cifratura dei file da valutare nel piano.
-- **Fuori ambito**: conservazione sostitutiva a norma, riconoscimento automatico del testo, importazione automatica da posta o da cassetto fiscale, firma digitale, consensi dei pazienti (005), pacchetto per il commercialista (009).
+- **Fuori ambito**: conservazione sostitutiva a norma, riconoscimento automatico del testo, importazione automatica da posta o dal Sistema di Interscambio (lo scarico dal portale resta manuale, l'importazione dei file scaricati è in FR-016), firma digitale, consensi dei pazienti (005), pacchetto per il commercialista (009).
