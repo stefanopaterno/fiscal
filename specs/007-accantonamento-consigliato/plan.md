@@ -31,7 +31,7 @@ primo anno; netto reale disponibile; margine di sicurezza e conto con interessi.
 src/engine/accantonamento/{incasso,percentuale,copertura,piano}.ts
 src/engine/regole/accantonamento/index.ts
 src/features/accantonamento/{dati,Accantonamento,Promemoria}.tsx
-app/accantonamento/page.tsx
+app/salvadanaio/page.tsx
 supabase/migrations/20261123000200_accantonamento.sql
 supabase/tests/database/013_accantonamento.test.sql
 tests/unit/accantonamento.test.ts, tests/e2e/accantonamento.spec.ts

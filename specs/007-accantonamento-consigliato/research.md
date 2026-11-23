@@ -13,9 +13,11 @@
   4. **meno la ritenuta d'acconto** della quota incassata (l'ha già versata il cliente).
   Il margine di sicurezza (10% nel primo anno) si applica a imposte e soggettivo, mostrato a parte. Le quote
   sono quelle dell'incasso (in proporzione al netto della fattura, come in `redditoDiCassa`).
-- **Ordine degli incassi**: l'effetto di un incasso si calcola togliendolo dall'anno attuale (ultimo incasso
-  "marginale"): la somma degli effetti può differire di poco dal totale; il totale dell'anno è comunque
-  controllato dalla copertura (R-03).
+- **Ordine degli incassi**: gli incassi dell'anno si calcolano in ordine di data, ognuno sopra a quelli
+  precedenti (reddito senza incassi + compensi cumulati): la somma degli effetti coincide con l'effetto totale
+  della partita IVA sull'anno. Il totale è comunque controllato dalla copertura (R-03).
+- **Senza CU** dell'anno il calcolo non si fa (il motore 001 parte dalla busta paga: senza, l'effetto sul
+  cumulo sarebbe sottostimato): la pagina chiede la CU e non propone accantonamenti.
 - Base dei dati: anno in corso fino a oggi (`raccogliAnno`). La previsione di fine anno arriva con la 006.
 
 ## R-02 — Percentuale del mese (FR-003)

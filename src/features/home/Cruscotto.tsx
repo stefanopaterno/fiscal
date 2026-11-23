@@ -46,8 +46,10 @@ import {
   type Profilo,
 } from '@/features/fatturazione/dati';
 import { dataItaliana, ETICHETTA_STATO, titoloDocumento } from '@/features/fatturazione/DettaglioFattura';
+import { BoxSalvadanaio } from '@/features/accantonamento/BoxHome';
+import { quadroAccantonamento, type QuadroAccantonamento } from '@/features/accantonamento/dati';
 import { BoxConsigli } from '@/features/spese/BoxConsigli';
-import { raccogliAnno, type DatiRaccolti } from '@/features/tasse/dati';
+import type { DatiRaccolti } from '@/features/tasse/dati';
 import { GrigliaKpi, Kpi } from '@/features/tasse/componenti';
 import { ConAiuto } from '@/ui/AiutoContestuale';
 import { ImportoNascosto } from '@/ui/ImportoNascosto';
@@ -172,6 +174,7 @@ type Dati = {
   incassi: Incasso[];
   clienti: Map<string, Cliente>;
   tasse: DatiRaccolti | null;
+  salvadanaio: QuadroAccantonamento | null;
 };
 
 export function Cruscotto() {
@@ -179,6 +182,7 @@ export function Cruscotto() {
   const esci = useEsci();
   const [dati, setDati] = useState<Dati | null>(null);
   const [errore, setErrore] = useState(false);
+  const [giro, setGiro] = useState(0);
   const oggi = oggiData();
   const anno = oggi.getFullYear();
 
@@ -191,9 +195,9 @@ export function Cruscotto() {
       leggiFatture(),
       leggiIncassi(),
       leggiClienti(),
-      annoTasse ? raccogliAnno(annoTasse).catch(() => null) : Promise.resolve(null),
+      annoTasse ? quadroAccantonamento(annoTasse).catch(() => null) : Promise.resolve(null),
     ])
-      .then(([profilo, attivita, fatture, incassi, clienti, tasse]) => {
+      .then(([profilo, attivita, fatture, incassi, clienti, salvadanaio]) => {
         if (!vivo) return;
         setDati({
           profilo,
@@ -201,14 +205,15 @@ export function Cruscotto() {
           fatture,
           incassi,
           clienti: new Map(clienti.map((c) => [c.id, c])),
-          tasse,
+          tasse: salvadanaio?.raccolti ?? null,
+          salvadanaio,
         });
       })
       .catch(() => vivo && setErrore(true));
     return () => {
       vivo = false;
     };
-  }, [anno]);
+  }, [anno, giro]);
 
   const nome = dati?.profilo?.nome?.trim();
   const dataLunga = oggi.toLocaleDateString('it-IT', {
@@ -255,6 +260,8 @@ export function Cruscotto() {
       ) : null}
 
       {dati ? <Evidenza tasse={dati.tasse} anno={anno} /> : <Caricamento />}
+
+      {dati?.salvadanaio ? <BoxSalvadanaio q={dati.salvadanaio} onCambio={() => setGiro((g) => g + 1)} /> : null}
 
       {dati ? <BoxConsigli tasse={dati.tasse} anno={anno} /> : null}
 

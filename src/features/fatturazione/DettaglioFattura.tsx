@@ -42,6 +42,7 @@ import { oggi, Riepilogo } from '@/features/fatturazione/NuovaFattura';
 import { useModalita } from '@/features/modalita/useModalita';
 import { ConAiuto } from '@/ui/AiutoContestuale';
 import { ImportoNascosto } from '@/ui/ImportoNascosto';
+import { PromemoriaFattura } from '@/features/accantonamento/Promemoria';
 import { CampoScelta, CampoTesto, Collegamento, Griglia, Scheda, CampoData } from '@/ui/Moduli';
 
 /**
@@ -338,6 +339,14 @@ export function DettaglioFattura({ id, appenaEmessa }: { id: string; appenaEmess
 
       {f.tipo === 'fattura' && f.stato !== 'bozza' ? (
         <Incassi key={residuo} fattura={f} incassi={incassi} residuo={residuo} onCambio={carica} />
+      ) : null}
+
+      {f.tipo === 'fattura' && incassi.length > 0 ? (
+        <PromemoriaFattura
+          fatturaId={f.id}
+          anni={incassi.map((i) => Number(i.data.slice(0, 4)))}
+          chiave={incassi.map((i) => i.id).join(',')}
+        />
       ) : null}
 
       <Dialog open={chiediElimina} onOpenChange={(_, d) => setChiediElimina(d.open)}>

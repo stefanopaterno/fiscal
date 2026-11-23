@@ -16,6 +16,8 @@ import {
   ClipboardTaskListLtr24Filled,
   Folder24Filled,
   Folder24Regular,
+  Savings24Filled,
+  Savings24Regular,
   MoreHorizontal24Filled,
   MoreHorizontal24Regular,
   Receipt24Filled,
@@ -56,6 +58,12 @@ export const VOCI: Voce[] = [
     etichetta: 'Tasse',
     icona: <Calculator24Regular />,
     iconaAttiva: <Calculator24Filled />,
+  },
+  {
+    href: '/salvadanaio/',
+    etichetta: 'Salvadanaio',
+    icona: <Savings24Regular />,
+    iconaAttiva: <Savings24Filled />,
   },
   {
     href: '/documenti/',
