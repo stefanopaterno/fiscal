@@ -4,7 +4,7 @@ import { Providers } from '@/ui/Providers';
 
 export const metadata: Metadata = {
   title: { default: 'Fiscal', template: '%s · Fiscal' },
-  description: 'Fiscal · Soarlyai Project. Uso personale.',
+  description: 'Fiscal · SOARLYAI PROJECT. Uso personale.',
   applicationName: 'Fiscal',
   robots: { index: false, follow: false },
   manifest: '/app/manifest.webmanifest',

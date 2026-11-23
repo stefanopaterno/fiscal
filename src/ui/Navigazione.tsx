@@ -16,6 +16,8 @@ import {
   ClipboardTaskListLtr24Filled,
   Folder24Filled,
   Folder24Regular,
+  News24Filled,
+  News24Regular,
   Savings24Filled,
   Savings24Regular,
   MoreHorizontal24Filled,
@@ -76,6 +78,12 @@ export const VOCI: Voce[] = [
     etichetta: 'Adempimenti',
     icona: <ClipboardTaskListLtr24Regular />,
     iconaAttiva: <ClipboardTaskListLtr24Filled />,
+  },
+  {
+    href: '/novita/',
+    etichetta: 'Novità',
+    icona: <News24Regular />,
+    iconaAttiva: <News24Filled />,
   },
   {
     href: '/impostazioni/',

@@ -47,6 +47,8 @@ const useStili = makeStyles({
   // nei pannelli il marchio si allinea al bordo del testo sotto (nessun margine proprio)
   testataAllineata: { padding: 0 },
   marchio: { display: 'flex', flexDirection: 'column' },
+  // maiuscolo spaziato, come una firma sotto il nome
+  progetto: { letterSpacing: '0.08em', fontWeight: tokens.fontWeightSemibold },
   corpo: {
     flexGrow: 1,
     display: 'flex',
@@ -84,7 +86,9 @@ export function Marchio({ suSfondoBlu = false }: { suSfondoBlu?: boolean }) {
         <Text weight="semibold" size={400}>
           Fiscal
         </Text>
-        <Text size={200}>Soarlyai Project</Text>
+        <Text size={100} className={s.progetto}>
+          SOARLYAI PROJECT
+        </Text>
       </div>
     </div>
   );

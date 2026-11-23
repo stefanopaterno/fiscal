@@ -47,6 +47,7 @@ import {
 } from '@/features/fatturazione/dati';
 import { dataItaliana, ETICHETTA_STATO, titoloDocumento } from '@/features/fatturazione/DettaglioFattura';
 import { BoxSalvadanaio } from '@/features/accantonamento/BoxHome';
+import { AvvisoNovita } from '@/features/novita/AvvisoNovita';
 import { quadroAccantonamento, type QuadroAccantonamento } from '@/features/accantonamento/dati';
 import { BoxConsigli } from '@/features/spese/BoxConsigli';
 import type { DatiRaccolti } from '@/features/tasse/dati';
@@ -260,6 +261,8 @@ export function Cruscotto() {
       ) : null}
 
       {dati ? <Evidenza tasse={dati.tasse} anno={anno} /> : <Caricamento />}
+
+      <AvvisoNovita />
 
       {dati?.salvadanaio ? <BoxSalvadanaio q={dati.salvadanaio} onCambio={() => setGiro((g) => g + 1)} /> : null}
 

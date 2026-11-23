@@ -4,9 +4,16 @@
 
 **Created**: 2026-11-22
 
-**Status**: Draft
+**Status**: Clarified
 
 **Input**: User description: "Ogni settimana una news che dice se ci sono novità di legge o di prassi che toccano le regole usate da Fiscal (IRPEF, acconti, ENPAP, IVA e bollo, ritenute, spese e oneri, scadenze, CU, Modello Redditi, Sistema Tessera Sanitaria, SDI, addizionali): cosa cambia, da quando, fonte ufficiale, quali regole tocca, impatto sui conti e proposta di aggiornamento da approvare; segnalare quando una regola 'da verificare' può diventare 'verificata'. Nessuna modifica automatica senza approvazione; nessun dato personale inviato fuori per cercare le novità."
+
+## Clarifications
+
+### Session 2026-11-23
+
+- Q: Quale canale per la news? → A: dentro l'app (pagina «Novità» con avviso in home). Le notizie le scrive l'assistente dopo ogni controllo e arrivano con la pubblicazione; quando l'ultimo controllo ha più di 7 giorni l'app mostra un prompt da copiare per l'assistente. Gli aggiornamenti delle regole li fa l'assistente e si pubblicano solo dopo il sì dell'utente.
+- Q: Le addizionali di regione e comune si controllano fuori dall'app? → A: sì, le cerca l'assistente sulle fonti ufficiali (Dipartimento delle Finanze, regione, comune) e le tiene nella sua memoria locale e nel database dell'utente, mai nel repository pubblico. L'app ricorda il controllo quando regione e comune pubblicano: da febbraio per la regionale, dal 20 dicembre e a maggio per la comunale, finché le aliquote dell'anno non sono segnate «verificate».
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -112,8 +119,8 @@ La news ricorda anche le novità **annunciate ma non ancora in vigore** (disegni
 - **FR-008**: Un aggiornamento approvato MUST superare gli stessi controlli automatici di ogni altra modifica prima di essere pubblicato e MUST NOT cambiare i risultati degli anni non interessati.
 - **FR-009**: Il sistema MUST controllare a ogni news le regole "da verificare" e proporne il passaggio a "verificata" (o un nuovo valore) quando la fonte ufficiale è disponibile.
 - **FR-010**: Il sistema MUST segnalare le novità solo proposte e le scadenze nuove o spostate, senza generare modifiche alle regole per le norme non in vigore.
-- **FR-011**: La ricerca delle novità MUST usare solo informazioni pubbliche (le regole dell'app e le fonti); dati personali e importi dell'utente MUST restare nell'app. Regione e comune di residenza per le addizionali MUST essere usati solo dentro l'app [NEEDS CLARIFICATION: le aliquote delle addizionali del tuo comune e della tua regione vanno controllate fuori dall'app (servirebbe indicare comune e regione a un servizio esterno) o solo come promemoria annuale da verificare a mano?].
-- **FR-012**: La news MUST essere consegnata attraverso [NEEDS CLARIFICATION: quale canale preferisci per la news: dentro l'app (sezione Novità con badge), email, oppure una segnalazione nel repository del codice, che è anche dove si approva la modifica?].
+- **FR-011**: La ricerca delle novità MUST usare solo informazioni pubbliche (le regole dell'app e le fonti); dati personali e importi dell'utente MUST restare nell'app. Le aliquote delle addizionali di regione e comune le controlla l'assistente sulle fonti ufficiali, su richiesta dell'utente; regione, comune e valori MUST NOT finire nel repository pubblico (restano nel database dell'utente e nella memoria locale dell'assistente). L'app MUST ricordare il controllo alle date di pubblicazione (regionale da febbraio; comunale dal 20 dicembre e a maggio) finché le aliquote dell'anno non sono «verificate».
+- **FR-012**: La news MUST essere consegnata dentro l'app (pagina «Novità» e avviso in home) e MUST mostrare la data dell'ultimo controllo; se è più vecchio di 7 giorni MUST proporre un testo (prompt) da copiare per l'assistente, senza dati personali.
 - **FR-013**: Il sistema MUST tenere uno storico delle news e delle proposte (approvate, rifiutate, in attesa) con data e motivo.
 - **FR-014**: Il sistema MUST ordinare le novità per impatto sui conti dell'utente e mettere in cima quelle con scadenza vicina.
 - **FR-015**: Le news MUST usare un linguaggio comprensibile senza competenze fiscali, come il resto dell'app, e MUST ricordare che le proposte vanno confermate col commercialista quando l'impatto è rilevante.
@@ -139,7 +146,7 @@ La news ricorda anche le novità **annunciate ma non ancora in vigore** (disegni
 
 ## Assumptions
 
-- La ricerca delle novità la fa un assistente automatico pianificato che legge le fonti pubbliche e le regole dell'app (che sono nel repository pubblico, con fonte e stato): non ha bisogno dei dati dell'utente. L'impatto sui conti si calcola poi dentro l'app.
+- La ricerca delle novità la fa l'assistente (a richiesta con il prompt dell'app, o con un'esecuzione pianificata se l'utente la attiva) che legge le fonti pubbliche e le regole dell'app (che sono nel repository pubblico, con fonte e stato): non ha bisogno dei dati dell'utente. L'impatto sui conti si calcola poi dentro l'app.
 - Frequenza predefinita: ogni lunedì mattina; in periodi caldi (Legge di Bilancio tra ottobre e gennaio, istruzioni di CU e Modello Redditi tra gennaio e marzo) il controllo resta settimanale ma più approfondito.
 - La proposta di aggiornamento delle regole la prepara l'assistente come modifica del codice da rivedere; la pubblicazione avviene solo dopo l'approvazione dell'utente, come per ogni altro rilascio.
 - Il sistema non sostituisce il commercialista: per novità con impatto rilevante suggerisce di confermare.
