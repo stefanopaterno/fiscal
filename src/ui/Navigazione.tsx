@@ -14,6 +14,8 @@ import {
   Calculator24Filled,
   Calculator24Regular,
   ClipboardTaskListLtr24Filled,
+  Folder24Filled,
+  Folder24Regular,
   MoreHorizontal24Filled,
   MoreHorizontal24Regular,
   Receipt24Filled,
@@ -54,6 +56,12 @@ export const VOCI: Voce[] = [
     etichetta: 'Tasse',
     icona: <Calculator24Regular />,
     iconaAttiva: <Calculator24Filled />,
+  },
+  {
+    href: '/documenti/',
+    etichetta: 'Documenti',
+    icona: <Folder24Regular />,
+    iconaAttiva: <Folder24Filled />,
   },
   {
     href: '/adempimenti/',

@@ -121,6 +121,7 @@ test('tutte le pagine: niente scorrimento laterale, aree da 44 px sul telefono, 
     ['/app/spese/oneri/', 'Spese personali'],
     ['/app/spese/consigli/', 'Come abbassare le tasse'],
     ['/app/impostazioni/spese/', 'Spese e consigli'],
+    ['/app/documenti/', 'Documenti'],
   ] as const) {
     await page.goto(percorso);
     await expect(page.getByRole('heading', { name: titolo, level: 1 })).toBeVisible();
