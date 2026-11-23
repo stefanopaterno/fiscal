@@ -1,67 +1,35 @@
-import {
-  createDarkTheme,
-  createLightTheme,
-  type BrandVariants,
-  type Theme,
-} from '@fluentui/react-components';
+import { webDarkTheme, webLightTheme, type Theme } from '@fluentui/react-components';
 
 /**
- * Tema "Grafite e ottone" di Fiscal: grafite come colore principale (pulsanti, link, voce attiva),
- * ottone caldo come accento (logo, riquadri in evidenza), in linea con il nero e oro di Soarlyai.
- * Una sola fonte dei colori: la usano il tema di Fluent, il logo, le icone e la home.
+ * Tema di Fiscal: il blu di Fluent UI 9, in versione chiara (predefinita) e scura. L'utente sceglie con il
+ * pulsante in alto (luna/sole); la scelta resta su questo dispositivo. Una sola fonte dei colori del
+ * marchio: la usano il logo, le icone e il riquadro in evidenza della home.
  */
 export const COLORI = {
-  grafite: '#31363F',
-  grafiteChiara: '#3D434D',
-  grafiteScura: '#15181C',
-  ottone: '#C9A24B',
-  ottoneChiaro: '#E2C47E',
-  ottoneScuro: '#9C7A2E',
+  blu: '#0F6CBD',
+  bluChiaro: '#2B88D8',
+  bluScuro: '#0B4F8F',
 } as const;
 
-/** Scala di grafite per Fluent UI 9 (10 = quasi nero, 160 = grigio chiarissimo). */
-const grafite: BrandVariants = {
-  10: '#060708',
-  20: '#0E1013',
-  30: '#15181C',
-  40: '#1B1F24',
-  50: '#21252B',
-  60: '#262B32',
-  70: '#2B3038',
-  80: '#31363F',
-  90: '#3D434D',
-  100: '#4A515C',
-  110: '#5C6370',
-  120: '#737A86',
-  130: '#8C929C',
-  140: '#A8ADB5',
-  150: '#C8CBD0',
-  160: '#E6E8EB',
-};
+export type NomeTema = 'chiaro' | 'scuro';
 
-/** I link in ottone scuro: in grafite si confonderebbero col testo (contrasto ≥ 4,5:1 sul bianco). */
-export const temaChiaro: Theme = {
-  ...createLightTheme(grafite),
-  colorBrandForegroundLink: '#7E611E',
-  colorBrandForegroundLinkHover: '#6A5119',
-  colorBrandForegroundLinkPressed: '#5A4415',
-};
+export const temi: Record<NomeTema, Theme> = { chiaro: webLightTheme, scuro: webDarkTheme };
 
-/** Al buio la grafite non si vedrebbe: pulsanti e link principali in ottone. */
-export const temaScuro: Theme = {
-  ...createDarkTheme(grafite),
-  colorBrandBackground: COLORI.ottone,
-  colorBrandBackgroundHover: COLORI.ottoneChiaro,
-  colorBrandBackgroundPressed: COLORI.ottoneScuro,
-  colorBrandBackgroundSelected: COLORI.ottoneScuro,
-  colorNeutralForegroundOnBrand: COLORI.grafiteScura,
-  colorBrandForeground1: COLORI.ottoneChiaro,
-  colorBrandForeground2: COLORI.ottone,
-  colorBrandForegroundLink: COLORI.ottoneChiaro,
-  colorBrandForegroundLinkHover: COLORI.ottone,
-  colorBrandForegroundLinkPressed: COLORI.ottoneScuro,
-  colorBrandStroke1: COLORI.ottone,
-  colorCompoundBrandBackground: COLORI.ottone,
-  colorCompoundBrandForeground1: COLORI.ottoneChiaro,
-  colorCompoundBrandStroke: COLORI.ottone,
-};
+const CHIAVE = 'fiscal.tema';
+
+/** Tema salvato su questo dispositivo; chiaro se non c'è una scelta. */
+export function temaSalvato(): NomeTema {
+  try {
+    return localStorage.getItem(CHIAVE) === 'scuro' ? 'scuro' : 'chiaro';
+  } catch {
+    return 'chiaro';
+  }
+}
+
+export function salvaTema(t: NomeTema) {
+  try {
+    localStorage.setItem(CHIAVE, t);
+  } catch {
+    /* archivio del browser non disponibile: la scelta vale fino alla chiusura */
+  }
+}

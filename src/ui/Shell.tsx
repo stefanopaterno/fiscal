@@ -1,11 +1,17 @@
 'use client';
 
 import { Button, makeStyles, mergeClasses, Text, tokens } from '@fluentui/react-components';
-import { Eye24Regular, EyeOff24Regular } from '@fluentui/react-icons';
+import {
+  Eye24Regular,
+  EyeOff24Regular,
+  WeatherMoon24Regular,
+  WeatherSunny24Regular,
+} from '@fluentui/react-icons';
 import { useOcchio } from '@/features/lock/useOcchio';
 import { FasciaProva } from '@/features/modalita/FasciaProva';
 import { StatoCoda } from '@/features/offline-queue/StatoCoda';
 import { Logo } from '@/ui/Logo';
+import { useTema } from '@/ui/Providers';
 import { LARGHEZZA_PC, Navigazione } from '@/ui/Navigazione';
 import type { ReactNode } from 'react';
 
@@ -31,6 +37,7 @@ const useStili = makeStyles({
     paddingRight: tokens.spacingHorizontalL,
   },
   occhio: { minWidth: '44px', minHeight: '44px' },
+  comandi: { display: 'flex', alignItems: 'center', gap: tokens.spacingHorizontalXS },
   testata: {
     display: 'flex',
     alignItems: 'center',
@@ -100,13 +107,34 @@ export function PulsanteOcchio() {
   );
 }
 
+/** Pulsante del tema: passa da chiaro (predefinito) a scuro e viceversa; la scelta resta sul dispositivo. */
+export function PulsanteTema() {
+  const s = useStili();
+  const { tema, cambia } = useTema();
+  const scuro = tema === 'scuro';
+  return (
+    <Button
+      appearance="subtle"
+      shape="circular"
+      className={s.occhio}
+      icon={scuro ? <WeatherSunny24Regular /> : <WeatherMoon24Regular />}
+      aria-label={scuro ? 'Passa al tema chiaro' : 'Passa al tema scuro'}
+      title={scuro ? 'Tema chiaro' : 'Tema scuro'}
+      onClick={() => cambia(scuro ? 'chiaro' : 'scuro')}
+    />
+  );
+}
+
 export function Shell({ children, navigazione = false }: { children: ReactNode; navigazione?: boolean }) {
   const s = useStili();
   return (
     <div className={s.pagina}>
       <div className={s.barra}>
         <Marchio />
-        <PulsanteOcchio />
+        <div className={s.comandi}>
+          <PulsanteTema />
+          <PulsanteOcchio />
+        </div>
       </div>
       <div className={navigazione ? mergeClasses(s.corpo, s.conBarraInBasso) : s.corpo}>
         {navigazione ? <Navigazione /> : null}

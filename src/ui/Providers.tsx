@@ -10,14 +10,22 @@ import {
 } from '@fluentui/react-components';
 import { useServerInsertedHTML } from 'next/navigation';
 import { OcchioProvider } from '@/features/lock/useOcchio';
-import { temaChiaro, temaScuro } from '@/ui/tema';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { salvaTema, temaSalvato, temi, type NomeTema } from '@/ui/tema';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type ReactNode,
+} from 'react';
 
 /**
  * Provider dell'interfaccia (T022, prova S5).
  * - Griffel (il motore di stili di Fluent UI 9) raccoglie gli stili durante l'esportazione statica
  *   e li scrive nell'HTML: la pagina si vede già formattata, senza "sfarfallio".
- * - Tema "Grafite e ottone" (src/ui/tema.ts), chiaro o scuro secondo l'impostazione del dispositivo.
+ * - Tema blu di Fluent, chiaro di partenza o scuro a scelta (pulsante in alto, src/ui/tema.ts).
  * - In produzione registra il service worker dell'app (solo file dell'app, mai dati).
  */
 /**
@@ -41,10 +49,28 @@ function StiliTouch() {
   return null;
 }
 
+/** Tema in uso e cambio (pulsante luna/sole nella barra in alto). */
+const ContestoTema = createContext<{ tema: NomeTema; cambia: (t: NomeTema) => void }>({
+  tema: 'chiaro',
+  cambia: () => undefined,
+});
+export const useTema = () => useContext(ContestoTema);
+
+const EVENTO_TEMA = 'fiscal-tema';
+function ascoltaTema(avvisa: () => void) {
+  window.addEventListener(EVENTO_TEMA, avvisa);
+  window.addEventListener('storage', avvisa); // cambio fatto in un'altra scheda
+  return () => {
+    window.removeEventListener(EVENTO_TEMA, avvisa);
+    window.removeEventListener('storage', avvisa);
+  };
+}
+
 export function Providers({ children }: { children: ReactNode }) {
   const [renderer] = useState(() => createDOMRenderer());
   const stiliScritti = useRef(false);
-  const [scuro, setScuro] = useState(false);
+  // chiaro di partenza (anche nella pagina esportata); poi la scelta salvata su questo dispositivo
+  const tema = useSyncExternalStore(ascoltaTema, temaSalvato, () => 'chiaro' as NomeTema);
 
   useServerInsertedHTML(() => {
     if (stiliScritti.current) return null;
@@ -53,12 +79,13 @@ export function Providers({ children }: { children: ReactNode }) {
   });
 
   useEffect(() => {
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
-    const aggiorna = () => setScuro(media.matches);
-    aggiorna();
-    media.addEventListener('change', aggiorna);
-    return () => media.removeEventListener('change', aggiorna);
-  }, []);
+    document.documentElement.style.colorScheme = tema === 'scuro' ? 'dark' : 'light';
+  }, [tema]);
+
+  const cambia = (t: NomeTema) => {
+    salvaTema(t);
+    window.dispatchEvent(new Event(EVENTO_TEMA));
+  };
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
@@ -71,9 +98,11 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <RendererProvider renderer={renderer}>
       <SSRProvider>
-        <FluentProvider theme={scuro ? temaScuro : temaChiaro} style={{ minHeight: '100vh' }}>
+        <FluentProvider theme={temi[tema]} style={{ minHeight: '100vh' }}>
           <StiliTouch />
-          <OcchioProvider>{children}</OcchioProvider>
+          <ContestoTema.Provider value={{ tema, cambia }}>
+            <OcchioProvider>{children}</OcchioProvider>
+          </ContestoTema.Provider>
         </FluentProvider>
       </SSRProvider>
     </RendererProvider>

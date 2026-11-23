@@ -66,7 +66,7 @@ const useStili = makeStyles({
   evidenza: {
     borderRadius: tokens.borderRadiusXLarge,
     padding: `${tokens.spacingVerticalXL} ${tokens.spacingHorizontalXXL}`,
-    backgroundImage: `linear-gradient(135deg, ${COLORI.grafiteChiara} 0%, ${COLORI.grafiteScura} 100%)`,
+    backgroundImage: `linear-gradient(135deg, ${COLORI.bluChiaro} 0%, ${COLORI.bluScuro} 100%)`,
     color: '#FFFFFF',
     display: 'flex',
     flexWrap: 'wrap',
@@ -77,9 +77,8 @@ const useStili = makeStyles({
     '@media (max-width: 480px)': { padding: tokens.spacingHorizontalL },
   },
   evidenzaTesto: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalXS, minWidth: 0 },
-  evidenzaTitolo: { color: COLORI.ottoneChiaro },
+  evidenzaTitolo: {},
   evidenzaImporto: {
-    color: COLORI.ottoneChiaro,
     fontSize: tokens.fontSizeHero800,
     lineHeight: tokens.lineHeightHero800,
     fontWeight: tokens.fontWeightBold,
