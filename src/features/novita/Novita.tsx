@@ -224,12 +224,13 @@ export function Novita() {
 
 /** Impatto della novità sui tuoi conti (T006): calcolato qui, con i tuoi dati, senza mandarli fuori. */
 function ImpattoSuiConti({ n }: { n: Notizia }) {
+  const s = useStili();
   const [stato, setStato] = useState<'idle' | 'calcolo' | 'errore' | Impatto>('idle');
   const sim = n.simulazione!;
   if (stato === 'idle' || stato === 'calcolo')
     return (
       <Button
-        size="small"
+        className={s.pulsante}
         disabled={stato === 'calcolo'}
         onClick={async () => {
           setStato('calcolo');
