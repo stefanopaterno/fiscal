@@ -17,6 +17,8 @@ import {
   Folder24Filled,
   DocumentCheckmark24Filled,
   DocumentCheckmark24Regular,
+  DocumentSignature24Filled,
+  DocumentSignature24Regular,
   Folder24Regular,
   News24Filled,
   News24Regular,
@@ -80,6 +82,12 @@ export const VOCI: Voce[] = [
     etichetta: 'Documenti',
     icona: <Folder24Regular />,
     iconaAttiva: <Folder24Filled />,
+  },
+  {
+    href: '/consensi/',
+    etichetta: 'Consensi',
+    icona: <DocumentSignature24Regular />,
+    iconaAttiva: <DocumentSignature24Filled />,
   },
   {
     href: '/adempimenti/',

@@ -75,6 +75,17 @@ export const GUIDE: Guida[] = [
     ],
   },
   {
+    id: 'consensi',
+    titolo: 'Registrare un consenso informato',
+    perche: 'Il consenso va raccolto prima di iniziare: Fiscal tiene la prova di chi ha firmato, quando e quale testo.',
+    passi: [
+      { titolo: 'I tipi', cosa: 'In «Tipi e modelli» crea i tuoi tipi di consenso, per esempio «Percorso individuale».', controlla: 'Fiscal non propone tipi né testi: sono scelte tue.', href: '/consensi/modelli/', pagina: 'Tipi e modelli' },
+      { titolo: 'Il tuo testo', cosa: 'Carica il PDF del tuo modello con versione e data da cui vale.', controlla: 'Con una versione nuova i pazienti con la vecchia diventano «da rinnovare».', href: '/consensi/modelli/', pagina: 'Tipi e modelli' },
+      { titolo: 'Il consenso', cosa: 'Apri il paziente in Consensi e registra tipo, versione, data e chi ha firmato.', controlla: 'Per un minore servono entrambi i genitori o il rappresentante legale.', href: '/consensi/', pagina: 'Consensi' },
+      { titolo: 'La copia firmata', cosa: 'Se vuoi, allega la foto o il PDF firmato.', controlla: 'Prima firma il DPA con Supabase: lo ricorda l\'avviso in pagina.', href: '/consensi/', pagina: 'Consensi' },
+    ],
+  },
+  {
     id: 'archivio',
     titolo: 'Tenere in ordine i documenti',
     perche: 'CU, ricevute e fatture ricevute in un posto solo, ritrovabili quando servono.',

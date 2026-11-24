@@ -1,10 +1,10 @@
 # Feature Specification: Consenso informato dei pazienti
 
-**Feature Branch**: `005-consenso-informato-pazienti` (nessun repository git inizializzato)
+**Feature Branch**: `005-consenso-informato-pazienti`
 
 **Created**: 2026-11-20
 
-**Status**: Draft
+**Status**: Implementata (2026-11-24)
 
 **Input**: User description: "Per i pazienti voglio conservare anche il consenso informato."
 
@@ -17,6 +17,14 @@
 - Q: Le copie dei consensi sono cifrate con una chiave dell'utente? → A: No: restano in chiaro, con la stessa protezione degli altri dati (login, 2FA, regole per riga, accesso al file riservato). Rischio residuo accettato dall'utente, titolare del trattamento: restano da fare l'accordo sul trattamento dei dati con il fornitore del database, la regione UE del progetto e l'informativa ai pazienti.
 - Q: Un consenso scade? → A: No: vale fino a fine percorso o revoca; il rinnovo è richiesto solo se cambia la versione del testo o il tipo di intervento; promemoria facoltativo a 12 mesi per rivedere i consensi. La durata esatta è da verificare con l'Ordine.
 - Q: Come compare il paziente per impostazione predefinita? → A: Con iniziali e anno di nascita (per esempio "M.R. 2008"); un'icona mostra il nome completo dopo una verifica con Face ID, impronta o PIN del dispositivo, e il nome torna nascosto dopo pochi secondi.
+
+### Session 2026-11-24
+
+- Q: Le copie firmate si caricano subito, prima del DPA con il fornitore del database? → A: Sì, con un avviso in pagina finché l'utente non segna il DPA come firmato. La regione del progetto è già nell'Unione Europea (eu-central-1, Francoforte).
+- Q: Dove valgono le iniziali al posto del nome? → A: Ovunque nell'app (rubrica, fatture, home, adempimenti, consensi), per le persone fisiche; gli enti restano con la denominazione. Il nome completo resta solo dove è obbligatorio (fattura stampata, file per lo SDI e la Tessera Sanitaria) e nel modulo di modifica dell'anagrafica.
+- Q: Per un minore quando il consenso è completo? → A: Con la firma di entrambi i genitori oppure di un rappresentante legale unico (ruolo generico: genitore unico esercente la responsabilità, tutore, amministratore di sostegno). Un maggiorenne firma da sé o tramite il rappresentante legale.
+- Q: Come si caricano i modelli? → A: PDF del modello con versione e data di entrata in vigore (file facoltativo).
+- Q: Da dove si ricava la data di nascita? → A: Dal codice fiscale del paziente, già presente per la Tessera Sanitaria: nessun campo nuovo nell'anagrafica.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -118,7 +126,7 @@ L'utente vede nel calendario e nella scheda del paziente i promemoria sui consen
 - **FR-001**: Il sistema MUST permettere di registrare per ogni paziente uno o più consensi, ciascuno con tipo, data di firma, data di registrazione, versione del testo e firmatario (nome e ruolo). Il sistema MUST registrare sempre la modalità di acquisizione (per esempio firma su carta, e-mail di accettazione, altro) e MUST trattare l'allegato come facoltativo.
 - **FR-002**: Il sistema MUST permettere all'utente di creare e modificare i propri tipi di consenso (nome e descrizione) e MUST NOT imporre tipi predefiniti; ogni consenso registrato MUST essere collegato a un tipo scelto dall'utente.
 - **FR-003**: Il sistema MUST permettere di allegare a un consenso la copia firmata o l'e-mail di accettazione (PDF o immagine), facoltativa, e di riaprirla o scaricarla.
-- **FR-004**: Il sistema MUST gestire il consenso di minori e persone sotto tutela, registrando uno o più firmatari e indicando se il consenso è completo, incompleto o non richiesto con motivazione.
+- **FR-004**: Il sistema MUST gestire il consenso di minori e persone sotto tutela, registrando uno o più firmatari (paziente, genitore, rappresentante legale) e indicando se il consenso è completo o incompleto: per un minore è completo con entrambi i genitori o con il rappresentante legale unico.
 - **FR-005**: Il sistema MUST mostrare per ogni paziente lo stato attuale del consenso (presente, mancante, incompleto, revocato, da rinnovare) e l'elenco dei pazienti per stato. Un consenso MUST valere fino a fine percorso o revoca; lo stato "da rinnovare" MUST comparire solo se cambia la versione del testo o il tipo di intervento, e il sistema MAY mostrare un promemoria facoltativo a 12 mesi per rivedere i consensi.
 - **FR-006**: Il sistema MUST permettere di registrare la revoca con data e MUST conservare lo storico completo senza sovrascrivere né cancellare i consensi precedenti.
 - **FR-007**: Il sistema MUST segnalare quando un paziente minorenne diventa maggiorenne e richiede un nuovo consenso.

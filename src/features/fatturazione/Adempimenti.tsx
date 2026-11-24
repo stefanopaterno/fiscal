@@ -1,5 +1,6 @@
 'use client';
 
+import { NomePaziente } from '@/features/consensi/nomi';
 import {
   Badge,
   Button,
@@ -16,7 +17,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { riepilogoFatturaElettronica } from '@/engine/adempimenti/fattura-elettronica';
 import { csvSts, righeSts } from '@/engine/adempimenti/sts';
 import { formattaEuro } from '@/engine/importi';
-import { nomeCliente, type DatiCliente } from '@/engine/validazioni/cliente';
+import { type DatiCliente } from '@/engine/validazioni/cliente';
 import {
   leggiFatture,
   leggiIncassi,
@@ -198,7 +199,7 @@ export function Adempimenti() {
                   {titoloDocumento(f)} · {dataItaliana(f.data)}
                 </Text>
                 <Text size={200}>
-                  <ImportoNascosto valore={c ? nomeCliente(c) : '—'} segnaposto="••••" /> ·{' '}
+                  <NomePaziente cliente={c} /> ·{' '}
                   <ImportoNascosto valore={formattaEuro(f.totale)} />
                   {!pagata && f.tipo === 'fattura' ? ' · non ancora incassata' : ''}
                 </Text>
@@ -309,7 +310,9 @@ function RiepilogoFe({ fattura: f }: { fattura: Fattura }) {
           <Text weight="semibold">
             {titoloDocumento(f)} · {dataItaliana(f.data)}
           </Text>
-          <Text size={200}>{clienteDi(f) ? nomeCliente(clienteDi(f)!) : '—'}</Text>
+          <Text size={200}>
+            <NomePaziente cliente={clienteDi(f)} />
+          </Text>
         </span>
         <Button className={s.pulsante} onClick={() => void mostra()}>
           {testo ? 'Chiudi' : 'Mostra i dati'}

@@ -1,5 +1,6 @@
 'use client';
 
+import { NomePaziente, useNomePaziente } from '@/features/consensi/nomi';
 import {
   Badge,
   Button,
@@ -15,7 +16,6 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { formattaEuro } from '@/engine/importi';
-import { nomeCliente } from '@/engine/validazioni/cliente';
 import { totaliFatture } from '@/engine/fattura/totali';
 import {
   leggiClienti,
@@ -67,6 +67,7 @@ const useStili = makeStyles({
 
 export function ElencoFatture() {
   const s = useStili();
+  const nomePaziente = useNomePaziente();
   const router = useRouter();
   const [fatture, setFatture] = useState<Fattura[] | null>(null);
   const [clienti, setClienti] = useState<Map<string, Cliente>>(new Map());
@@ -151,7 +152,7 @@ export function ElencoFatture() {
             opzioni={[
               { valore: '', etichetta: 'Tutti' },
               ...[...clienti.values()]
-                .map((c) => ({ valore: c.id, etichetta: nomeCliente(c) }))
+                .map((c) => ({ valore: c.id, etichetta: nomePaziente(c) }))
                 .sort((a, b) => a.etichetta.localeCompare(b.etichetta, 'it')),
             ]}
             aiuto={{ argomento: 'filtro cliente', testo: 'Mostra solo le fatture di un cliente.' }}
@@ -240,7 +241,7 @@ export function ElencoFatture() {
                     <Text weight="semibold">{titoloDocumento(f)}</Text>
                     <Text size={200} className={s.nome}>
                       {dataItaliana(f.data)} ·{' '}
-                      <ImportoNascosto valore={c ? nomeCliente(c) : '—'} segnaposto="••••" />
+                      <NomePaziente cliente={c} />
                     </Text>
                   </span>
                   <span className={s.destra}>

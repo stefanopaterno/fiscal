@@ -9,6 +9,7 @@ import {
   Map24Regular,
 } from '@fluentui/react-icons';
 import { useRouter } from 'next/navigation';
+import { PulsanteNomi } from '@/features/consensi/nomi';
 import { useOcchio } from '@/features/lock/useOcchio';
 import { FasciaProva } from '@/features/modalita/FasciaProva';
 import { StatoCoda } from '@/features/offline-queue/StatoCoda';
@@ -157,6 +158,7 @@ export function Shell({ children, navigazione = false }: { children: ReactNode; 
         <div className={s.comandi}>
           {navigazione ? <PulsanteTour /> : null}
           <PulsanteTema />
+          {navigazione ? <PulsanteNomi /> : null}
           <PulsanteOcchio />
         </div>
       </div>

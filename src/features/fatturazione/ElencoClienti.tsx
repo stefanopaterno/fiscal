@@ -1,5 +1,6 @@
 'use client';
 
+import { NomePaziente } from '@/features/consensi/nomi';
 import {
   Avatar,
   Badge,
@@ -22,7 +23,6 @@ import { leggiClienti, leggiFatture, type Cliente, type Fattura } from '@/featur
 import { dataItaliana } from '@/features/fatturazione/DettaglioFattura';
 import { useOcchio } from '@/features/lock/useOcchio';
 import { ConAiuto } from '@/ui/AiutoContestuale';
-import { ImportoNascosto } from '@/ui/ImportoNascosto';
 import { rubrica, type FiltroTipo, type VoceRubrica } from './rubrica';
 
 /**
@@ -235,7 +235,7 @@ function RigaCliente({ voce: v }: { voce: VoceRubrica }) {
         />
         <span className={s.testo}>
           <Text weight="semibold" className={s.nome}>
-            <ImportoNascosto valore={v.nome} segnaposto="••••" />
+            <NomePaziente cliente={v.cliente} />
           </Text>
           <span className={s.dettagli}>
             <Badge appearance="tint" color={c.tipo === 'ente' ? 'brand' : 'informative'}>

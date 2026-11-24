@@ -1,5 +1,6 @@
 'use client';
 
+import { NomePaziente } from '@/features/consensi/nomi';
 import {
   Badge,
   Button,
@@ -21,7 +22,7 @@ import { Delete20Regular, Print20Regular } from '@fluentui/react-icons';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { euroInCentesimi, formattaEuro, centesimiInTesto } from '@/engine/importi';
-import { nomeCliente, type DatiCliente } from '@/engine/validazioni/cliente';
+import { type DatiCliente } from '@/engine/validazioni/cliente';
 import {
   creaNotaDiCredito,
   eliminaBozza,
@@ -197,7 +198,7 @@ export function DettaglioFattura({ id, appenaEmessa }: { id: string; appenaEmess
         </ConAiuto>
         <Text>
           del {dataItaliana(f.data)} a{' '}
-          <ImportoNascosto valore={cliente ? nomeCliente(cliente) : '—'} segnaposto="••••" />
+          <NomePaziente cliente={cliente} />
         </Text>
         <div className={s.etichette}>
           <Badge

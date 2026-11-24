@@ -1,5 +1,6 @@
 'use client';
 
+import { PromemoriaConsensi } from '@/features/consensi/AvvisoFattura';
 import {
   Badge,
   Button,
@@ -104,6 +105,7 @@ export function Scadenze() {
           <SkeletonItem shape="rectangle" style={{ height: '160px' }} />
         </Skeleton>
       ) : null}
+      <PromemoriaConsensi />
       {q && q.anno === anno ? (
         <>
           <Scheda

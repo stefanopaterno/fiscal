@@ -1,5 +1,7 @@
 'use client';
 
+import { AvvisoConsensoFattura } from '@/features/consensi/AvvisoFattura';
+import { useNomePaziente } from '@/features/consensi/nomi';
 import {
   Button,
   Checkbox,
@@ -17,7 +19,6 @@ import { useEffect, useState } from 'react';
 import { calcolaFattura, type RisultatoFattura } from '@/engine/fattura/calcola';
 import { centesimiInTesto, euroInCentesimi, formattaEuro } from '@/engine/importi';
 import { regolePerAnno } from '@/engine/regole';
-import { nomeCliente } from '@/engine/validazioni/cliente';
 import { controllaProfilo } from '@/engine/validazioni/profilo';
 import {
   emettiFattura,
@@ -120,6 +121,7 @@ const useStili = makeStyles({
 
 export function NuovaFattura(props: { id: string | null; clienteIniziale: string | null }) {
   const s = useStili();
+  const nomePaziente = useNomePaziente();
   const router = useRouter();
   const [dati, setDati] = useState<{
     profilo: Profilo | null;
@@ -379,6 +381,10 @@ export function NuovaFattura(props: { id: string | null; clienteIniziale: string
               </MessageBarBody>
             </MessageBar>
           ) : null}
+          <AvvisoConsensoFattura
+            clienteId={clienteId}
+            persona={dati.clienti.find((c) => c.id === clienteId)?.tipo === 'persona_fisica'}
+          />
           <Griglia>
             <CampoScelta
               etichetta="Cliente"
@@ -389,7 +395,7 @@ export function NuovaFattura(props: { id: string | null; clienteIniziale: string
               opzioni={[
                 { valore: '', etichetta: 'Scegli…' },
                 ...dati.clienti
-                  .map((c) => ({ valore: c.id, etichetta: nomeCliente(c) }))
+                  .map((c) => ({ valore: c.id, etichetta: nomePaziente(c) }))
                   .sort((a, b) => a.etichetta.localeCompare(b.etichetta, 'it')),
               ]}
               aiuto={{

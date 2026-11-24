@@ -1,5 +1,6 @@
 'use client';
 
+import { NomePaziente } from '@/features/consensi/nomi';
 import {
   Badge,
   Button,
@@ -32,7 +33,6 @@ import { formattaEuro } from '@/engine/importi';
 import { totaliFatture } from '@/engine/fattura/totali';
 import { anniConRegoleIrpef } from '@/engine/regole/irpef';
 import { controllaProfilo } from '@/engine/validazioni/profilo';
-import { nomeCliente } from '@/engine/validazioni/cliente';
 import { useEsci } from '@/features/auth/useSessione';
 import {
   leggiAttivita,
@@ -48,6 +48,7 @@ import {
 import { dataItaliana, ETICHETTA_STATO, titoloDocumento } from '@/features/fatturazione/DettaglioFattura';
 import { BoxSalvadanaio } from '@/features/accantonamento/BoxHome';
 import { AvvisoScadenze } from '@/features/dichiarazione/AvvisoScadenze';
+import { PromemoriaConsensi } from '@/features/consensi/AvvisoFattura';
 import { AvvisoNovita } from '@/features/novita/AvvisoNovita';
 import { SuggerimentoGuida } from '@/features/aiuto/SuggerimentoGuida';
 import { quadroPrevisione, type QuadroPrevisione } from '@/features/previsione/dati';
@@ -271,6 +272,7 @@ export function Cruscotto() {
       <SuggerimentoGuida />
 
       <AvvisoScadenze />
+      <PromemoriaConsensi />
 
       <AvvisoNovita />
 
@@ -521,7 +523,7 @@ function UltimeFatture({ dati }: { dati: Dati }) {
               >
                 <span className={s.fatturaTesto}>
                   <Text weight="semibold" className={s.troncato}>
-                    <ImportoNascosto valore={cliente ? nomeCliente(cliente) : 'Cliente'} segnaposto="••••" />
+                    <NomePaziente cliente={cliente} />
                   </Text>
                   <Text size={200}>
                     {titoloDocumento(f)} · {dataItaliana(f.data)}

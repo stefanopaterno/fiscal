@@ -107,7 +107,7 @@ test('in prova emetto, stampo con filigrana e cancello; poi passo alla produzion
 
   // Fattura di prova con la data di oggi (prima dell'inizio attività)
   await page.goto('/app/fatture/nuova/');
-  await page.getByLabel(/^Cliente/).selectOption({ label: 'Bianchi Luca' });
+  await page.getByLabel(/^Cliente/).selectOption({ label: 'L.B. 1980' });
   await page.getByLabel(/^Data/).fill(oggi());
   await page.getByLabel(/^Importo unitario/).fill('80');
   await page.getByRole('button', { name: 'Emetti la fattura' }).click();
@@ -124,7 +124,7 @@ test('in prova emetto, stampo con filigrana e cancello; poi passo alla produzion
 
   // Un'altra prova, poi passaggio alla produzione: le prove spariscono, i clienti restano
   await page.goto('/app/fatture/nuova/');
-  await page.getByLabel(/^Cliente/).selectOption({ label: 'Bianchi Luca' });
+  await page.getByLabel(/^Cliente/).selectOption({ label: 'L.B. 1980' });
   await page.getByLabel(/^Data/).fill(oggi());
   await page.getByLabel(/^Importo unitario/).fill('60');
   await page.getByRole('button', { name: 'Emetti la fattura' }).click();
@@ -146,7 +146,7 @@ test('in prova emetto, stampo con filigrana e cancello; poi passo alla produzion
 
   // In produzione la data di inizio attività conta di nuovo
   await page.goto('/app/fatture/nuova/');
-  await page.getByLabel(/^Cliente/).selectOption({ label: 'Bianchi Luca' });
+  await page.getByLabel(/^Cliente/).selectOption({ label: 'L.B. 1980' });
   await page.getByLabel(/^Data/).fill(oggi());
   await page.getByLabel(/^Importo unitario/).fill('60');
   await page.getByRole('button', { name: 'Emetti la fattura' }).click();

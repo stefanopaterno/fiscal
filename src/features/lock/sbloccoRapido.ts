@@ -89,6 +89,21 @@ async function segretoPrf(credenziale: string, sale: Uint8Array): Promise<ArrayB
   return primo;
 }
 
+/**
+ * Verifica del dispositivo (Face ID, impronta o PIN) senza toccare la sessione: serve a mostrare per pochi
+ * secondi i nomi completi dei pazienti (specifica 005, FR-013). Falso se non attivo qui o se la verifica fallisce.
+ */
+export async function verificaConDispositivo(): Promise<boolean> {
+  const attivazione = leggi<Attivazione>(CHIAVE_ATTIVAZIONE);
+  if (!attivazione) return false;
+  try {
+    await segretoPrf(attivazione.credenziale, daB64url(attivazione.sale));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** Attiva lo sblocco rapido su QUESTO dispositivo (chiede Face ID / impronta). */
 export async function attivaSbloccoRapido(): Promise<void> {
   const sale = casuale(32);

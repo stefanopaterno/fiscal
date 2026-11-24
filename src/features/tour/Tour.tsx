@@ -121,6 +121,22 @@ export const TAPPE: Tappa[] = [
     link: [{ href: '/documenti/', testo: 'Apri i documenti' }],
   },
   {
+    id: 'consensi',
+    titolo: 'Consensi',
+    spec: 'specifica 005',
+    cosa: 'Il consenso informato di ogni paziente: tipi e testi tuoi con versione, firmatari, copia firmata facoltativa, revoca e storico che non si cancella. I nomi dei pazienti compaiono come iniziali in tutta l\'app.',
+    prova: [
+      'Crea un tipo di consenso, poi registra il consenso di un minore con un solo genitore: risulta «incompleto».',
+      'Tocca la persona in alto: i nomi completi compaiono per qualche secondo dopo Face ID o il codice.',
+    ],
+    logica:
+      'Per un minore firmano entrambi i genitori o il rappresentante legale; al compimento dei 18 anni serve un consenso nuovo. Solo dati amministrativi, mai clinici: il consenso conferma che la persona è un paziente, quindi è un dato sanitario.',
+    link: [
+      { href: '/consensi/', testo: 'Apri i consensi' },
+      { href: '/consensi/modelli/', testo: 'Tipi e modelli' },
+    ],
+  },
+  {
     id: 'dichiarazione',
     titolo: 'Dichiarazione e scadenze',
     spec: 'specifica 004',
@@ -340,7 +356,7 @@ export function Tour() {
         </section>
       ))}
       <Text size={200} className={s.nota}>
-        Ancora da fare: consenso informato dei pazienti. Le stime non sostituiscono il commercialista.
+        Le stime e le spiegazioni non sostituiscono il commercialista.
       </Text>
     </div>
   );

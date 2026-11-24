@@ -87,7 +87,7 @@ test('emetto una fattura per una seduta, la stampo e la numerazione prosegue', a
 
   // Seconda fattura, già incassata: numero 2 e incasso registrato
   await page.goto('/app/fatture/nuova/');
-  await page.getByLabel(/^Cliente/).selectOption({ label: 'Bianchi Luca' });
+  await page.getByLabel(/^Cliente/).selectOption({ label: 'L.B. 1980' });
   await page.getByLabel(/^Data/).fill('2027-01-11');
   await page.getByLabel(/^Importo unitario/).fill('60');
   await page.getByRole('checkbox', { name: 'Già incassata' }).check();
@@ -97,7 +97,7 @@ test('emetto una fattura per una seduta, la stampo e la numerazione prosegue', a
 
   // Una data precedente all'ultima emessa viene rifiutata con una spiegazione
   await page.goto('/app/fatture/nuova/');
-  await page.getByLabel(/^Cliente/).selectOption({ label: 'Bianchi Luca' });
+  await page.getByLabel(/^Cliente/).selectOption({ label: 'L.B. 1980' });
   await page.getByLabel(/^Data/).fill('2027-01-05');
   await page.getByLabel(/^Importo unitario/).fill('60');
   await page.getByRole('button', { name: 'Emetti la fattura' }).click();

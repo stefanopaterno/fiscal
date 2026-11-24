@@ -9,6 +9,7 @@ import {
   SSRProvider,
 } from '@fluentui/react-components';
 import { useServerInsertedHTML } from 'next/navigation';
+import { NomiProvider } from '@/features/consensi/nomi';
 import { OcchioProvider } from '@/features/lock/useOcchio';
 import { salvaTema, temaSalvato, temi, type NomeTema } from '@/ui/tema';
 import {
@@ -101,7 +102,9 @@ export function Providers({ children }: { children: ReactNode }) {
         <FluentProvider theme={temi[tema]} style={{ minHeight: '100vh' }}>
           <StiliTouch />
           <ContestoTema.Provider value={{ tema, cambia }}>
-            <OcchioProvider>{children}</OcchioProvider>
+            <OcchioProvider>
+              <NomiProvider>{children}</NomiProvider>
+            </OcchioProvider>
           </ContestoTema.Provider>
         </FluentProvider>
       </SSRProvider>
