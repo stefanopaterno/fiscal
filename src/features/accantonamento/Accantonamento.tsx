@@ -122,12 +122,27 @@ export function Accantonamento() {
         <Kpi
           etichetta="Serve per le scadenze"
           valore={e(q.fabbisogno)}
-          aiuto={{ argomento: 'fabbisogno', testo: `Imposte, contributi ENPAP, IVA e bollo delle scadenze ancora da pagare, sul reddito ${q.anno} fino a oggi.` }}
+          aiuto={{
+            argomento: 'fabbisogno',
+            testo: `Imposte, contributi ENPAP, IVA e bollo delle scadenze ancora da pagare, sul reddito ${q.anno} fino a oggi.`,
+            passi: [
+              ...q.scadenze.map((x) => <>{x.voce}: <ImportoNascosto valore={e(x.importo)} /></>),
+              <>Totale: <ImportoNascosto valore={e(q.fabbisogno)} /></>,
+            ],
+          }}
         />
         <Kpi
           etichetta={q.mancaTotale > 0 ? 'Manca' : 'In più'}
           valore={e(q.mancaTotale > 0 ? q.mancaTotale : q.eccedenza)}
-          aiuto={{ argomento: 'copertura', testo: 'La differenza tra quello che hai nel salvadanaio e quello che serve per le prossime scadenze.' }}
+          aiuto={{
+            argomento: 'copertura',
+            testo: 'La differenza tra quello che hai nel salvadanaio e quello che serve per le prossime scadenze.',
+            passi: [
+              <>Nel salvadanaio: <ImportoNascosto valore={e(q.saldo)} /></>,
+              <>Serve per le scadenze: <ImportoNascosto valore={e(q.fabbisogno)} /></>,
+              q.mancaTotale > 0 ? <>Manca: <ImportoNascosto valore={e(q.mancaTotale)} /></> : <>In più: <ImportoNascosto valore={e(q.eccedenza)} /></>,
+            ],
+          }}
         />
         <Kpi
           etichetta="Netto reale disponibile"

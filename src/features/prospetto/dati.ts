@@ -7,6 +7,8 @@ import { totaleSpeseAnno } from '@/engine/spese/deducibilita';
 import { nomeCliente } from '@/engine/validazioni/cliente';
 import { quadroDichiarazione, quadroScadenze } from '@/features/dichiarazione/dati';
 import { leggiDocumenti, scaricaFile, type Documento } from '@/features/documenti/dati';
+import { scaricaGiustificativo } from '@/features/spese/dati';
+import { improntaSezioni, type Impronte } from '@/engine/prospetto/confronto';
 import {
   ErroreFatturazione,
   leggiClienti,
@@ -36,6 +38,9 @@ export type PacchettoRiga = Metadati & {
   avvisi: number;
   regole: string;
   totali: Record<string, number[]>;
+  /** Impronte delle righe per il confronto riga per riga (mai contenuti). */
+  impronte: Impronte;
+  giustificativi: number;
   creato_il: string;
 };
 export type Richiesta = Metadati & { data: string; testo: string; stato: 'aperta' | 'chiusa'; chiusa_il: string | null; pacchetto_id: string | null };
@@ -65,6 +70,8 @@ export type Preparazione = {
   dati: DatiPacchetto;
   avvisi: Avviso[];
   documenti: Documento[];
+  /** Spese del periodo con giustificativo, da allegare se richiesto (T007). */
+  giustificativi: { id: string; data: string; categoria: string }[];
   anteprima: Sezione[];
 };
 
@@ -208,7 +215,10 @@ export async function prepara(o: Opzioni): Promise<Preparazione> {
     avvisi,
   };
   const docs = documenti.filter((d) => !d.eliminato_il && d.data != null && nel(d.data));
-  return { dati, avvisi, documenti: docs, anteprima: generaPacchetto(dati).sezioni };
+  const giustificativi = o.allegati
+    ? speseNel.filter((x) => x.ha_giustificativo).map((x) => ({ id: x.id, data: x.data, categoria: x.categoria }))
+    : [];
+  return { dati, avvisi, documenti: docs, giustificativi, anteprima: generaPacchetto(dati).sezioni };
 }
 
 /** Genera lo ZIP cifrato con PDF, Excel ed eventuali allegati; restituisce file e password (mostrata una volta). */
@@ -225,6 +235,18 @@ export async function genera(p: Preparazione, destinatario: string | null): Prom
       /* un allegato non scaricabile non blocca il pacchetto: si salta e il conteggio degli allegati lo riflette */
     }
   }
+  let giustificativi = 0;
+  for (const [i, x] of p.giustificativi.entries()) {
+    try {
+      const f = await scaricaGiustificativo(x.id);
+      const ext = /pdf/.test(f.tipo) ? 'pdf' : /png/.test(f.tipo) ? 'png' : /heic/.test(f.tipo) ? 'heic' : /webp/.test(f.tipo) ? 'webp' : 'jpg';
+      // nome dato da Fiscal: data, categoria e numero, mai il nome originale del file
+      file.push({ nome: `giustificativi/${x.data}-${x.categoria.replace(/[^a-z0-9_]/g, '')}-${i + 1}.${ext}`, dati: f.dati });
+      giustificativi += 1;
+    } catch {
+      /* un giustificativo non scaricabile non blocca il pacchetto: il conteggio lo riflette */
+    }
+  }
   const password = generaPassword();
   const zip = await zipCifrato(file, password);
   const riga: PacchettoRiga = {
@@ -234,7 +256,9 @@ export async function genera(p: Preparazione, destinatario: string | null): Prom
     periodo_a: p.dati.a,
     sezioni: p.dati.sezioni,
     usa_codici: p.dati.usaCodici,
-    allegati: file.length - 2,
+    allegati: file.length - 2 - giustificativi,
+    giustificativi,
+    impronte: (await improntaSezioni(g.sezioni)).impronte,
     destinatario: destinatario?.trim() || null,
     avvisi: p.avvisi.length,
     regole: p.dati.regole.slice(0, 120),

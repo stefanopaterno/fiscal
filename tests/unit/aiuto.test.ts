@@ -83,3 +83,36 @@ describe('controlli per lo sviluppo (FR-013)', () => {
     expect(testi).not.toMatch(/\d+(,\d+)?\s?%|\d[\d.]*,\d{2}\s?€/);
   });
 });
+
+describe('passi del calcolo sui numeri (T008)', () => {
+  // Somme e conteggi semplici non hanno un calcolo da spiegare; ogni altro numero in evidenza ha i suoi passi.
+  const SEMPLICI = ['Incassato nel', 'Da incassare', 'Fatture ', 'Pagato nel', 'Senza giustificativo', 'Nel salvadanaio'];
+
+  function kpiSenzaPassi(dir: string): string[] {
+    const out: string[] = [];
+    const file = (d: string): string[] =>
+      readdirSync(d).flatMap((n) => (statSync(join(d, n)).isDirectory() ? file(join(d, n)) : n.endsWith('.tsx') ? [join(d, n)] : []));
+    for (const f of file(dir)) {
+      const s = readFileSync(f, 'utf8');
+      let i = s.indexOf('<Kpi');
+      while (i >= 0) {
+        let j = i;
+        let prof = 0;
+        while (j < s.length && !(s.startsWith('/>', j) && prof === 0)) {
+          if (s[j] === '{') prof++;
+          else if (s[j] === '}') prof--;
+          j++;
+        }
+        const blocco = s.slice(i, j);
+        const etichetta = /etichetta=\{?[`"']([^`"']*)/.exec(blocco)?.[1] ?? '?';
+        if (!blocco.includes('passi') && !SEMPLICI.some((x) => etichetta.startsWith(x))) out.push(`${f}: ${etichetta}`);
+        i = s.indexOf('<Kpi', j);
+      }
+    }
+    return out;
+  }
+
+  it('ogni numero calcolato in evidenza spiega i suoi passi', () => {
+    expect(kpiSenzaPassi('src/features')).toEqual([]);
+  });
+});

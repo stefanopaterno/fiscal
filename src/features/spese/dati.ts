@@ -126,6 +126,13 @@ export async function caricaGiustificativo(id: string, file: File): Promise<void
     );
 }
 
+/** Il file del giustificativo, per il pacchetto del commercialista (specifica 009, T007). */
+export async function scaricaGiustificativo(id: string): Promise<{ dati: Uint8Array; tipo: string }> {
+  const { data, error } = await getSupabase().storage.from('giustificativi').download(`${await cartella()}/${id}`);
+  if (error || !data) throw new ErroreFatturazione('scaricamento', 'Giustificativo non trovato.');
+  return { dati: new Uint8Array(await data.arrayBuffer()), tipo: data.type };
+}
+
 /** Link temporaneo (5 minuti) per aprire il giustificativo. */
 export async function apriGiustificativo(id: string): Promise<string | null> {
   const { data } = await getSupabase()

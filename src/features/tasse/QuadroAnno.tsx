@@ -11,12 +11,13 @@ import {
   tokens,
 } from '@fluentui/react-components';
 import { useEffect, useState } from 'react';
-import { stimaVersamenti } from '@/engine/irpef/acconti';
+import { stimaVersamenti, type VoceVersamento } from '@/engine/irpef/acconti';
 import { calcolaAnno, type RisultatoAnno } from '@/engine/irpef/anno';
 import { percentualeInTesto } from '@/engine/irpef/aritmetica';
 import { contributiEnpap, type ContributiEnpap } from '@/engine/irpef/enpap';
 import { formattaEuro } from '@/engine/importi';
 import { ErroreIrpef } from '@/engine/regole/irpef';
+import { ImportoNascosto } from '@/ui/ImportoNascosto';
 import { Collegamento, Scheda } from '@/ui/Moduli';
 import { GrigliaKpi, Kpi, SceltaAnno, useAnno, Voce, Voci } from './componenti';
 import { raccogliAnno, type DatiRaccolti } from './dati';
@@ -26,6 +27,15 @@ import { Simulatore } from './Simulatore';
  * Quadro delle imposte dell'anno (US1, US3; contracts/pagine.md): conguaglio, scaglione, cosa versare a
  * giugno e novembre dell'anno dopo, contributi ENPAP e simulatore. Ogni numero ha la sua spiegazione.
  */
+const NOME_VERSAMENTO: Record<VoceVersamento, string> = {
+  saldo_irpef: 'Saldo IRPEF',
+  saldo_add_regionale: 'Saldo addizionale regionale',
+  saldo_add_comunale: 'Saldo addizionale comunale',
+  acconto_add_comunale: 'Acconto addizionale comunale',
+  acconto_irpef_1: 'Primo acconto IRPEF',
+  acconto_irpef_2: 'Secondo acconto IRPEF',
+};
+
 const useStili = makeStyles({
   colonna: { display: 'flex', flexDirection: 'column', gap: tokens.spacingVerticalL, minWidth: 0 },
   collegamenti: { display: 'flex', gap: tokens.spacingHorizontalL, flexWrap: 'wrap' },
@@ -140,6 +150,9 @@ function Quadro({
   const enpapTotale = enpap ? enpap.soggettivo + enpap.maternita + enpap.integrativo : 0;
   const daAccantonare = stima.giugno + stima.novembre + enpapTotale;
   const e = formattaEuro;
+  const N = (v: number) => <ImportoNascosto valore={e(v)} />;
+  const vociMese = (mese: string) =>
+    stima.voci.filter((v) => v.mese === mese && v.importo !== 0).map((v) => <>{NOME_VERSAMENTO[v.voce]}: {N(v.importo)}</>);
 
   return (
     <>
@@ -180,6 +193,12 @@ function Quadro({
           aiuto={{
             argomento: 'da accantonare',
             testo: `Quello che dovrai versare nel ${annoDopo} per i redditi ${r.anno}: saldo e primo acconto a giugno, secondo acconto a novembre${enpap ? ', contributi ENPAP a ottobre' : ''}. Tienilo da parte sul conto.`,
+            passi: [
+              <>Giugno (saldo e primo acconto, al netto dei crediti): {N(stima.giugno)}</>,
+              <>Novembre (secondo acconto): {N(stima.novembre)}</>,
+              ...(enpap ? [<>ENPAP soggettivo, integrativo e maternità: {N(enpapTotale)}</>] : []),
+              <>Totale da accantonare: {N(daAccantonare)}</>,
+            ],
           }}
         />
         <Kpi
@@ -190,37 +209,64 @@ function Quadro({
             argomento: 'conguaglio',
             testo:
               'IRPEF e addizionali dovute sul totale dei tuoi redditi, meno quello che il datore ti ha già trattenuto in busta paga e gli acconti già versati.',
+            passi: [
+              <>IRPEF netta: {N(r.irpefNetta)}</>,
+              <>Meno ritenute in busta paga e sulle fatture: {N(r.ritenute)}</>,
+              <>Meno acconti già versati: {N(r.accontiVersati)}</>,
+              <>Conguaglio IRPEF: {N(r.conguaglioIrpef)}</>,
+              ...(r.addizionali
+                ? [
+                    <>Addizionale regionale (dovuta meno trattenuta): {N(r.addizionali.regionale.conguaglio)}</>,
+                    <>Addizionale comunale (dovuta meno trattenuta): {N(r.addizionali.comunale.conguaglio)}</>,
+                  ]
+                : [<>Addizionali: mancano le aliquote dell&apos;anno</>]),
+              <>Totale: {N(r.conguaglioTotale)}</>,
+            ],
           }}
         />
         <Kpi
           etichetta="Aliquota marginale"
           valore={percentualeInTesto(r.scaglione.aliquotaMarginale)}
           nascondi={false}
-          nota={
-            r.scaglione.mancaAlProssimo != null
-              ? `mancano ${formattaEuro(r.scaglione.mancaAlProssimo)} allo scaglione dopo`
-              : 'scaglione più alto'
-          }
-          aiuto={{ argomento: 'aliquota marginale', testo: spiega('scaglione')?.testo ?? '' }}
+          nota={r.scaglione.mancaAlProssimo != null ? 'quanto manca allo scaglione dopo: nel «?»' : 'scaglione più alto'}
+          aiuto={{
+            argomento: 'aliquota marginale',
+            testo: 'L\'aliquota che paghi sul prossimo euro di reddito: è quella che conta per le tasse su un compenso in più.',
+            passi: [
+              <>Reddito imponibile: {N(r.redditoImponibile)}</>,
+              <>Scaglione: {percentualeInTesto(r.scaglione.aliquotaMarginale)}</>,
+              ...(r.scaglione.mancaAlProssimo != null ? [<>Mancano allo scaglione dopo: {N(r.scaglione.mancaAlProssimo)}</>] : []),
+            ],
+            fonte: spiega('scaglione')?.regola,
+          }}
         />
         <Kpi
           etichetta={`Giugno ${annoDopo}`}
           valore={e(stima.giugno)}
           nota="saldo + primo acconto"
-          aiuto={{ argomento: 'giugno', testo: stima.acconti.spiegazione }}
+          aiuto={{ argomento: 'giugno', testo: stima.acconti.spiegazione, passi: [...vociMese(stima.meseGiugno), <>Da versare: {N(stima.giugno)}</>] }}
         />
         <Kpi
           etichetta={`Novembre ${annoDopo}`}
           valore={e(stima.novembre)}
           nota="secondo acconto"
-          aiuto={{ argomento: 'novembre', testo: stima.acconti.spiegazione }}
+          aiuto={{ argomento: 'novembre', testo: stima.acconti.spiegazione, passi: [...vociMese(stima.meseNovembre), <>Da versare: {N(stima.novembre)}</>] }}
         />
         {enpap ? (
           <Kpi
             etichetta={`ENPAP ${enpap.scadenza.split('-').reverse().join('/')}`}
             valore={e(enpapTotale)}
             nota={enpap.provvisorio ? 'stima provvisoria' : undefined}
-            aiuto={{ argomento: 'contributi ENPAP', testo: enpap.spiegazione }}
+            aiuto={{
+              argomento: 'contributi ENPAP',
+              testo: enpap.spiegazione,
+              passi: [
+                <>Soggettivo: {N(enpap.soggettivo)}</>,
+                <>Integrativo: {N(enpap.integrativo)}</>,
+                <>Maternità: {N(enpap.maternita)}</>,
+                <>Totale: {N(enpapTotale)}</>,
+              ],
+            }}
           />
         ) : null}
       </GrigliaKpi>

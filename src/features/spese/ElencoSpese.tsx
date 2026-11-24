@@ -183,15 +183,23 @@ function ElencoPerAnno({ anno, setAnno }: { anno: number; setAnno: (a: number) =
           etichetta="Deducibile"
           valore={formattaEuro(totale?.deducibile ?? 0)}
           evidenza
-          nota={
-            totale && totale.ammortamenti > 0
-              ? `di cui beni durevoli ${formattaEuro(totale.ammortamenti)}`
-              : undefined
-          }
+          nota={totale && totale.ammortamenti > 0 ? 'compresi i beni durevoli' : undefined}
           aiuto={{
             argomento: 'deducibile',
             testo:
               'La parte delle spese che abbassa il reddito della partita IVA, e quindi le tasse. Alcune spese contano solo in parte (telefono 80%) o fino a un tetto (formazione 10.000 €).',
+            passi: totale
+              ? [
+                  ...totale.perCategoria.map((c) => (
+                    <>
+                      {c.nome}: <ImportoNascosto valore={formattaEuro(c.deducibile)} /> su <ImportoNascosto valore={formattaEuro(c.speso)} />
+                    </>
+                  )),
+                  ...(totale.ammortamenti > 0 ? [<>Quota dei beni durevoli (ammortamento): <ImportoNascosto valore={formattaEuro(totale.ammortamenti)} /></>] : []),
+                  <>Totale deducibile: <ImportoNascosto valore={formattaEuro(totale.deducibile)} /></>,
+                ]
+              : undefined,
+            fonte: 'Regole delle spese dell\'anno (specifica 008)',
           }}
         />
         <Kpi
