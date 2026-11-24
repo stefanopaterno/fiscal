@@ -95,7 +95,8 @@ export function Dichiarazione() {
       </div>
       <div className={s.collegamenti}>
         <Collegamento href="/dichiarazione/scadenze/">Scadenze</Collegamento>
-        <Collegamento href={`/dichiarazione/riepilogo/?anno=${anno}`}>Riepilogo per il commercialista</Collegamento>
+        <Collegamento href="/dichiarazione/pacchetto/">Pacchetto per il commercialista</Collegamento>
+        <Collegamento href={`/dichiarazione/riepilogo/?anno=${anno}`}>Riepilogo da stampare</Collegamento>
         <Collegamento href={`/dichiarazione/partenza/?anno=${anno - 1}`}>Anno di partenza (730)</Collegamento>
       </div>
       {errore ? (

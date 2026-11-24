@@ -124,7 +124,7 @@ export const TAPPE: Tappa[] = [
     id: 'dichiarazione',
     titolo: 'Dichiarazione e scadenze',
     spec: 'specifica 004',
-    cosa: 'Checklist del Modello Redditi, esito voce per voce con i crediti, anno di partenza dal 730, scadenze con festivi e proroghe, file per il calendario del telefono, riepilogo da stampare.',
+    cosa: 'Checklist del Modello Redditi, esito voce per voce con i crediti, anno di partenza dal 730, scadenze con festivi e proroghe, file per il calendario del telefono, riepilogo da stampare e pacchetto protetto per il commercialista.',
     prova: [
       'Nella checklist segna «Non applicabile» una voce: la percentuale sale.',
       'Nelle scadenze segna «Fatta» il bollo di novembre, poi guarda il 2028.',
@@ -135,6 +135,7 @@ export const TAPPE: Tappa[] = [
     link: [
       { href: '/dichiarazione/', testo: 'Dichiarazione' },
       { href: '/dichiarazione/scadenze/', testo: 'Scadenze' },
+      { href: '/dichiarazione/pacchetto/', testo: 'Pacchetto per il commercialista' },
     ],
   },
   {
@@ -336,8 +337,8 @@ export function Tour() {
         </section>
       ))}
       <Text size={200} className={s.nota}>
-        Ancora da fare: consenso informato dei pazienti, prospetto per il commercialista, aiuto contestuale
-        completo. Le stime non sostituiscono il commercialista.
+        Ancora da fare: consenso informato dei pazienti e aiuto contestuale completo. Le stime non sostituiscono il
+        commercialista.
       </Text>
     </div>
   );

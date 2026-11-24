@@ -131,6 +131,7 @@ test('tutte le pagine: niente scorrimento laterale, aree da 44 px sul telefono, 
     ['/app/dichiarazione/scadenze/', 'Scadenze'],
     ['/app/dichiarazione/partenza/', 'Anno di partenza'],
     ['/app/dichiarazione/riepilogo/', 'Riepilogo per il commercialista'],
+    ['/app/dichiarazione/pacchetto/', 'Pacchetto per il commercialista'],
   ] as const) {
     await page.goto(percorso);
     await expect(page.getByRole('heading', { name: titolo, level: 1 })).toBeVisible();
