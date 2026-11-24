@@ -246,8 +246,12 @@ function nettaSoloCu(R: number, regole: RegoleIrpef, giorni: number): number {
   return Math.max(0, lorda - det - ulterioreDetrazione(R, regole.ulterioreDetrazione.valore));
 }
 
-export function calcolaAnno(input: InputAnno): RisultatoAnno {
-  const regole = regoleIrpefPerAnno(input.anno);
+/**
+ * Calcolo dell'anno. `regoleAlternative` serve solo a simulare una novità normativa (specifica 012, T006):
+ * le stesse regole dell'anno con una modifica, per mostrare l'impatto sui conti prima di approvarla.
+ */
+export function calcolaAnno(input: InputAnno, regoleAlternative?: RegoleIrpef): RisultatoAnno {
+  const regole = regoleAlternative ?? regoleIrpefPerAnno(input.anno);
   controllaInput(input);
 
   const regoleUsate: Regola<unknown>[] = [];

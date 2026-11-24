@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { controlliDovuti, controlloSettimanale, promptControllo } from '@/engine/novita/controlli';
+import { impattoNovita } from '@/engine/novita/impatto';
 import { regoleAperte } from '@/engine/novita/regole-aperte';
 import { NOTIZIE, ULTIMO_CONTROLLO } from '@/engine/regole/novita';
 
@@ -51,5 +52,25 @@ describe('controlli periodici', () => {
       expect(['in_vigore', 'approvata', 'proposta']).toContain(n.stato);
       expect(n.data).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     }
+  });
+});
+
+describe('impatto di una novità sui conti (T006)', () => {
+  const input = (reddito: number) => ({
+    anno: 2027,
+    cu: [{ redditoLavoro: reddito, ritenuteIrpef: 0, addRegionale: 0, addComunaleAcconto: 0, addComunaleSaldo: 0 }],
+    redditoProfessionale: 0,
+    addizionali: null,
+  });
+  const bilancio = NOTIZIE.find((n) => n.id === '2026-11-bilancio-2027')!;
+
+  it('tra 50.000 e 55.000 € il 33% invece del 43% fa risparmiare il 10% della fascia', () => {
+    const r = impattoNovita(bilancio, input(55_000_00))!;
+    expect(r.differenza).toBe(-500_00);
+    expect(impattoNovita(bilancio, input(40_000_00))!.differenza).toBe(0);
+  });
+
+  it('nessuna simulazione per un altro anno', () => {
+    expect(impattoNovita(bilancio, { ...input(55_000_00), anno: 2026 })).toBeNull();
   });
 });

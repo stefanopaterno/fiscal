@@ -7,6 +7,8 @@
  * Stato: in_vigore (pubblicata), approvata (approvata ma non ancora pubblicata), proposta (in discussione).
  * Proposta di aggiornamento: in_attesa finché l'utente non dice sì; applicata o rifiutata dopo.
  */
+import type { RegoleIrpef } from '../irpef';
+
 export type Fonte = { nome: string; url: string; ufficiale: boolean };
 
 export type Notizia = {
@@ -25,6 +27,16 @@ export type Notizia = {
   /** Riguarda chi è psicologo in regime ordinario con lavoro dipendente? Se no, il motivo. */
   tiRiguarda: true | string;
   proposta: { descrizione: string; stato: 'in_attesa' | 'applicata' | 'rifiutata'; decisaIl?: string } | null;
+  /**
+   * Simulazione dell'impatto sui conti dell'utente (T006): le regole dell'anno con la modifica alternativa. Il
+   * confronto si fa nel browser con i dati dell'utente, che non lasciano mai l'app.
+   */
+  simulazione?: {
+    anno: number;
+    /** Cosa rappresenta l'alternativa rispetto alle regole in uso (es. «se la norma non passa»). */
+    alternativa: string;
+    applica: (r: RegoleIrpef) => RegoleIrpef;
+  };
 };
 
 /** Ultimo controllo delle fonti fatto dall'assistente (FR-001, FR-013). */
@@ -51,6 +63,17 @@ export const NOTIZIE: Notizia[] = [
     stato: 'proposta',
     fonti: [{ nome: 'Disegno di legge di Bilancio 2027 (Camera e Senato)', url: 'https://www.senato.it/', ufficiale: true }],
     regole: ['IRPEF ed ENPAP 2027 · scaglioni'],
+    simulazione: {
+      anno: 2027,
+      alternativa: 'se la norma non venisse approvata (33% solo fino a 50.000 €)',
+      applica: (r) => ({
+        ...r,
+        scaglioni: {
+          ...r.scaglioni,
+          valore: r.scaglioni.valore.map((x) => (x.finoA === 55_000_00 ? { ...x, finoA: 50_000_00 } : x)),
+        },
+      }),
+    },
     impatto:
       'Chi ha un imponibile tra 50.000 e 55.000 € paga il 10% in meno su quella fascia: fino a 500 € in meno sul 2027.',
     tiRiguarda: true,

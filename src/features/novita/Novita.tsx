@@ -15,9 +15,12 @@ import {
 import { Copy20Regular } from '@fluentui/react-icons';
 import { useEffect, useMemo, useState } from 'react';
 import { controlliDovuti, controlloSettimanale, promptControllo, type Controllo } from '@/engine/novita/controlli';
+import { impattoNovita, type Impatto } from '@/engine/novita/impatto';
 import { regoleAperte } from '@/engine/novita/regole-aperte';
+import { formattaEuro } from '@/engine/importi';
 import { NOTIZIE, ULTIMO_CONTROLLO, type Notizia } from '@/engine/regole/novita';
-import { leggiAliquote } from '@/features/tasse/dati';
+import { leggiAliquote, raccogliAnno } from '@/features/tasse/dati';
+import { ImportoNascosto } from '@/ui/ImportoNascosto';
 import { Collegamento, Scheda } from '@/ui/Moduli';
 import { oggiIso } from '@/lib/oggi';
 
@@ -172,6 +175,7 @@ export function Novita() {
               <Text size={200} className={s.nota}>
                 Regole toccate: {n.regole.join(', ')}
               </Text>
+              {n.simulazione && n.tiRiguarda === true ? <ImpattoSuiConti n={n} /> : null}
               {n.proposta ? (
                 <Text size={200}>
                   Proposta ({n.proposta.stato === 'in_attesa' ? 'in attesa del tuo sì' : n.proposta.stato}): {n.proposta.descrizione}
@@ -215,5 +219,44 @@ export function Novita() {
         </div>
       </Scheda>
     </div>
+  );
+}
+
+/** Impatto della novità sui tuoi conti (T006): calcolato qui, con i tuoi dati, senza mandarli fuori. */
+function ImpattoSuiConti({ n }: { n: Notizia }) {
+  const [stato, setStato] = useState<'idle' | 'calcolo' | 'errore' | Impatto>('idle');
+  const sim = n.simulazione!;
+  if (stato === 'idle' || stato === 'calcolo')
+    return (
+      <Button
+        size="small"
+        disabled={stato === 'calcolo'}
+        onClick={async () => {
+          setStato('calcolo');
+          try {
+            const r = impattoNovita(n, (await raccogliAnno(sim.anno)).input);
+            setStato(r ?? 'errore');
+          } catch {
+            setStato('errore');
+          }
+        }}
+      >
+        {stato === 'calcolo' ? 'Calcolo…' : `Calcola l'impatto sui miei conti ${sim.anno}`}
+      </Button>
+    );
+  if (stato === 'errore')
+    return <Text size={200}>Non riesco a calcolarlo: servono la CU e i dati del {sim.anno} in «Dati dell&apos;anno».</Text>;
+  const r = stato;
+  return (
+    <Text size={200}>
+      IRPEF e addizionali {sim.anno} con le regole in uso: <ImportoNascosto valore={formattaEuro(r.inUso)} />; {sim.alternativa}:{' '}
+      <ImportoNascosto valore={formattaEuro(r.alternativa)} />.{' '}
+      {r.differenza === 0
+        ? 'Per te non cambia nulla.'
+        : r.differenza < 0
+          ? <>Con le regole in uso paghi <ImportoNascosto valore={formattaEuro(-r.differenza)} /> in meno.</>
+          : <>Con le regole in uso paghi <ImportoNascosto valore={formattaEuro(r.differenza)} /> in più.</>}
+      {r.provvisorio ? ' (stima provvisoria)' : ''}
+    </Text>
   );
 }
