@@ -68,6 +68,11 @@ test('pacchetto per il commercialista: protetto, senza nomi con i codici, nello 
   await expect(page.getByLabel('Password del pacchetto', { exact: true })).toHaveCount(0);
   await expect(page.getByText(/per Studio di prova/)).toBeVisible();
 
+  // Secondo pacchetto dello stesso periodo: confronto riga per riga con il primo (T007)
+  await page.getByRole('button', { name: 'Controlla e prepara' }).click();
+  await expect(page.getByText(/^Rispetto al pacchetto del /)).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByText('Nessuna riga cambiata.')).toBeVisible();
+
   await page.getByRole('textbox', { name: /^Nuova richiesta/ }).fill('Manca la ricevuta ENPAP di ottobre');
   await page.getByRole('button', { name: 'Aggiungi', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Richieste del commercialista (1 aperte)' })).toBeVisible();

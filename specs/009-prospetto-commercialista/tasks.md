@@ -6,4 +6,4 @@
 - [X] T004 Dati `src/features/prospetto/dati.ts`
 - [X] T005 [US1–US5] Pagina `/app/dichiarazione/pacchetto/`: periodo, sezioni, modelli, controlli, anteprima, generazione, password una volta, storico, richieste
 - [X] T006 Test e2e `tests/e2e/prospetto.spec.ts` (pacchetto aperto con bsdtar, nessun cognome con i codici) e test di impaginazione
-- [ ] T007 Confronto riga per riga tra pacchetti e giustificativi delle spese come allegati — rinviati
+- [X] T007 Confronto riga per riga (`src/engine/prospetto/confronto.ts`: impronte SHA-256 abbreviate di chiave e riga, mai contenuti; migrazione `20261124000500_impronte_pacchetti.sql`), anteprima delle righe nuove o cambiate prima di generare, conteggi nello storico; giustificativi delle spese del periodo nella cartella `giustificativi/` con nomi dati da Fiscal

@@ -3,6 +3,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'no
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { confrontaImpronte, improntaSezioni } from '@/engine/prospetto/confronto';
 import { codiceCliente, controlli, costruisciSezioni, generaPacchetto, SEZIONI, type DatiPacchetto } from '@/engine/prospetto/contenuto';
 import { leggiZip } from '@/engine/documenti/zip';
 import { ctrWinZip, generaPassword, zipCifrato } from '@/engine/prospetto/zip-aes';
@@ -120,5 +121,26 @@ describe('ZIP cifrato AES-256', () => {
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+});
+
+describe('confronto riga per riga (T007)', () => {
+  const sezione = (righe: (string | number | null)[][]) => [{ codice: 'fatture' as const, titolo: 'Fatture', colonne: [], righe, totali: null }];
+
+  it('conta righe nuove, cambiate e tolte senza conservare il contenuto', async () => {
+    const prima = await improntaSezioni(sezione([['2027-01-10', '1', 'Rossi', 8000], ['2027-02-10', '2', 'Bianchi', 8000]]));
+    const dopo = await improntaSezioni(sezione([['2027-01-10', '1', 'Rossi', 9000], ['2027-03-10', '3', 'Verdi', 8000]]));
+    const [d] = confrontaImpronte(dopo.impronte, prima.impronte);
+    expect(d).toMatchObject({ codice: 'fatture' });
+    expect(d!.nuove.map((k) => dopo.etichette.fatture![k])).toEqual(['2027-03-10 · 3']);
+    expect(d!.cambiate.map((k) => dopo.etichette.fatture![k])).toEqual(['2027-01-10 · 1']);
+    expect(d!.tolte).toHaveLength(1);
+    expect(JSON.stringify(dopo.impronte)).not.toMatch(/Rossi|Verdi|9000/);
+  });
+
+  it('righe con stessa data e numero si distinguono; nessuna differenza se uguali', async () => {
+    const a = await improntaSezioni(sezione([['2027-01-10', 'Software', 10], ['2027-01-10', 'Software', 20]]));
+    expect(Object.keys(a.impronte.fatture!)).toHaveLength(2);
+    expect(confrontaImpronte(a.impronte, a.impronte)).toEqual([]);
   });
 });

@@ -15,7 +15,9 @@ import {
 import { ArrowDownload20Regular, Copy20Regular, ShieldLock20Regular } from '@fluentui/react-icons';
 import { useCallback, useEffect, useState } from 'react';
 import { formattaEuro } from '@/engine/importi';
+import { confrontaImpronte, improntaSezioni, type DifferenzaSezione } from '@/engine/prospetto/confronto';
 import { SEZIONI, type CodiceSezione } from '@/engine/prospetto/contenuto';
+import { ConAiuto } from '@/ui/AiutoContestuale';
 import { ImportoNascosto } from '@/ui/ImportoNascosto';
 import { CampoData, CampoScelta, CampoSiNo, CampoTesto, Collegamento, Griglia, Scheda } from '@/ui/Moduli';
 import { annoCorrente, oggiIso } from '@/lib/oggi';
@@ -323,6 +325,13 @@ export function Pacchetto() {
               ))}
             </ul>
             {prep.documenti.length ? <Text>Allegati dall&apos;archivio: {prep.documenti.length}</Text> : null}
+            {prep.giustificativi.length ? <Text>Giustificativi delle spese: {prep.giustificativi.length}</Text> : null}
+            {storico ? (
+              <ConfrontoPrecedente
+                prep={prep}
+                precedente={storico.pacchetti.find((x) => x.periodo_da === prep.dati.da && x.periodo_a === prep.dati.a) ?? null}
+              />
+            ) : null}
             <Button className={s.pulsante} appearance="primary" icon={<ArrowDownload20Regular />} disabled={inCorso} onClick={() => void generaFile()}>
               Genera il pacchetto protetto
             </Button>
@@ -457,6 +466,7 @@ function Storico({ pacchetti, richieste, onCambio }: { pacchetti: PacchettoRiga[
         <ul className={s.elenco}>
           {pacchetti.map((x, i) => {
             const prima = pacchetti.slice(i + 1).find((y) => y.periodo_da === x.periodo_da && y.periodo_a === x.periodo_a);
+            const righe = prima && Object.keys(prima.impronte ?? {}).length ? confrontaImpronte(x.impronte ?? {}, prima.impronte) : null;
             const diff = prima ? differenze(x, prima) : [];
             return (
               <li key={x.id} className={s.voce}>
@@ -469,7 +479,13 @@ function Storico({ pacchetti, richieste, onCambio }: { pacchetti: PacchettoRiga[
                 </Text>
                 {prima ? (
                   <Text size={200}>
-                    {diff.length ? `Rispetto al precedente sono cambiati: ${diff.map(nomeSezione).join(', ')}.` : 'Uguale al precedente dello stesso periodo.'}
+                    {righe
+                      ? righe.length
+                        ? `Rispetto al precedente: ${righe.map((d) => `${nomeSezione(d.codice)} ${riassunto(d)}`).join('; ')}.`
+                        : 'Uguale al precedente dello stesso periodo, riga per riga.'
+                      : diff.length
+                        ? `Rispetto al precedente sono cambiati: ${diff.map(nomeSezione).join(', ')}.`
+                        : 'Uguale al precedente dello stesso periodo.'}
                   </Text>
                 ) : null}
               </li>
@@ -478,5 +494,65 @@ function Storico({ pacchetti, richieste, onCambio }: { pacchetti: PacchettoRiga[
         </ul>
       </Scheda>
     </>
+  );
+}
+
+const riassunto = (d: DifferenzaSezione) =>
+  [
+    d.nuove.length ? `${d.nuove.length} ${d.nuove.length === 1 ? 'riga nuova' : 'righe nuove'}` : '',
+    d.cambiate.length ? `${d.cambiate.length} ${d.cambiate.length === 1 ? 'cambiata' : 'cambiate'}` : '',
+    d.tolte.length ? `${d.tolte.length} ${d.tolte.length === 1 ? 'tolta' : 'tolte'}` : '',
+  ]
+    .filter(Boolean)
+    .join(', ');
+
+/**
+ * Confronto riga per riga con l'ultimo pacchetto dello stesso periodo (T007): prima di generare, le righe nuove o
+ * cambiate per sezione, indicate con data e numero. Le righe tolte si contano soltanto (il contenuto non si conserva).
+ */
+function ConfrontoPrecedente({ prep, precedente }: { prep: Preparazione; precedente: PacchettoRiga | null }) {
+  const [esito, setEsito] = useState<{ diff: DifferenzaSezione[]; etichette: Record<string, Record<string, string>> } | null>(null);
+  const vecchie = precedente?.impronte;
+  useEffect(() => {
+    if (!vecchie || !Object.keys(vecchie).length) return;
+    let vivo = true;
+    void improntaSezioni(prep.anteprima).then(({ impronte, etichette }) => vivo && setEsito({ diff: confrontaImpronte(impronte, vecchie), etichette }));
+    return () => {
+      vivo = false;
+    };
+  }, [prep, vecchie]);
+  if (!precedente || !esito) return null;
+  const titolo = (c: string) => SEZIONI.find((x) => x.codice === c)?.titolo ?? c;
+  return (
+    <ConAiuto
+      aiuto={{
+        argomento: 'confronto con il pacchetto precedente',
+        testo: 'Cosa è cambiato rispetto all\'ultimo pacchetto dello stesso periodo, così il commercialista guarda solo le novità.',
+        dettaglio: 'Dello storico Fiscal conserva solo impronte delle righe, non il contenuto: per questo le righe tolte si possono contare ma non mostrare.',
+      }}
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <Text weight="semibold">Rispetto al pacchetto del {new Date(precedente.creato_il).toLocaleDateString('it-IT')}</Text>
+      {!esito.diff.length ? (
+        <Text>Nessuna riga cambiata.</Text>
+      ) : (
+        <ul>
+          {esito.diff.map((d) => (
+            <li key={d.codice}>
+              <Text>
+                {titolo(d.codice)}: {riassunto(d)}
+                {d.nuove.length + d.cambiate.length
+                  ? ` (${[...d.nuove, ...d.cambiate]
+                      .slice(0, 6)
+                      .map((k) => esito.etichette[d.codice]?.[k] ?? '')
+                      .join('; ')}${d.nuove.length + d.cambiate.length > 6 ? '…' : ''})`
+                  : ''}
+              </Text>
+            </li>
+          ))}
+        </ul>
+      )}
+      </div>
+    </ConAiuto>
   );
 }
