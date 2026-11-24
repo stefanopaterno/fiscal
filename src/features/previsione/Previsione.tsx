@@ -6,6 +6,7 @@ import {
   makeStyles,
   mergeClasses,
   MessageBar,
+  MessageBarActions,
   MessageBarBody,
   MessageBarTitle,
   Skeleton,
@@ -207,6 +208,8 @@ function Contenuto({ q, onCambio }: { q: QuadroPrevisione; onCambio: () => void 
         ) : null}
       </GrigliaKpi>
 
+      <Netto q={q} />
+      <PropostaVariabilita q={q} onCambio={onCambio} />
       <Variazione q={q} onCambio={onCambio} />
       <Prospetto q={q} />
       <Ipotesi key={`${q.ipotesi.id}-${q.ipotesi.versione}`} q={q} onCambio={onCambio} />
@@ -323,6 +326,7 @@ function Ipotesi({ q, onCambio }: { q: QuadroPrevisione; onCambio: () => void })
   const ip = q.ipotesi;
   const [metodo, setMetodo] = useState<Metodo | 'auto'>(ip.metodo ?? 'auto');
   const [obiettivo, setObiettivo] = useState(ip.obiettivo == null ? '' : centesimiInTesto(ip.obiettivo));
+  const [netto, setNetto] = useState(ip.obiettivo_netto == null ? '' : centesimiInTesto(ip.obiettivo_netto));
   const [prudente, setPrudente] = useState(String(Math.round(ip.prudente * 100)));
   const [ottimistico, setOttimistico] = useState(String(Math.round(ip.ottimistico * 100)));
   const [pesi, setPesi] = useState(ip.pesi.map((p) => String(Math.round(p * 100))));
@@ -331,9 +335,11 @@ function Ipotesi({ q, onCambio }: { q: QuadroPrevisione; onCambio: () => void })
 
   const num = (t: string) => Number(t.replace(',', '.'));
   const obiettivoC = obiettivo.trim() === '' ? null : euroInCentesimi(obiettivo);
+  const nettoC = netto.trim() === '' ? null : euroInCentesimi(netto);
   const pesiOk = pesi.every((p) => Number.isFinite(num(p)) && num(p) >= 0 && num(p) <= 100);
   const ok =
     (obiettivo.trim() === '' || (obiettivoC != null && obiettivoC > 0)) &&
+    (netto.trim() === '' || (nettoC != null && nettoC > 0)) &&
     num(prudente) >= 0 && num(prudente) <= 90 &&
     num(ottimistico) >= 0 && num(ottimistico) <= 200 &&
     pesiOk;
@@ -346,6 +352,7 @@ function Ipotesi({ q, onCambio }: { q: QuadroPrevisione; onCambio: () => void })
       id: ip.id || nuovoId(),
       metodo: metodo === 'auto' ? null : metodo,
       obiettivo: obiettivoC,
+      obiettivo_netto: nettoC,
       prudente: num(prudente) / 100,
       ottimistico: num(ottimistico) / 100,
       pesi: pesi.map((p) => Math.round(num(p) * 10) / 1000),
@@ -409,6 +416,19 @@ function Ipotesi({ q, onCambio }: { q: QuadroPrevisione; onCambio: () => void })
           segnaposto="es. 30.000"
           errore={obiettivo.trim() !== '' && (obiettivoC == null || obiettivoC <= 0) ? 'Importo non valido' : undefined}
           aiuto={{ argomento: 'obiettivo', testo: 'Compensi dell\'anno senza integrativo, IVA e bollo. La parte che manca si distribuisce sui mesi rimasti secondo i pesi.' }}
+        />
+        <CampoTesto
+          etichetta="Obiettivo di netto dell'anno"
+          valore={netto}
+          onChange={setNetto}
+          inputMode="decimal"
+          lunghezzaMax={12}
+          segnaposto="es. 18.000"
+          errore={netto.trim() !== '' && (nettoC == null || nettoC <= 0) ? 'Importo non valido' : undefined}
+          aiuto={{
+            argomento: 'obiettivo di netto',
+            testo: 'Quanto vuoi che ti resti dalla partita IVA nell\'anno, dopo spese, tasse e contributi. Fiscal calcola quanto devi incassare per arrivarci.',
+          }}
         />
         <CampoTesto
           etichetta="Prudente: incassi in meno (%)"
@@ -529,5 +549,112 @@ function Calendario({ q }: { q: QuadroPrevisione }) {
         ))}
       </ul>
     </Scheda>
+  );
+}
+
+/** Netto previsto e obiettivo di netto (FR-011, T008). */
+function Netto({ q }: { q: QuadroPrevisione }) {
+  const n = q.netto;
+  if (!n) return null;
+  const manca = n.obiettivo != null ? n.obiettivo - n.previsto : null;
+  return (
+    <GrigliaKpi>
+      <Kpi
+        etichetta={`Netto previsto ${q.anno}`}
+        valore={e(n.previsto)}
+        nota="compensi meno spese, tasse e contributi"
+        aiuto={{
+          argomento: 'netto previsto',
+          testo: 'Quello che ti resta della partita IVA nello scenario atteso. Non conta IVA, integrativo e bollo, che non sono tuoi.',
+          passi: [
+            <>Compensi attesi: <ImportoNascosto valore={e(q.scenari!.atteso.compensi)} /></>,
+            <>Tasse e contributi: <ImportoNascosto valore={e(q.scenari!.atteso.totale)} /></>,
+            <>Netto (tolte anche le spese deducibili): <ImportoNascosto valore={e(n.previsto)} /></>,
+          ],
+        }}
+      />
+      {n.obiettivo != null ? (
+        <Kpi
+          etichetta="Obiettivo di netto"
+          valore={e(n.obiettivo)}
+          nota={
+            manca != null && manca > 0
+              ? n.compensiNecessari != null
+                ? 'servono più compensi: vedi i dettagli'
+                : 'non raggiungibile con questi dati'
+              : 'raggiunto nello scenario atteso'
+          }
+          aiuto={{
+            argomento: 'compensi per l\'obiettivo',
+            testo: 'Fiscal prova diversi compensi con il motore delle tasse finché il netto arriva all\'obiettivo: tiene conto degli scaglioni e dei contributi, quindi ogni euro in più vale meno di un euro netto.',
+            dettaglio: 'Le spese future seguono il rapporto con i compensi avuto finora.',
+            passi:
+              n.compensiNecessari != null
+                ? [
+                    <>Netto previsto: <ImportoNascosto valore={e(n.previsto)} /></>,
+                    <>Obiettivo: <ImportoNascosto valore={e(n.obiettivo)} /></>,
+                    <>Compensi necessari nell&apos;anno: <ImportoNascosto valore={e(n.compensiNecessari)} /></>,
+                    <>Cioè in più rispetto all&apos;atteso: <ImportoNascosto valore={e(n.compensiNecessari - q.scenari!.atteso.compensi)} /></>,
+                  ]
+                : undefined,
+          }}
+        />
+      ) : null}
+    </GrigliaKpi>
+  );
+}
+
+/** Proposta dell'intervallo dalla variabilità reale (FR-004, T008): l'utente la accetta o la rifiuta. */
+function PropostaVariabilita({ q, onCambio }: { q: QuadroPrevisione; onCambio: () => void }) {
+  const chiave = `fiscal.variabilita.${q.anno}`;
+  const [rifiutata, setRifiutata] = useState(() => {
+    try {
+      return typeof window !== 'undefined' && localStorage.getItem(chiave) === String(q.variabilita?.frazione);
+    } catch {
+      return false;
+    }
+  });
+  const [errore, setErrore] = useState<string | null>(null);
+  const v = q.variabilita;
+  if (!v || rifiutata) return null;
+  if (Math.abs(q.ipotesi.prudente - v.frazione) < 0.001 && Math.abs(q.ipotesi.ottimistico - v.frazione) < 0.001) return null;
+  const pct = Math.round(v.frazione * 100);
+  return (
+    <MessageBar intent="info" layout="multiline">
+      <MessageBarBody>
+        <MessageBarTitle>Intervallo dai tuoi dati</MessageBarTitle>
+        Negli ultimi {v.mesiUsati} mesi un mese si è scostato in media del {Math.round(v.scostamentoMensile * 100)}% dalla media. Sui{' '}
+        {v.mesiFuturi} mesi che mancano gli scostamenti in parte si compensano: propongo scenari a ±{pct}% invece di −
+        {Math.round(q.ipotesi.prudente * 100)}% / +{Math.round(q.ipotesi.ottimistico * 100)}%.
+        {errore ? ` ${errore}` : ''}
+      </MessageBarBody>
+      <MessageBarActions>
+        <Button
+          onClick={async () => {
+            try {
+              await salva('ipotesi_previsione', { ...q.ipotesi, id: q.ipotesi.id || nuovoId(), prudente: v.frazione, ottimistico: v.frazione });
+              onCambio();
+            } catch (err) {
+              setErrore(spiegaErrore(err));
+            }
+          }}
+        >
+          Usa ±{pct}%
+        </Button>
+        <Button
+          appearance="subtle"
+          onClick={() => {
+            try {
+              localStorage.setItem(chiave, String(v.frazione));
+            } catch {
+              /* preferenza solo per questa sessione */
+            }
+            setRifiutata(true);
+          }}
+        >
+          No, grazie
+        </Button>
+      </MessageBarActions>
+    </MessageBar>
   );
 }

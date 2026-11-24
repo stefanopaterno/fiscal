@@ -162,3 +162,28 @@ export function proietta(d: DatiMesi, ip: Ipotesi, metodoForzato?: Metodo | null
     },
   };
 }
+
+/**
+ * Intervallo dalla variabilità reale (FR-004, T008): dopo almeno sei mesi conclusi con incassi, quanto i mesi si
+ * scostano in media dalla loro media. Sulla somma dei mesi che mancano gli scostamenti in parte si compensano,
+ * quindi lo scostamento mensile si divide per la radice del numero di mesi futuri. Arrotondato al 5%, tra 5% e
+ * 60%. È una proposta: l'utente la accetta o la rifiuta.
+ */
+export type ProposteVariabilita = { frazione: number; mesiUsati: number; scostamentoMensile: number; mesiFuturi: number };
+
+export function variabilitaReale(d: DatiMesi): ProposteVariabilita | null {
+  const c = completi(d);
+  // con l'anno prima completo i mesi osservati sono di più (stessa attività, stagionalità inclusa)
+  const serie = [...(d.annoPrima ?? []), ...d.reali.slice(0, c)];
+  const inizio = serie.findIndex((x) => x > 0); // i mesi prima dell'inizio dell'attività non contano
+  const osservati = inizio < 0 ? [] : serie.slice(inizio).slice(-18);
+  const mesiReali = d.reali.slice(0, c);
+  if (c < 6 || mesiReali.every((x) => x === 0) || osservati.length < 6) return null;
+  const media = somma(osservati) / osservati.length;
+  if (media <= 0) return null;
+  const scostamento = somma(osservati.map((x) => Math.abs(x - media))) / osservati.length / media;
+  const mesiFuturi = Math.max(1, 12 - c);
+  const grezza = scostamento / Math.sqrt(mesiFuturi);
+  const frazione = Math.min(0.6, Math.max(0.05, Math.round(grezza * 20) / 20));
+  return { frazione, mesiUsati: osservati.length, scostamentoMensile: Math.round(scostamento * 100) / 100, mesiFuturi };
+}

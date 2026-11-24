@@ -107,3 +107,30 @@ export function righeMensili(b: BaseAnno, valori: number[]): RigaMese[] {
     };
   });
 }
+
+/**
+ * Netto dell'anno (FR-011, T008): compensi meno spese deducibili (le future in proporzione, come per il reddito)
+ * meno tasse e contributi della partita IVA. Non conta IVA, integrativo e bollo, che non sono tuoi.
+ */
+export function nettoAnno(b: BaseAnno, compensiFuturi: number): number {
+  const spese = b.deducibiliReali + (b.compensiReali > 0 ? divisioneArrotondata(b.deducibiliReali * compensiFuturi, b.compensiReali) : 0);
+  const p = previsioneAnno(b, compensiFuturi);
+  return p.compensi - spese - p.totale;
+}
+
+/**
+ * Compensi futuri che servono per arrivare a un netto (ricerca per bisezione sul motore: tiene conto degli
+ * scaglioni e dei contributi). Null se l'obiettivo è già raggiunto o non si raggiunge entro dieci volte il netto.
+ */
+export function compensiPerNetto(b: BaseAnno, obiettivo: number): number | null {
+  if (b.manuale || nettoAnno(b, 0) >= obiettivo) return null;
+  let basso = 0;
+  let alto = Math.max(100_00, obiettivo * 10);
+  if (nettoAnno(b, alto) < obiettivo) return null;
+  while (alto - basso > 100) {
+    const medio = Math.floor((basso + alto) / 2);
+    if (nettoAnno(b, medio) >= obiettivo) alto = medio;
+    else basso = medio;
+  }
+  return Math.ceil(alto / 100) * 100;
+}

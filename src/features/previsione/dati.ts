@@ -1,5 +1,5 @@
 import { quoteIncasso } from '@/engine/accantonamento/incasso';
-import { previsioneAnno, righeMensili, type BaseAnno, type PrevisioneAnno, type RigaMese } from '@/engine/previsione/anno';
+import { compensiPerNetto, nettoAnno, previsioneAnno, righeMensili, type BaseAnno, type PrevisioneAnno, type RigaMese } from '@/engine/previsione/anno';
 import { calendarioPagamenti, spiegaVariazione, type Fotografia, type MesePagamenti } from '@/engine/previsione/calendario';
 import {
   IPOTESI_PREDEFINITE,
@@ -10,6 +10,8 @@ import {
   type Ipotesi,
   type Metodo,
   type Proiezione,
+  type ProposteVariabilita,
+  variabilitaReale,
 } from '@/engine/previsione/proiezione';
 import { anniConRegoleIrpef } from '@/engine/regole/irpef';
 import {
@@ -34,6 +36,8 @@ export type IpotesiRiga = Metadati & {
   anno: number;
   metodo: Metodo | null;
   obiettivo: number | null;
+  /** Netto dell'anno che l'utente vuole raggiungere (FR-011). */
+  obiettivo_netto: number | null;
   pesi: number[];
   prudente: number;
   ottimistico: number;
@@ -61,7 +65,7 @@ export async function leggiIpotesi(anno: number): Promise<IpotesiRiga | null> {
   const r = await getSupabase().from('ipotesi_previsione').select('*').eq('anno', anno).maybeSingle();
   const d = controlla(r) as IpotesiRiga | null;
   return d
-    ? { ...d, pesi: d.pesi.map(Number), prudente: Number(d.prudente), ottimistico: Number(d.ottimistico), obiettivo: d.obiettivo == null ? null : Number(d.obiettivo) }
+    ? { ...d, pesi: d.pesi.map(Number), prudente: Number(d.prudente), ottimistico: Number(d.ottimistico), obiettivo: d.obiettivo == null ? null : Number(d.obiettivo), obiettivo_netto: d.obiettivo_netto == null ? null : Number(d.obiettivo_netto) }
     : null;
 }
 
@@ -76,6 +80,7 @@ export const nuoveIpotesi = (anno: number, id: string): IpotesiRiga => ({
   anno,
   metodo: null,
   obiettivo: null,
+  obiettivo_netto: null,
   pesi: [...IPOTESI_PREDEFINITE.pesi],
   prudente: IPOTESI_PREDEFINITE.prudente,
   ottimistico: IPOTESI_PREDEFINITE.ottimistico,
@@ -136,6 +141,10 @@ export type QuadroPrevisione = {
   attuale: Fotografia | null;
   primoAnno: boolean;
   annoPrima: number[] | null;
+  /** Intervallo degli scenari proposto dalla variabilità reale (null con meno di sei mesi). */
+  variabilita: ProposteVariabilita | null;
+  /** Netto previsto e, se l'obiettivo di netto non è raggiunto, i compensi che servono in tutto (FR-011). */
+  netto: { previsto: number; obiettivo: number | null; compensiNecessari: number | null } | null;
 };
 
 const fotoDaRiga = (f: FotografiaRiga): Fotografia => ({
@@ -272,6 +281,18 @@ export function calcolaPrevisione(p: {
     attuale,
     primoAnno: raccolti.annoInizio === anno,
     annoPrima,
+    variabilita: variabilitaReale(dati),
+    netto: manca
+      ? null
+      : (() => {
+          const futuro = Math.max(0, proiezione.scenari.atteso - proiezione.reale);
+          const necessari = ipotesi.obiettivo_netto ? compensiPerNetto(base, ipotesi.obiettivo_netto) : null;
+          return {
+            previsto: nettoAnno(base, futuro),
+            obiettivo: ipotesi.obiettivo_netto,
+            compensiNecessari: necessari == null ? null : proiezione.reale + necessari,
+          };
+        })(),
   };
 }
 

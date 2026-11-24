@@ -7,4 +7,4 @@
 - [X] T005 [US1–US4] Pagina `app/tasse/previsione/page.tsx` con `src/features/previsione/Previsione.tsx`
 - [X] T006 [FR-017] Riquadro in evidenza della home con tasse previste e prossimo versamento
 - [X] T007 Test e2e `tests/e2e/previsione.spec.ts` e pagina nel test di impaginazione
-- [ ] T008 [US5] Obiettivo di netto e intervallo degli scenari dalla variabilità reale — rinviati
+- [X] T008 [US5] Obiettivo di netto (migrazione `20261124000400_obiettivo_netto.sql`; `nettoAnno` e `compensiPerNetto` con bisezione sul motore) e intervallo degli scenari dalla variabilità reale (`variabilitaReale`: scostamento medio dei mesi diviso per la radice dei mesi futuri, 5–60%, da accettare o rifiutare); test in `tests/unit/previsione-mensile.test.ts`

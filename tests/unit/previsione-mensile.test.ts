@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { imposteAnno } from '@/engine/accantonamento/incasso';
 import { calcolaAnno, type InputAnno } from '@/engine/irpef/anno';
-import { previsioneAnno, righeMensili, type BaseAnno } from '@/engine/previsione/anno';
+import { compensiPerNetto, nettoAnno, previsioneAnno, righeMensili, type BaseAnno } from '@/engine/previsione/anno';
 import { calendarioPagamenti, spiegaVariazione } from '@/engine/previsione/calendario';
-import { IPOTESI_PREDEFINITE, metodiDisponibili, metodoUsato, proietta, type DatiMesi } from '@/engine/previsione/proiezione';
+import { IPOTESI_PREDEFINITE, metodiDisponibili, metodoUsato, proietta, variabilitaReale, type DatiMesi } from '@/engine/previsione/proiezione';
 
 // Specifica 006: proiezione dei mesi, previsione di fine anno col motore 001, prospetto, calendario, variazioni.
 const zeri = () => Array(12).fill(0) as number[];
@@ -121,5 +121,35 @@ describe('calendario e variazioni', () => {
     expect(s).toMatch(/incassi reali \+1\.500,00\s€/);
     expect(s).toMatch(/metodo cambiato/);
     expect(s).toMatch(/dal 33% al 43%/);
+  });
+});
+
+describe('variabilità reale e obiettivo di netto (T008)', () => {
+  it('propone un intervallo solo dopo sei mesi, più largo se i mesi oscillano', () => {
+    const regolari = [3000_00, 3000_00, 3000_00, 3000_00, 3000_00, 3000_00, ...Array(6).fill(0)];
+    expect(variabilitaReale(dati(regolari.map((x, i) => (i < 5 ? x : 0)), 6))).toBeNull();
+    expect(variabilitaReale(dati(regolari, 7))!.frazione).toBe(0.05); // minimo
+    const altalena = [1000_00, 5000_00, 1000_00, 5000_00, 1000_00, 5000_00, ...Array(6).fill(0)];
+    const v = variabilitaReale(dati(altalena, 7))!;
+    expect(v.scostamentoMensile).toBeCloseTo(0.67, 2);
+    expect(v.mesiFuturi).toBe(6);
+    expect(v.frazione).toBe(0.25); // 0,67 / √6 ≈ 0,27 → 25%
+  });
+
+  it('i mesi prima dell\'inizio dell\'attività non contano', () => {
+    const prima = [...Array(9).fill(0), 3000_00, 3000_00, 3000_00];
+    const v = variabilitaReale(dati([3000_00, 3000_00, 3000_00, 3000_00, 3000_00, 3000_00, ...Array(6).fill(0)], 7, { annoPrima: prima }))!;
+    expect(v.mesiUsati).toBe(9);
+  });
+
+  it('netto e compensi necessari: ogni euro in più vale meno di un euro netto', () => {
+    const b = base(20_000_00);
+    const netto = nettoAnno(b, 0);
+    expect(netto).toBeLessThan(20_000_00);
+    expect(compensiPerNetto(b, netto - 1)).toBeNull(); // già raggiunto
+    const servono = compensiPerNetto(b, netto + 5_000_00)!;
+    expect(servono).toBeGreaterThan(5_000_00);
+    expect(nettoAnno(b, servono)).toBeGreaterThanOrEqual(netto + 5_000_00);
+    expect(nettoAnno(b, servono - 200)).toBeLessThan(netto + 5_000_00);
   });
 });
