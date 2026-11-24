@@ -77,5 +77,9 @@ test('aiuto "?": si apre sotto il campo con una spiegazione semplice', async ({ 
   await page.goto('/app/accesso/');
   await page.getByRole('button', { name: 'Aiuto: password' }).click();
   await expect(page.getByRole('note')).toContainText('In parole semplici');
+  // livello breve: solo la spiegazione; «Dettagli» apre il perché e l'avvertenza (specifica 011, FR-007, FR-014)
+  await expect(page.getByRole('note')).not.toContainText('come il bancomat');
+  await page.getByRole('note').getByRole('button', { name: 'Dettagli' }).click();
   await expect(page.getByRole('note')).toContainText('come il bancomat');
+  await expect(page.getByRole('note')).toContainText('non una consulenza fiscale');
 });

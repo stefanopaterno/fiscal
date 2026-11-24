@@ -49,6 +49,7 @@ import { dataItaliana, ETICHETTA_STATO, titoloDocumento } from '@/features/fattu
 import { BoxSalvadanaio } from '@/features/accantonamento/BoxHome';
 import { AvvisoScadenze } from '@/features/dichiarazione/AvvisoScadenze';
 import { AvvisoNovita } from '@/features/novita/AvvisoNovita';
+import { SuggerimentoGuida } from '@/features/aiuto/SuggerimentoGuida';
 import { quadroPrevisione, type QuadroPrevisione } from '@/features/previsione/dati';
 import { quadroAccantonamento, type QuadroAccantonamento } from '@/features/accantonamento/dati';
 import { BoxConsigli } from '@/features/spese/BoxConsigli';
@@ -266,6 +267,8 @@ export function Cruscotto() {
       ) : null}
 
       {dati ? <Evidenza tasse={dati.tasse} previsione={dati.previsione} anno={anno} /> : <Caricamento />}
+
+      <SuggerimentoGuida />
 
       <AvvisoScadenze />
 

@@ -174,7 +174,16 @@ function Contenuto({ q, onCambio }: { q: QuadroPrevisione; onCambio: () => void 
           nota={sc.atteso.provvisorio ? 'stima provvisoria' : 'stima'}
           aiuto={{
             argomento: 'tasse previste',
-            testo: `IRPEF e addizionali in più per la partita IVA (${e(sc.atteso.imposte)}) e contributi ENPAP soggettivo e maternità (${e(sc.atteso.contributi)}), su ${e(sc.atteso.compensi)} di compensi attesi nell'anno.`,
+            testo: "IRPEF e addizionali in più per la partita IVA, più i contributi ENPAP soggettivo e maternità, sui compensi attesi nell'anno.",
+            passi: [
+              <>Compensi attesi: <ImportoNascosto valore={e(sc.atteso.compensi)} /></>,
+              <>Reddito della partita IVA (compensi meno spese): <ImportoNascosto valore={e(sc.atteso.reddito)} /></>,
+              <>IRPEF e addizionali con e senza partita IVA, sopra lo stipendio: <ImportoNascosto valore={e(sc.atteso.imposte)} /></>,
+              <>ENPAP soggettivo e maternità: <ImportoNascosto valore={e(sc.atteso.contributi)} /></>,
+              <>Totale: <ImportoNascosto valore={e(sc.atteso.totale)} /></>,
+            ],
+            fonte: 'Motore delle tasse di Fiscal con le regole dell\'anno',
+            daVerificare: sc.atteso.provvisorio,
           }}
         />
         <Kpi

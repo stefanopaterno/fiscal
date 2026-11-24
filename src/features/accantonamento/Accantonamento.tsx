@@ -134,7 +134,14 @@ export function Accantonamento() {
           valore={e(q.netto.disponibile)}
           aiuto={{
             argomento: 'netto reale',
-            testo: `Incassato della partita IVA nel ${q.anno} (${e(q.netto.incassato)}) meno spese pagate (${e(q.netto.spese)}) e accantonamenti necessari (${e(q.netto.necessari)}). Senza stipendio e senza fatture non ancora pagate.`,
+            testo: 'Quello che puoi spendere davvero della partita IVA: incassato meno spese pagate meno tasse e contributi da mettere da parte. Senza stipendio e senza fatture non ancora pagate.',
+            passi: [
+              <>Incassato nel {q.anno}: <ImportoNascosto valore={e(q.netto.incassato)} /></>,
+              <>Meno spese pagate: <ImportoNascosto valore={e(q.netto.spese)} /></>,
+              <>Meno tasse e contributi da mettere da parte: <ImportoNascosto valore={e(q.netto.necessari)} /></>,
+              <>Netto reale: <ImportoNascosto valore={e(q.netto.disponibile)} /></>,
+            ],
+            fonte: 'Specifica 007: incassi, spese e motore delle tasse dell\'anno',
           }}
         />
       </GrigliaKpi>

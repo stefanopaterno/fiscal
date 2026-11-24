@@ -261,6 +261,9 @@ export function Tour() {
         Dieci tappe nell&apos;ordine in cui userai Fiscal durante l&apos;anno. Spunta «Vista» man mano: il
         segno resta su questo dispositivo.
       </Text>
+      <div className={s.fila}>
+        <Collegamento href="/aiuto/">Guide passo passo e glossario</Collegamento>
+      </div>
       <ProgressBar value={n / TAPPE.length} thickness="large" aria-label="Tappe viste" />
       <Text className={s.nota}>
         {n} {n === 1 ? 'tappa vista' : 'tappe viste'} su {TAPPE.length}
@@ -337,8 +340,7 @@ export function Tour() {
         </section>
       ))}
       <Text size={200} className={s.nota}>
-        Ancora da fare: consenso informato dei pazienti e aiuto contestuale completo. Le stime non sostituiscono il
-        commercialista.
+        Ancora da fare: consenso informato dei pazienti. Le stime non sostituiscono il commercialista.
       </Text>
     </div>
   );

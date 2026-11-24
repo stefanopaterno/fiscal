@@ -179,7 +179,7 @@ export function Voce(props: {
           <BollaAiuto
             argomento={props.etichetta.toLowerCase()}
             testo={props.spiegazione}
-            daDove={props.regola}
+            fonte={props.regola}
           />
         ) : null}
       </div>
