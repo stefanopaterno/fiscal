@@ -191,19 +191,42 @@ function Contenuto({ q, onCambio }: { q: QuadroPrevisione; onCambio: () => void 
           etichetta="Scenario prudente"
           valore={e(sc.prudente.totale)}
           nota={`incassi futuri −${Math.round(q.ipotesi.prudente * 100)}%`}
-          aiuto={{ argomento: 'scenario prudente', testo: 'Se incassi meno del previsto nei mesi che mancano: le tasse scendono, ma conviene prepararsi allo scenario atteso.' }}
+          aiuto={{
+            argomento: 'scenario prudente',
+            testo: 'Se incassi meno del previsto nei mesi che mancano: le tasse scendono, ma conviene prepararsi allo scenario atteso.',
+            passi: [
+              <>Compensi con i mesi futuri ridotti: <ImportoNascosto valore={e(sc.prudente.compensi)} /></>,
+              <>Reddito: <ImportoNascosto valore={e(sc.prudente.reddito)} /></>,
+              <>Tasse e contributi: <ImportoNascosto valore={e(sc.prudente.totale)} /></>,
+            ],
+          }}
         />
         <Kpi
           etichetta="Scenario ottimistico"
           valore={e(sc.ottimistico.totale)}
           nota={`incassi futuri +${Math.round(q.ipotesi.ottimistico * 100)}%`}
-          aiuto={{ argomento: 'scenario ottimistico', testo: 'Se incassi di più del previsto: è il caso da coprire per non avere sorprese.' }}
+          aiuto={{
+            argomento: 'scenario ottimistico',
+            testo: 'Se incassi di più del previsto: è il caso da coprire per non avere sorprese.',
+            passi: [
+              <>Compensi con i mesi futuri aumentati: <ImportoNascosto valore={e(sc.ottimistico.compensi)} /></>,
+              <>Reddito: <ImportoNascosto valore={e(sc.ottimistico.reddito)} /></>,
+              <>Tasse e contributi: <ImportoNascosto valore={e(sc.ottimistico.totale)} /></>,
+            ],
+          }}
         />
         {q.prossimo ? (
           <Kpi
             etichetta={`Versamento di ${nomeMese(q.prossimo.mese)}`}
             valore={e(q.prossimo.totale)}
-            aiuto={{ argomento: 'prossimo versamento', testo: q.prossimo.voci.map((v) => v.tipo).join(', ') + '.' }}
+            aiuto={{
+              argomento: 'prossimo versamento',
+              testo: 'Quello che si paga in quel mese con l\'F24 (e a ottobre all\'ENPAP), dalle stime dell\'anno.',
+              passi: [
+                ...q.prossimo.voci.map((v) => <>{v.tipo}: <ImportoNascosto valore={e(v.importo)} /></>),
+                <>Totale: <ImportoNascosto valore={e(q.prossimo.totale)} /></>,
+              ],
+            }}
           />
         ) : null}
       </GrigliaKpi>

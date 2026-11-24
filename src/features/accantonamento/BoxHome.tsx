@@ -48,13 +48,28 @@ export function BoxSalvadanaio({ q, onCambio }: { q: QuadroAccantonamento; onCam
           aiuto={{
             argomento: 'netto reale',
             testo: 'Quello che puoi spendere davvero della partita IVA: incassato meno spese pagate e meno tasse e contributi da mettere da parte. Lo stipendio non è compreso.',
+            passi: [
+              <>Incassato: <ImportoNascosto valore={e(q.netto.incassato)} /></>,
+              <>Meno spese pagate: <ImportoNascosto valore={e(q.netto.spese)} /></>,
+              <>Meno tasse e contributi da mettere da parte: <ImportoNascosto valore={e(q.netto.necessari)} /></>,
+              <>Netto reale: <ImportoNascosto valore={e(q.netto.disponibile)} /></>,
+            ],
           }}
         />
         <Kpi
           etichetta="Ogni 100 € di compenso"
           valore={e(q.percentuale.per100)}
           nota="da mettere da parte"
-          aiuto={{ argomento: 'percentuale', testo: q.percentuale.motivi.join(' ') }}
+          aiuto={{
+            argomento: 'percentuale',
+            testo: q.percentuale.motivi.join(' '),
+            passi: [
+              <>IRPEF e addizionali sul compenso in più: <ImportoNascosto valore={e(q.percentuale.imposte)} /></>,
+              <>Contributi ENPAP: <ImportoNascosto valore={e(q.percentuale.contributi)} /></>,
+              <>Margine di sicurezza: <ImportoNascosto valore={e(q.percentuale.margine)} /></>,
+              <>Ogni 100 € da mettere da parte: <ImportoNascosto valore={e(q.percentuale.per100)} /></>,
+            ],
+          }}
         />
         <Kpi
           etichetta="Nel salvadanaio"

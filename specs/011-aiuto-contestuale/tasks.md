@@ -7,4 +7,5 @@
 - [X] T005 Pagine `/app/aiuto/` e `/app/aiuto/guida/`, collegamento dal tour, suggerimento in home
 - [X] T006 Passi del calcolo su tasse previste e netto reale; fonte nei dettagli del quadro delle tasse
 - [X] T007 Test e2e `tests/e2e/aiuto.spec.ts`, aggiornato `accesso.spec.ts`, pagine nel test di impaginazione
-- [ ] T008 Passi del calcolo su tutti gli importi e prova con una persona esterna — rinviati
+- [X] T008 Passi del calcolo su tutti i numeri calcolati (quadro delle tasse, previsione e scenari, salvadanaio, spese deducibili, netto, obiettivo); importi nelle note spostati nei passi oscurabili; controllo automatico in `tests/unit/aiuto.test.ts` (somme e conteggi semplici esclusi)
+- [ ] T009 Prova con una persona esterna (SC-002) — azione dell'utente
