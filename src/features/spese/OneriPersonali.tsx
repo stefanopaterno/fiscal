@@ -1,5 +1,6 @@
 'use client';
 
+import { annoChiuso, MESSAGGIO_ANNO_CHIUSO } from '@/features/tasse/dati';
 import {
   Badge,
   Button,
@@ -119,6 +120,8 @@ function OneriPerAnno({ anno, setAnno }: { anno: number; setAnno: (a: number) =>
 
   async function aggiungi() {
     if (!nuovo.importo) return setErrore("Scrivi l'importo.");
+    const annoOnere = Number(nuovo.data.slice(0, 4));
+    if (await annoChiuso(annoOnere)) return setErrore(MESSAGGIO_ANNO_CHIUSO(annoOnere));
     try {
       await salva('oneri_personali', {
         id: nuovoId(),

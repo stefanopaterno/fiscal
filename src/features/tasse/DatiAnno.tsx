@@ -11,13 +11,14 @@ import {
 } from '@fluentui/react-components';
 import { Add20Regular, Delete20Regular } from '@fluentui/react-icons';
 import { useEffect, useState } from 'react';
-import { CampoSiNo, CampoTesto, Griglia, Scheda } from '@/ui/Moduli';
+import { CampoSiNo, CampoTesto, Collegamento, Griglia, Scheda } from '@/ui/Moduli';
 import { CampoEuro, percentualeDaTesto, percentualeInTestoModulo, SceltaAnno, useAnno } from './componenti';
 import {
   elimina,
   leggiAliquote,
   leggiCu,
   leggiDatiAnno,
+  leggiDichiarazione,
   nuovaCu,
   nuoveAliquote,
   nuoviDatiAnno,
@@ -38,6 +39,15 @@ const useStili = makeStyles({
   azioni: { display: 'flex', gap: tokens.spacingHorizontalM, flexWrap: 'wrap', alignItems: 'center' },
   pulsante: { minHeight: '44px' },
   scelta: { maxWidth: '240px' },
+  campi: {
+    border: 'none',
+    margin: 0,
+    padding: 0,
+    minWidth: 0,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: tokens.spacingVerticalL,
+  },
   scaglione: {
     display: 'grid',
     gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr) 44px',
@@ -85,15 +95,30 @@ function DatiAnnoPerAnno({ anno, setAnno }: { anno: number; setAnno: (a: number)
   const [dati, setDati] = useState<RigaDatiAnno | null>(null);
   const [aliquote, setAliquote] = useState<AliquoteRiga | null>(null);
   const [errore, setErrore] = useState(false);
+  const [chiusoIl, setChiusoIl] = useState<string | null>(null);
+  const [copiate, setCopiate] = useState(false);
 
   useEffect(() => {
     let vivo = true;
-    Promise.all([leggiCu(anno), leggiDatiAnno(anno), leggiAliquote(anno)])
-      .then(([c, d, a]) => {
+    Promise.all([
+      leggiCu(anno),
+      leggiDatiAnno(anno),
+      leggiAliquote(anno),
+      leggiDichiarazione(anno).catch(() => null),
+      leggiAliquote(anno - 1).catch(() => null),
+      leggiDatiAnno(anno - 1).catch(() => null),
+    ])
+      .then(([c, d, a, dich, aPrima, dPrima]) => {
         if (!vivo) return;
+        setChiusoIl(dich?.chiuso_il ?? null);
         setCu(c.length > 0 ? c : [nuovaCu(anno, nuovoId())]);
-        setDati(d ?? nuoviDatiAnno(anno, nuovoId()));
-        setAliquote(a ?? nuoveAliquote(anno, nuovoId()));
+        // dati stabili (FR-006): proposti dall'anno prima, da confermare salvando
+        setDati(d ?? { ...nuoviDatiAnno(anno, nuovoId()), soggetto_isa: dPrima?.soggetto_isa ?? false });
+        if (a) setAliquote(a);
+        else if (aPrima) {
+          setAliquote({ ...aPrima, id: nuovoId(), versione: 0, anno, verificate: false });
+          setCopiate(true);
+        } else setAliquote(nuoveAliquote(anno, nuovoId()));
       })
       .catch(() => vivo && setErrore(true));
     return () => {
@@ -116,7 +141,27 @@ function DatiAnnoPerAnno({ anno, setAnno }: { anno: number; setAnno: (a: number)
           <Spinner label="Carico i dati…" />
         )
       ) : (
-        <>
+        <fieldset className={s.campi} disabled={chiusoIl !== null}>
+          {chiusoIl ? (
+            <MessageBar intent="warning" layout="multiline">
+              <MessageBarBody>
+                L&apos;anno {anno} è chiuso dal {chiusoIl.split('-').reverse().join('/')}: i dati si leggono ma non si
+                modificano. Per correggerli riapri l&apos;anno dalla{' '}
+                <Collegamento href="/dichiarazione/" inLinea>
+                  Dichiarazione
+                </Collegamento>
+                .
+              </MessageBarBody>
+            </MessageBar>
+          ) : null}
+          {copiate && !chiusoIl ? (
+            <MessageBar intent="info" layout="multiline">
+              <MessageBarBody>
+                Ho proposto le aliquote delle addizionali del {anno - 1}: controllale per il {anno} e salvale. Restano
+                «provvisorie» finché non le segni verificate.
+              </MessageBarBody>
+            </MessageBar>
+          ) : null}
           {cu.map((c, i) => (
             <SchedaCu
               key={c.id}
@@ -134,7 +179,7 @@ function DatiAnnoPerAnno({ anno, setAnno }: { anno: number; setAnno: (a: number)
           </Button>
           <SchedaDati key={`d${dati.id}`} iniziale={dati} />
           <SchedaAliquote key={`a${aliquote.id}`} iniziale={aliquote} />
-        </>
+        </fieldset>
       )}
     </div>
   );

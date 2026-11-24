@@ -1,5 +1,6 @@
 'use client';
 
+import { annoChiuso, MESSAGGIO_ANNO_CHIUSO } from '@/features/tasse/dati';
 import {
   Button,
   makeStyles,
@@ -192,6 +193,8 @@ export function SchedaSpesa({ id }: { id: string | null }) {
         tipo: 'errore',
         testo: 'Scrivi perché cambi la percentuale (serve in caso di controllo).',
       });
+    const annoSpesa = Number(spesa.data.slice(0, 4));
+    if (await annoChiuso(annoSpesa)) return setEsito({ tipo: 'errore', testo: MESSAGGIO_ANNO_CHIUSO(annoSpesa) });
     setSalvando(true);
     try {
       const riga: Spesa = {

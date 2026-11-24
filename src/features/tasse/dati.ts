@@ -190,6 +190,20 @@ export async function leggiDichiarazione(anno: number): Promise<Dichiarazione | 
   return controlla(r) as Dichiarazione | null;
 }
 
+/**
+ * L'anno è chiuso (specifica 004, FR-015)? Le sue voci non si modificano finché non viene riaperto. Senza rete
+ * risponde «no»: il database rifiuta comunque la modifica e la coda la segnala.
+ */
+export async function annoChiuso(anno: number): Promise<boolean> {
+  try {
+    return (await leggiDichiarazione(anno))?.chiuso_il != null;
+  } catch {
+    return false;
+  }
+}
+export const MESSAGGIO_ANNO_CHIUSO = (anno: number) =>
+  `Il ${anno} è chiuso: per aggiungere o cambiare voci di quell'anno riaprilo dalla Dichiarazione.`;
+
 export async function elimina(
   tabella: 'certificazioni_uniche' | 'versamenti_previdenza' | 'versamenti_imposte',
   id: string,

@@ -256,6 +256,7 @@ export function spiegaErrore(e: unknown): string {
       non_in_prova: 'Sei in produzione: le fatture emesse non si cancellano più.',
       conferma_mancante: 'Scrivi PRODUZIONE in maiuscolo per confermare.',
       verifica_recente: 'Per sicurezza inserisci di nuovo password e codice, poi riprova.',
+      anno_chiuso: "L'anno di questa voce è chiuso: per modificarla riaprilo dalla Dichiarazione.",
       esempio_gia_caricato:
         "I dati d'esempio ci sono già. Per caricarli di nuovo, prima usa «Cancella i dati di prova».",
       esempio_fatture_presenti:
