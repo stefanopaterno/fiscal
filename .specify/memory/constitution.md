@@ -101,9 +101,14 @@ rischio residuo (dati leggibili dal gestore del progetto) accettato dall'utente.
   (senza "parte di"); "My Fiscal" resta solo il nome interno del progetto. Gli aiuti contestuali
   (principio VI, specifica 011) MUST comparire con un pulsante "?" accanto a ogni sezione, numero e
   campo, scritti per chi non è commercialista: frasi brevi, parole di tutti i giorni, un esempio.
-- **Natura dell'app**: My Fiscal è uno strumento personale di simulazione e organizzazione, non
-  sostituisce il commercialista né le dichiarazioni ufficiali. L'app MUST mostrare in modo
-  visibile che i risultati sono stime fino a verifica.
+- **Natura dell'app**: Fiscal è lo strumento fiscale principale dell'utente e sostituisce il
+  commercialista nella gestione ordinaria: contabilità per cassa, calcoli, IVA e ritenute,
+  scadenze e acconti, simulazioni e preparazione del Modello Redditi PF. La responsabilità
+  finale resta dell'utente e l'app MUST NOT firmare né trasmettere le dichiarazioni ufficiali al
+  posto suo. Le regole fiscali MUST restare verificabili e datate per anno, con stato
+  "verificata/da verificare" (principio II); l'app MUST mostrare come stime i risultati che
+  dipendono da regole non ancora confermate e MUST segnalare quando un caso esce dall'ordinario e
+  conviene un parere professionale.
 - **Riferimento normativo**: normativa fiscale italiana vigente per gli anni 2026/2027.
 - **Privacy dei dati**: vedi principio VII. I dati fiscali e personali sono conservati solo nel
   progetto Supabase dell'utente; nessun altro servizio di terzi li riceve.
@@ -266,4 +271,4 @@ principi o sezioni, PATCH per chiarimenti. Ogni piano e ogni revisione MUST veri
 conformità ai principi; le deroghe MUST essere giustificate per iscritto nel piano. Il file
 `CLAUDE.md` resta la guida di ruolo e contesto per lo sviluppo quotidiano.
 
-**Version**: 2.7.1 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-21
+**Version**: 2.8.0 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-24
