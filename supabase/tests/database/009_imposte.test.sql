@@ -62,11 +62,11 @@ select throws_ok(
   '23505', null, 'una sola riga di aliquote per anno');
 select throws_ok(
   $$insert into public.aliquote_addizionali (id, anno, regionale_scaglioni) values (gen_random_uuid(), 2026, '[{"fino_a": 1500000, "aliquota": 0.0123}]')$$,
-  '23514', null, 'ultimo scaglione con un limite rifiutato');
+  'P0001', 'scaglioni_non_validi', 'ultimo scaglione con un limite rifiutato');
 select throws_ok(
   $$insert into public.aliquote_addizionali (id, anno, regionale_scaglioni) values (gen_random_uuid(), 2026,
     '[{"fino_a": 2800000, "aliquota": 0.01}, {"fino_a": 1500000, "aliquota": 0.02}, {"fino_a": null, "aliquota": 0.03}]')$$,
-  '23514', null, 'limiti non crescenti rifiutati');
+  'P0001', 'scaglioni_non_validi', 'limiti non crescenti rifiutati');
 select throws_ok(
   $$insert into public.aliquote_addizionali (id, anno, regionale_scaglioni, comunale_aliquota) values (gen_random_uuid(), 2025,
     '[{"fino_a": null, "aliquota": 0.0123}]', 0.012)$$,
