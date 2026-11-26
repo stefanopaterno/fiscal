@@ -114,7 +114,7 @@ export type RigaRegistro = {
   fonte: FonteVoce | null;
   stato: StatoVerifica;
   stato_norma: StatoNorma;
-  nota?: string | null;
+  spiegazione?: string | null;
   creato_il: string;
 };
 

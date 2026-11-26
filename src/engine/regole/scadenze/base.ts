@@ -1,3 +1,4 @@
+import { baseF24 } from '../f24/base';
 import type { Regola } from '../tipi';
 
 /**
@@ -66,7 +67,7 @@ export function scadenzeBase(): Regola<ScadenzaRegola>[] {
       'Art. 6 L. 405/1990: acconto IVA entro il 27 dicembre',
     ),
     v(
-      { chiave: 'bollo_t4', data: '02-28', titolo: 'Bollo delle fatture del quarto trimestre', descrizione: "Imposta di bollo sulle fatture elettroniche esenti di ottobre–dicembre dell'anno prima (F24 codice 2524).", categoria: 'versamento', pertinenza: 'bollo', importo: 'bollo_t4', riferimento: -1 },
+      { chiave: 'bollo_t4', data: '02-28', titolo: 'Bollo delle fatture del quarto trimestre', descrizione: `Imposta di bollo sulle fatture elettroniche esenti di ottobre–dicembre dell'anno prima (F24 codice ${baseF24(0).codici.bollo_t4.valore.codice}).`, categoria: 'versamento', pertinenza: 'bollo', importo: 'bollo_t4', riferimento: -1 },
       'Art. 6 DM 17/6/2014 come modificato dal DL 73/2022: bollo virtuale sulle fatture elettroniche, versamento trimestrale',
       'da_verificare',
     ),

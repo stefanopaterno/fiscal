@@ -315,7 +315,7 @@ const CATALOGO_FATTURAZIONE: ParametroCatalogo[] = [
     'fattura.importo_bollo',
     'Importo del bollo',
     'Quanto costa il bollo sulle fatture esenti sopra la soglia.',
-    [NORMATTIVA, ADE],
+    [NORMATTIVA, ADE, FATTURAPA],
     euro(0.5, 20),
     'importoBollo',
   ),

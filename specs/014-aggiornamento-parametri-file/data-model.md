@@ -63,7 +63,7 @@ Aggiornabile solo `modifiche_programma[*].stato` (trigger); il resto immutabile.
 | fonte | jsonb | `{titolo, riferimento, url, data_atto}` |
 | stato | enum `stato_verifica` (`verificata`, `da_verificare`) | |
 | stato_norma | text | `in_vigore` \| `approvata_non_pubblicata` \| `proposta` |
-| nota | text | ≤ 500 |
+| spiegazione | text | ≤ 500; dalla `nota` del file (testo normativo pubblico; il nome evita «nota», vietato dal test 007 sui dati clinici) |
 
 **Trigger**:
 - `before update or delete` → errore («il registro dei parametri non si modifica: annulla con una nuova riga»),
