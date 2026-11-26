@@ -92,7 +92,7 @@ description: "Elenco dei lavori per la specifica 014 - Aggiornamento dei paramet
 
 - [X] T034 [US4] Scheda `src/features/parametri/ParametriInUso.tsx`: per area, valore in uso, origine, fonte, stato, cronologia; «Annulla» con conferma, bloccato e spiegato per gli anni chiusi
 - [X] T035 [US4] Annullamento in `src/features/parametri/dati.ts` (riga `annullato` con `annulla_id`, data-model.md `aggiornamenti_parametri.annulla_id`; per `addizionali.*` ripristino di `aliquote_addizionali` dal `valore_precedente`) e ricarica del registro
-- [ ] T036 [US4] e2e in `tests/e2e/parametri.spec.ts`: approva, annulla, calcolo tornato uguale, due righe in cronologia
+- [X] T036 [US4] e2e in `tests/e2e/parametri.spec.ts`: approva, annulla, calcolo tornato uguale, due righe in cronologia
 
 ---
 
@@ -118,7 +118,7 @@ description: "Elenco dei lavori per la specifica 014 - Aggiornamento dei paramet
 
 - [ ] T041 [P] Aiuti «?» e voci del glossario (catalogo, decorrenza, registro) in `src/engine/regole/glossario/index.ts` e guida in `/app/aiuto/`
 - [ ] T042 [P] Tour: passo sulla pagina Parametri fiscali in `src/features/tour/`
-- [ ] T043 e2e completo `tests/e2e/parametri.spec.ts` (scenari 1–5, 9) e `tests/e2e/layout.spec.ts` sulla nuova pagina (360 px, 44 px, nessuno scroll orizzontale)
+- [X] T043 e2e completo `tests/e2e/parametri.spec.ts` (scenari 1–5, 9) e `tests/e2e/layout.spec.ts` sulla nuova pagina (360 px, 44 px, nessuno scroll orizzontale)
 - [ ] T044 Verifica di sicurezza: file malevolo (HTML, script, istruzioni nel testo), URL non `https:`, chiave con caratteri strani; nessun contenuto del file finisce in `innerHTML`
 - [ ] T045 Aggiornare `contracts/richiesta-template.md` con l'output reale del generatore e rieseguire quickstart.md per intero
 
