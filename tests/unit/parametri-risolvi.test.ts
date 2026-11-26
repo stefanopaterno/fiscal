@@ -167,3 +167,26 @@ describe('risolutore', () => {
     expect(f('2027-03-02').bollo).toBe(250);
   });
 });
+
+describe('origine e spiegazioni (T032, T033)', () => {
+  it('le spiegazioni dell\'IRPEF citano l\'aggiornamento', async () => {
+    const { calcolaAnno } = await import('@/engine/irpef/anno');
+    impostaRegistro([riga({ chiave: 'irpef.scaglioni', anno: 2027, valore: SCAGLIONI_50, creato_il: '2027-01-12T09:00:00Z' })]);
+    const r = calcolaAnno(input(2027));
+    expect(JSON.stringify(r.spiegazioni)).toMatch(/Aggiornamento approvato il 12\/01\/2027: Atto di prova/);
+  });
+
+  it('origine: programma, aggiornamento, allineato al programma, riportato', async () => {
+    const { origineParametro, testoOrigine } = await import('@/engine/parametri/origine');
+    expect(origineParametro('irpef.scaglioni', { anno: 2027 })).toEqual({ tipo: 'programma' });
+    impostaRegistro([
+      riga({ chiave: 'irpef.scaglioni', anno: 2027, valore: SCAGLIONI_50 }),
+      riga({ chiave: 'fattura.aliquota_iva', dal: '2027-01-01', valore: 0.22 }),
+      riga({ chiave: 'irpef.scaglioni', anno: 2028, valore: SCAGLIONI_50 }),
+    ]);
+    expect(origineParametro('irpef.scaglioni', { anno: 2027 })).toMatchObject({ tipo: 'aggiornamento', allineato: false });
+    expect(origineParametro('fattura.aliquota_iva', { anno: 2027, data: '2027-05-01' })).toMatchObject({ tipo: 'aggiornamento', allineato: true });
+    expect(origineParametro('enpap.aliquota_soggettivo', { anno: 2028 })).toEqual({ tipo: 'riportato', daAnno: 2027 });
+    expect(testoOrigine('irpef.scaglioni', { anno: 2027 })).toMatch(/^da aggiornamento del/);
+  });
+});

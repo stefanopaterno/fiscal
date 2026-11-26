@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState, type ReactNode } from 'react';
 import { GuardiaBlocco } from '@/features/lock/GuardiaBlocco';
 import { AgganciProve } from '@/features/offline-queue/AgganciProve';
+import { useRegistroParametri } from '@/features/parametri/ProviderParametri';
 import { destinazione, getStatoAccesso } from '@/lib/supabase/aal';
 import { getSupabase } from '@/lib/supabase/client';
 
@@ -29,6 +30,8 @@ export function ProtectedPage({ children }: { children: ReactNode }) {
   const pagina = usePathname();
   const [consentito, setConsentito] = useState(false);
   const [completo, setCompleto] = useState(false);
+  // specifica 014: i parametri approvati dall'utente entrano nel motore prima di mostrare i calcoli
+  const parametriPronti = useRegistroParametri(consentito && completo);
 
   useEffect(() => {
     let attivo = true;
@@ -53,7 +56,7 @@ export function ProtectedPage({ children }: { children: ReactNode }) {
     };
   }, [pagina, router]);
 
-  if (!consentito) {
+  if (!consentito || (completo && !parametriPronti)) {
     return (
       <Skeleton aria-label="Caricamento" className={s.scheletro}>
         <SkeletonItem size={32} />

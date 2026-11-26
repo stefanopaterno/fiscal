@@ -33,7 +33,7 @@ description: "Elenco dei lavori per la specifica 014 - Aggiornamento dei paramet
 - [X] T013 Non regressione: `npx vitest run` e `npx playwright test` con registro vuoto, nessun risultato cambiato; aggiungere a `tests/unit/parametri-risolvi.test.ts` un caso che confronta `calcolaAnno` dei dati d'esempio 2027 prima/dopo T011
 - [X] T014 [P] Test pgTAP `supabase/tests/database/020_parametri.test.sql`: RLS proprietario e aal2 su entrambe le tabelle; anonimo 42501; `update`/`delete` su `aggiornamenti_parametri` rifiutati fuori dalla pulizia della prova; esattamente uno tra `anno` e `dal`; `annulla_id` obbligatorio solo con `azione = 'annullato'` e unico; inserimento e annullamento rifiutati per anno chiuso; `importazioni_parametri` modificabile solo in `modifiche_programma[*].stato` (data-model.md `aggiornamenti_parametri.azione`, `aggiornamenti_parametri.annulla_id`, `aggiornamenti_parametri.chiave`, `aggiornamenti_parametri.anno`, `aggiornamenti_parametri.dal`, `aggiornamenti_parametri.valore`, `aggiornamenti_parametri.stato`, `aggiornamenti_parametri.stato_norma`, `aggiornamenti_parametri.nota`, `importazioni_parametri.data_ricerca`, `importazioni_parametri.versione_schema`, `importazioni_parametri.anni`, `importazioni_parametri.modifiche_programma`)
 - [X] T015 Migrazione `supabase/migrations/20261126000100_parametri.sql`: tipi, tabelle, `private.applica_regole_tabella`, trigger di sola aggiunta e di anno chiuso con controllo del ruolo in linea prima di `private.*`, inclusione nella pulizia della modalità prova; fino a far passare T014
-- [ ] T016 Dati `src/features/parametri/dati.ts` (lettura registro e importazioni; scritture solo online, mai dalla coda) e `src/features/parametri/ProviderParametri.tsx` montato nel layout autenticato `app/layout.tsx`: carica il registro dopo l'accesso, chiama `impostaRegistro`, ricarica dopo ogni approvazione o annullamento
+- [X] T016 Dati `src/features/parametri/dati.ts` (lettura registro e importazioni; scritture solo online, mai dalla coda) e `src/features/parametri/ProviderParametri.tsx` montato nel layout autenticato `app/layout.tsx`: carica il registro dopo l'accesso, chiama `impostaRegistro`, ricarica dopo ogni approvazione o annullamento
 
 **Checkpoint**: catalogo e risolutore pronti, app identica a prima con registro vuoto.
 
@@ -46,8 +46,8 @@ description: "Elenco dei lavori per la specifica 014 - Aggiornamento dei paramet
 
 - [X] T017 [P] [US1] Test `tests/unit/parametri-richiesta.test.ts`: struttura come `contracts/richiesta-template.md` (sezioni 1–5), «da verificare» in cima, solo anni scelti, valori nelle unità del file, addizionali solo con regione e comune impostati; controllo automatico che il testo non contenga codici fiscali, nomi, importi di CU/fatture/spese del profilo di prova (FR-006, SC-007)
 - [X] T018 [US1] Generatore `src/engine/parametri/richiesta.ts` (research.md R-09) fino a far passare T017
-- [ ] T019 [US1] Scheda `src/features/parametri/PreparaRichiesta.tsx`: scelta anni (corrente, successivo, entrambi), anteprima, «Copia» e «Scarica .md», avviso se mancano regione/comune; aiuti «?» (011)
-- [ ] T020 [US1] Pagina `app/impostazioni/parametri/page.tsx` con le schede In uso / Prepara richiesta / Importa e voce in `app/impostazioni/` che la apre; collegamento dalla pagina «Novità» (`src/features/novita/Novita.tsx`)
+- [X] T019 [US1] Scheda `src/features/parametri/PreparaRichiesta.tsx`: scelta anni (corrente, successivo, entrambi), anteprima, «Copia» e «Scarica .md», avviso se mancano regione/comune; aiuti «?» (011)
+- [X] T020 [US1] Pagina `app/impostazioni/parametri/page.tsx` con le schede In uso / Prepara richiesta / Importa e voce in `app/impostazioni/` che la apre; collegamento dalla pagina «Novità» (`src/features/novita/Novita.tsx`)
 
 **Checkpoint**: la richiesta si genera e si copia.
 
@@ -64,7 +64,7 @@ description: "Elenco dei lavori per la specifica 014 - Aggiornamento dei paramet
 - [X] T024 [US2] Lettura `src/engine/parametri/leggi-file.ts` fino a far passare T021
 - [X] T025 [US2] Validatore `src/engine/parametri/valida.ts` (domini ufficiali + domini di regione e comune dal profilo; nessun `eval`, testi solo come testo) fino a far passare T022
 - [X] T026 [US2] Anteprima `src/engine/parametri/anteprima.ts` con `conRegistro` e `calcolaAnno`/`imposteAnno`; input dell'anno da `raccogliAnno` di `src/features/tasse/dati.ts`; fino a far passare T023
-- [ ] T027 [US2] Scheda `src/features/parametri/Importa.tsx`: incolla o carica (.json, .md, .txt), elenco per gruppi con prima → dopo, decorrenza, fonte (link `https:` con `rel="noopener noreferrer"`), stato, motivi, impatto in euro rispettando l'occhio che nasconde gli importi; voci bloccate con la spiegazione sull'anno chiuso
+- [X] T027 [US2] Scheda `src/features/parametri/Importa.tsx`: incolla o carica (.json, .md, .txt), elenco per gruppi con prima → dopo, decorrenza, fonte (link `https:` con `rel="noopener noreferrer"`), stato, motivi, impatto in euro rispettando l'occhio che nasconde gli importi; voci bloccate con la spiegazione sull'anno chiuso
 
 **Checkpoint**: l'anteprima è completa e non modifica nulla.
 
@@ -77,10 +77,10 @@ description: "Elenco dei lavori per la specifica 014 - Aggiornamento dei paramet
 
 - [X] T028 [P] [US3] Test `tests/unit/parametri-approva.test.ts`: dall'esito alla riga del registro (unità delle regole, `valore_precedente` = valore in vigore, `stato` finale), conteggi dell'importazione con «rifiutata»; bollo 2,50 € dal 2027-03-01 → fattura del 15/02 invariata, bozza del 02/03 con 2,50 €; scaglioni 2027 → 2026 invariato (data-model.md `aggiornamenti_parametri.valore_precedente`, `aggiornamenti_parametri.fonte`, `aggiornamenti_parametri.importazione_id`, `importazioni_parametri.conteggi`)
 - [X] T029 [US3] Funzione pura `preparaApprovazione` in `src/engine/parametri/anteprima.ts` fino a far passare T028
-- [ ] T030 [US3] Salvataggio in `src/features/parametri/dati.ts`: crea l'importazione e le righe approvate in un'unica chiamata (funzione SQL `public.approva_parametri` nella migrazione T015, transazione unica), poi ricarica il registro; per `addizionali.*` aggiorna `aliquote_addizionali` con `verificate` (research.md R-08)
-- [ ] T031 [US3] In `Importa.tsx`: selezione voce per voce, «Approva tutte», conferma in più per le voci anomale, riepilogo finale con link a «In uso»; parametri per data con decorrenza passata: elenco delle bozze che verranno ricalcolate
-- [ ] T032 [US3] Spiegazioni dei calcoli con l'origine del valore (FR-021): il risolutore espone l'origine (`programma` o `aggiornamento` con data e fonte) e le spiegazioni in `src/engine/irpef/anno.ts`, `src/engine/fattura/calcola.ts` e `src/engine/irpef/enpap.ts` la citano; test in `tests/unit/irpef-anno.test.ts` e `tests/unit/fattura-calcolo.test.ts`
-- [ ] T033 [US3] Allineamento con il programma (FR-022): se la base ha lo stesso valore e una fonte ufficiale, la voce risulta «allineata al programma» in `risolvi.ts`; test in `tests/unit/parametri-risolvi.test.ts`
+- [X] T030 [US3] Salvataggio in `src/features/parametri/dati.ts`: crea l'importazione e le righe approvate in un'unica chiamata (funzione SQL `public.approva_parametri` nella migrazione T015, transazione unica), poi ricarica il registro; per `addizionali.*` aggiorna `aliquote_addizionali` con `verificate` (research.md R-08)
+- [X] T031 [US3] In `Importa.tsx`: selezione voce per voce, «Approva tutte», conferma in più per le voci anomale, riepilogo finale con link a «In uso»; parametri per data con decorrenza passata: elenco delle bozze che verranno ricalcolate
+- [X] T032 [US3] Spiegazioni dei calcoli con l'origine del valore (FR-021): il risolutore espone l'origine (`programma` o `aggiornamento` con data e fonte) e le spiegazioni in `src/engine/irpef/anno.ts`, `src/engine/fattura/calcola.ts` e `src/engine/irpef/enpap.ts` la citano; test in `tests/unit/irpef-anno.test.ts` e `tests/unit/fattura-calcolo.test.ts`
+- [X] T033 [US3] Allineamento con il programma (FR-022): se la base ha lo stesso valore e una fonte ufficiale, la voce risulta «allineata al programma» in `risolvi.ts`; test in `tests/unit/parametri-risolvi.test.ts`
 
 **Checkpoint**: MVP completo (US1–US3).
 
@@ -90,8 +90,8 @@ description: "Elenco dei lavori per la specifica 014 - Aggiornamento dei paramet
 
 **Test indipendente**: quickstart.md scenari 6 e 7 (parte annullamento).
 
-- [ ] T034 [US4] Scheda `src/features/parametri/ParametriInUso.tsx`: per area, valore in uso, origine, fonte, stato, cronologia; «Annulla» con conferma, bloccato e spiegato per gli anni chiusi
-- [ ] T035 [US4] Annullamento in `src/features/parametri/dati.ts` (riga `annullato` con `annulla_id`, data-model.md `aggiornamenti_parametri.annulla_id`; per `addizionali.*` ripristino di `aliquote_addizionali` dal `valore_precedente`) e ricarica del registro
+- [X] T034 [US4] Scheda `src/features/parametri/ParametriInUso.tsx`: per area, valore in uso, origine, fonte, stato, cronologia; «Annulla» con conferma, bloccato e spiegato per gli anni chiusi
+- [X] T035 [US4] Annullamento in `src/features/parametri/dati.ts` (riga `annullato` con `annulla_id`, data-model.md `aggiornamenti_parametri.annulla_id`; per `addizionali.*` ripristino di `aliquote_addizionali` dal `valore_precedente`) e ricarica del registro
 - [ ] T036 [US4] e2e in `tests/e2e/parametri.spec.ts`: approva, annulla, calcolo tornato uguale, due righe in cronologia
 
 ---

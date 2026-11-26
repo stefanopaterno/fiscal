@@ -71,7 +71,12 @@ export function risolviSet<S>(
     const riga = rigaInVigore(p, contesto, base, registro, baseDiAnno);
     if (!riga) continue;
     const regolaBase = p.leggi(base);
-    const regola: Regola<unknown> = { valore: riga.valore, fonte: testoFonte(riga.fonte), stato: riga.stato };
+    const approvato = riga.creato_il.slice(0, 10).split('-').reverse().join('/');
+    const regola: Regola<unknown> = {
+      valore: riga.valore,
+      fonte: `Aggiornamento approvato il ${approvato}: ${testoFonte(riga.fonte)}`,
+      stato: riga.stato,
+    };
     set = p.applica(set, regola);
     const allineato = regolaBase !== undefined && regolaBase.stato === 'verificata' && uguali(regolaBase.valore, riga.valore);
     origini.set(p.chiave, { tipo: 'aggiornamento', riga, allineato });
