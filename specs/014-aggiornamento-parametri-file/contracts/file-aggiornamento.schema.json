@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "fiscal/file-aggiornamento/v1",
+  "title": "File di aggiornamento dei parametri fiscali (Fiscal, versione 1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["versione_schema", "data_ricerca", "anni", "voci", "modifiche_programma"],
+  "properties": {
+    "versione_schema": { "const": 1 },
+    "data_ricerca": { "type": "string", "format": "date" },
+    "anni": { "type": "array", "items": { "type": "integer", "minimum": 2000, "maximum": 2100 }, "minItems": 1 },
+    "ambito": {
+      "description": "Solo se ci sono voci addizionali.*: regione e comune per cui valgono.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["regione", "comune"],
+      "properties": { "regione": { "type": "string", "maxLength": 60 }, "comune": { "type": "string", "maxLength": 80 } }
+    },
+    "voci": { "type": "array", "maxItems": 200, "items": { "$ref": "#/$defs/voce" } },
+    "modifiche_programma": { "type": "array", "maxItems": 50, "items": { "$ref": "#/$defs/modifica" } },
+    "fonti_controllate": {
+      "type": "array",
+      "maxItems": 50,
+      "items": { "type": "object", "required": ["nome", "url", "raggiunta"], "properties": {
+        "nome": { "type": "string", "maxLength": 120 }, "url": { "type": "string", "maxLength": 500 }, "raggiunta": { "type": "boolean" } } }
+    }
+  },
+  "$defs": {
+    "fonte": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["titolo", "url", "data_atto"],
+      "properties": {
+        "titolo": { "type": "string", "maxLength": 200, "description": "Es. 'Legge 30 dicembre 2026, n. 210 (Legge di Bilancio 2027)'" },
+        "riferimento": { "type": "string", "maxLength": 120, "description": "Es. 'art. 1, comma 2'" },
+        "url": { "type": "string", "maxLength": 500, "pattern": "^https://" },
+        "data_atto": { "type": "string", "format": "date" }
+      }
+    },
+    "voce": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["chiave", "valore", "fonte", "stato_proposto", "stato_norma"],
+      "oneOf": [{ "required": ["anno"] }, { "required": ["dal"] }],
+      "properties": {
+        "chiave": { "type": "string", "maxLength": 120, "description": "Una chiave del catalogo della richiesta" },
+        "anno": { "type": "integer", "minimum": 2000, "maximum": 2100, "description": "Per i parametri 'per anno d'imposta' e le scadenze" },
+        "dal": { "type": "string", "format": "date", "description": "Per i parametri 'dalla data dell'operazione'" },
+        "valore": { "description": "Nell'unità indicata dal catalogo: percentuali come 23 (=23%), euro come 2.00, date AAAA-MM-GG, scaglioni come [{fino_a: 28000, aliquota: 23}, {fino_a: null, aliquota: 43}]" },
+        "fonte": { "$ref": "#/$defs/fonte" },
+        "stato_proposto": { "enum": ["verificata", "da_verificare"] },
+        "stato_norma": { "enum": ["in_vigore", "approvata_non_pubblicata", "proposta"] },
+        "nota": { "type": "string", "maxLength": 500, "description": "Cosa cambia, in parole semplici" }
+      }
+    },
+    "modifica": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["titolo", "descrizione", "fonte"],
+      "properties": {
+        "titolo": { "type": "string", "maxLength": 160 },
+        "descrizione": { "type": "string", "maxLength": 1000 },
+        "dal": { "type": "string", "format": "date" },
+        "fonte": { "$ref": "#/$defs/fonte" }
+      }
+    }
+  }
+}
