@@ -10,9 +10,9 @@
 
 | Comando | Cosa dimostra |
 |---|---|
-| `npx vitest run src/engine/parametri` | catalogo completo, conversioni, validatore, risolutore, anteprima |
+| `npx vitest run tests/unit/parametri` | catalogo completo, conversioni, validatore, risolutore, anteprima |
 | `npx vitest run` | **non regressione**: con registro vuoto tutti i risultati esistenti sono identici |
-| `supabase test db` (file `014_parametri.sql`) | RLS, sola aggiunta, blocco anni chiusi, annullamento unico |
+| `supabase test db` (file `020_parametri.test.sql`) | RLS, sola aggiunta, blocco anni chiusi, annullamento unico |
 | `npx playwright test tests/e2e/parametri.spec.ts` | flusso completo nell'interfaccia |
 
 ## Scenari manuali (corrispondono alle User Story)

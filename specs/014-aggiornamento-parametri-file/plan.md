@@ -82,7 +82,7 @@ src/features/parametri/
 └── Importa.tsx                  # incolla/carica → anteprima → approva voce per voce
 app/impostazioni/parametri/page.tsx
 supabase/migrations/20261126000100_parametri.sql
-supabase/tests/014_parametri.sql
+supabase/tests/database/020_parametri.test.sql
 tests/e2e/parametri.spec.ts
 ```
 
