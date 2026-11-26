@@ -11,11 +11,14 @@ export function AvvisoNovita() {
   useEffect(() => {
     let vivo = true;
     controlliDiOggi()
-      .then(({ controlli, settimanale }) => {
+      .then(({ controlli, settimanale, parametri, importazioni }) => {
         if (!vivo) return;
+        const daFare = importazioni.flatMap((i) => i.modifiche_programma).filter((m) => m.stato === 'aperta');
         const parti = [
           ...(settimanale.scaduto ? ['controllo settimanale delle novità'] : []),
           ...controlli.map((c) => c.titolo.charAt(0).toLowerCase() + c.titolo.slice(1)),
+          ...(parametri.dovuto ? ['aggiornamento dei parametri fiscali'] : []),
+          ...(daFare.length ? [`${new Set(daFare.map((m) => m.impronta)).size} novità da fare nel programma`] : []),
         ];
         setTesto(parti.length ? parti.join('; ') : null);
       })

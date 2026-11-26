@@ -100,8 +100,8 @@ description: "Elenco dei lavori per la specifica 014 - Aggiornamento dei paramet
 
 **Test indipendente**: quickstart.md scenario 8.
 
-- [ ] T037 [P] [US5] Test in `tests/unit/novita.test.ts`: impronta delle modifiche (titolo normalizzato + URL), nessun duplicato tra importazioni, stati aperta/fatta/non_riguarda (research.md R-10; data-model.md `importazioni_parametri.modifiche_programma`)
-- [ ] T038 [US5] Sezione «Da fare nel programma» in `src/features/novita/Novita.tsx` letta da `importazioni_parametri`, con azioni «fatta» e «non mi riguarda»; impronta in `src/engine/novita/modifiche.ts`
+- [X] T037 [P] [US5] Test in `tests/unit/novita.test.ts`: impronta delle modifiche (titolo normalizzato + URL), nessun duplicato tra importazioni, stati aperta/fatta/non_riguarda (research.md R-10; data-model.md `importazioni_parametri.modifiche_programma`)
+- [X] T038 [US5] Sezione «Da fare nel programma» in `src/features/novita/Novita.tsx` letta da `importazioni_parametri`, con azioni «fatta» e «non mi riguarda»; impronta in `src/engine/novita/modifiche.ts`
 
 ---
 
@@ -109,8 +109,8 @@ description: "Elenco dei lavori per la specifica 014 - Aggiornamento dei paramet
 
 **Test indipendente**: quickstart.md scenario 10.
 
-- [ ] T039 [P] [US6] Test in `tests/unit/novita.test.ts`: promemoria a gennaio, gennaio–marzo, date addizionali (012), «da verificare» sull'anno in corso da più di 30 giorni, ultima importazione oltre 90 giorni; usa `oggiIso` di `src/lib/oggi.ts` (data di prova)
-- [ ] T040 [US6] Regole del promemoria in `src/engine/novita/controlli.ts` e avviso in `src/features/novita/AvvisoNovita.tsx` con pulsante «Prepara aggiornamento»
+- [X] T039 [P] [US6] Test in `tests/unit/novita.test.ts`: promemoria a gennaio, gennaio–marzo, date addizionali (012), «da verificare» sull'anno in corso da più di 30 giorni, ultima importazione oltre 90 giorni; usa `oggiIso` di `src/lib/oggi.ts` (data di prova)
+- [X] T040 [US6] Regole del promemoria in `src/engine/novita/controlli.ts` e avviso in `src/features/novita/AvvisoNovita.tsx` con pulsante «Prepara aggiornamento»
 
 ---
 

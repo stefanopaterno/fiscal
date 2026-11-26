@@ -14,11 +14,13 @@ import {
 } from '@fluentui/react-components';
 import { Copy20Regular } from '@fluentui/react-icons';
 import { useEffect, useMemo, useState } from 'react';
-import { controlliDovuti, controlloSettimanale, promptControllo, type Controllo } from '@/engine/novita/controlli';
+import { controlliDovuti, controlloSettimanale, promemoriaParametri, promptControllo, type Controllo } from '@/engine/novita/controlli';
+import { modificheProgramma, type ModificaRaggruppata, type StatoModifica } from '@/engine/novita/modifiche';
 import { impattoNovita, type Impatto } from '@/engine/novita/impatto';
 import { regoleAperte } from '@/engine/novita/regole-aperte';
 import { formattaEuro } from '@/engine/importi';
 import { NOTIZIE, ULTIMO_CONTROLLO, type Notizia } from '@/engine/regole/novita';
+import { leggiImportazioni, segnaModifica, type Importazione } from '@/features/parametri/dati';
 import { leggiAliquote, raccogliAnno } from '@/features/tasse/dati';
 import { ImportoNascosto } from '@/ui/ImportoNascosto';
 import { Collegamento, Scheda } from '@/ui/Moduli';
@@ -54,20 +56,34 @@ const STATO: Record<Notizia['stato'], { testo: string; colore: 'success' | 'warn
   proposta: { testo: 'Proposta', colore: 'informative' },
 };
 
-/** Controlli dovuti oggi (usato anche dalla home). */
-export async function controlliDiOggi(): Promise<{ controlli: Controllo[]; settimanale: ReturnType<typeof controlloSettimanale> }> {
+/** Controlli dovuti oggi (usato anche dalla home), compreso il promemoria dei parametri (specifica 014). */
+export async function controlliDiOggi(): Promise<{
+  controlli: Controllo[];
+  settimanale: ReturnType<typeof controlloSettimanale>;
+  parametri: ReturnType<typeof promemoriaParametri>;
+  importazioni: Importazione[];
+}> {
   const oggi = oggiIso();
   const anno = Number(oggi.slice(0, 4));
   const anni = [anno, anno + 1];
-  const righe = await Promise.all(anni.map((a) => leggiAliquote(a).catch(() => null)));
+  const [righe, importazioni] = await Promise.all([
+    Promise.all(anni.map((a) => leggiAliquote(a).catch(() => null))),
+    leggiImportazioni().catch(() => [] as Importazione[]),
+  ]);
   const aliquoteVerificate = new Map(anni.map((a, i) => [a, righe[i]?.verificate === true]));
-  return { controlli: controlliDovuti(oggi, { aliquoteVerificate }), settimanale: controlloSettimanale(oggi) };
+  const parametri = promemoriaParametri(oggi, {
+    ultimaImportazione: importazioni[0]?.creato_il ?? null,
+    daVerificareAnnoInCorso: regoleAperte().filter((r) => r.anno === anno).length,
+  });
+  return { controlli: controlliDovuti(oggi, { aliquoteVerificate }), settimanale: controlloSettimanale(oggi), parametri, importazioni };
 }
 
 export function Novita() {
   const s = useStili();
   const oggi = oggiIso();
   const [dovuti, setDovuti] = useState<Controllo[] | null>(null);
+  const [parametri, setParametri] = useState<ReturnType<typeof promemoriaParametri> | null>(null);
+  const [importazioni, setImportazioni] = useState<Importazione[]>([]);
   const [copiato, setCopiato] = useState(false);
   const settimanale = controlloSettimanale(oggi);
   const prompt = useMemo(() => promptControllo(oggi), [oggi]);
@@ -76,7 +92,12 @@ export function Novita() {
   useEffect(() => {
     let vivo = true;
     controlliDiOggi()
-      .then((c) => vivo && setDovuti(c.controlli))
+      .then((c) => {
+        if (!vivo) return;
+        setDovuti(c.controlli);
+        setParametri(c.parametri);
+        setImportazioni(c.importazioni);
+      })
       .catch(() => vivo && setDovuti([]));
     return () => {
       vivo = false;
@@ -144,6 +165,29 @@ export function Novita() {
         <Text size={200} className={s.nota}>
           Il testo contiene solo informazioni pubbliche: nessun importo, né regione o comune.
         </Text>
+      </Scheda>
+
+      <Scheda
+        titolo="Parametri fiscali"
+        aiuto={{
+          argomento: 'aggiornamento dei parametri',
+          testo:
+            'Quando cambiano aliquote, soglie o scadenze: prepari la richiesta per Claude, importi la sua risposta e approvi voce per voce. Lo storico non cambia.',
+        }}
+      >
+        {parametri?.dovuto ? (
+          <MessageBar intent="warning" layout="multiline">
+            <MessageBarBody>{parametri.motivo}</MessageBarBody>
+          </MessageBar>
+        ) : (
+          <Text>
+            {importazioni[0]
+              ? `Ultimo aggiornamento importato il ${importazioni[0].creato_il.slice(0, 10).split('-').reverse().join('/')}.`
+              : 'Nessun aggiornamento importato: Fiscal usa i valori del programma.'}
+          </Text>
+        )}
+        <Collegamento href="/impostazioni/parametri/">Apri i parametri fiscali</Collegamento>
+        <DaFareNelProgramma importazioni={importazioni} onCambio={setImportazioni} />
       </Scheda>
 
       <Scheda
@@ -259,5 +303,68 @@ function ImpattoSuiConti({ n }: { n: Notizia }) {
           : <>Con le regole in uso paghi <ImportoNascosto valore={formattaEuro(r.differenza)} /> in più.</>}
       {r.provvisorio ? ' (stima provvisoria)' : ''}
     </Text>
+  );
+}
+
+/** Novità arrivate con i file di aggiornamento che richiedono un aggiornamento di Fiscal (specifica 014, US5). */
+function DaFareNelProgramma({ importazioni, onCambio }: { importazioni: Importazione[]; onCambio: (i: Importazione[]) => void }) {
+  const s = useStili();
+  const [errore, setErrore] = useState<string | null>(null);
+  const voci = modificheProgramma(importazioni);
+  if (!voci.length) return null;
+  const aperte = voci.filter((v) => v.stato === 'aperta');
+
+  async function segna(v: ModificaRaggruppata, stato: StatoModifica) {
+    setErrore(null);
+    try {
+      const toccate = importazioni.filter((i) => v.importazioni.includes(i.id));
+      for (const imp of toccate) await segnaModifica(imp, v.impronta, stato);
+      onCambio(await leggiImportazioni());
+    } catch {
+      setErrore('Non riesco a salvare: controlla la connessione.');
+    }
+  }
+
+  return (
+    <div className={s.voce}>
+      <Text weight="semibold">Da fare nel programma ({aperte.length})</Text>
+      {errore ? <Text className={s.nota}>{errore}</Text> : null}
+      <ul className={s.elenco}>
+        {voci.map((v) => (
+          <li key={v.impronta} className={s.voce}>
+            <div className={s.riga}>
+              <Text weight="semibold">{v.titolo}</Text>
+              <Badge appearance="tint" color={v.stato === 'aperta' ? 'warning' : 'success'}>
+                {v.stato === 'aperta' ? 'da fare' : v.stato === 'fatta' ? 'fatta' : 'non mi riguarda'}
+              </Badge>
+            </div>
+            <Text>{v.descrizione}</Text>
+            {v.dal ? <Text size={200}>Da quando: {v.dal.split('-').reverse().join('/')}</Text> : null}
+            {/^https:\/\//.test(v.fonte.url) ? (
+              <Link href={v.fonte.url} target="_blank" rel="noopener noreferrer" className={s.fonte}>
+                Fonte: {v.fonte.titolo}
+              </Link>
+            ) : null}
+            {v.stato === 'aperta' ? (
+              <div className={s.riga}>
+                <Button className={s.pulsante} onClick={() => void segna(v, 'fatta')}>
+                  Fatta
+                </Button>
+                <Button className={s.pulsante} onClick={() => void segna(v, 'non_riguarda')}>
+                  Non mi riguarda
+                </Button>
+              </div>
+            ) : (
+              <Button className={s.pulsante} appearance="subtle" onClick={() => void segna(v, 'aperta')}>
+                Riapri
+              </Button>
+            )}
+          </li>
+        ))}
+      </ul>
+      <Text size={200} className={s.nota}>
+        Per farle, incolla la novità all&apos;assistente: richiede una modifica di Fiscal con i suoi controlli.
+      </Text>
+    </div>
   );
 }

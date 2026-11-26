@@ -77,21 +77,27 @@ export function ParametriInUso({ aggiornamento }: { aggiornamento: number }) {
   const [daAnnullare, setDaAnnullare] = useState<RigaRegistro | null>(null);
   const [annullo, setAnnullo] = useState(false);
 
-  const carica = useCallback(async () => {
-    try {
-      const [r, c, a] = await Promise.all([leggiRegistro(), leggiAnniChiusi(), leggiAddizionali([annoOggi, annoOggi + 1])]);
-      setRegistro(r);
-      setAnniChiusi(c);
-      setAddizionali(a);
-    } catch (e) {
-      setErrore(spiegaErrore(e));
-      setRegistro([]);
-    }
-  }, [annoOggi]);
+  const [ricarica, setRicarica] = useState(0);
+  const carica = useCallback(() => setRicarica((x) => x + 1), []);
 
   useEffect(() => {
-    void carica();
-  }, [carica, aggiornamento]);
+    let vivo = true;
+    Promise.all([leggiRegistro(), leggiAnniChiusi(), leggiAddizionali([annoOggi, annoOggi + 1])])
+      .then(([r, c, a]) => {
+        if (!vivo) return;
+        setRegistro(r);
+        setAnniChiusi(c);
+        setAddizionali(a);
+      })
+      .catch((e: unknown) => {
+        if (!vivo) return;
+        setErrore(spiegaErrore(e));
+        setRegistro([]);
+      });
+    return () => {
+      vivo = false;
+    };
+  }, [annoOggi, aggiornamento, ricarica]);
 
   const attive = useMemo(() => new Set(righeAttive(registro ?? []).map((r) => r.id)), [registro]);
   const annullate = useMemo(() => new Set((registro ?? []).filter((r) => r.azione === 'annullato').map((r) => r.annulla_id)), [registro]);
@@ -102,7 +108,7 @@ export function ParametriInUso({ aggiornamento }: { aggiornamento: number }) {
     try {
       await annullaParametro(daAnnullare.id);
       await ricaricaRegistro();
-      await carica();
+      carica();
       setDaAnnullare(null);
     } catch (e) {
       setErrore(spiegaErrore(e));

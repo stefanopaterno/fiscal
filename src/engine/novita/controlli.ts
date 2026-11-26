@@ -72,3 +72,35 @@ export function promptControllo(oggi: string): string {
     'Aggiorna le notizie nell\'app con fonte, decorrenza e regole toccate; per ogni modifica delle regole preparami la proposta (prima → dopo, casi di prova) e aspetta il mio sì prima di applicarla e pubblicare.',
   ].join('\n');
 }
+
+/**
+ * Promemoria per preparare l'aggiornamento dei parametri da file (specifica 014, US6, FR-027): a inizio anno
+ * (Legge di Bilancio, istruzioni di CU e Modello Redditi), con regole «da verificare» sull'anno in corso da più
+ * di 30 giorni senza importazioni, o con l'ultima importazione oltre 90 giorni. Mai nella settimana dopo
+ * un'importazione. Le date delle addizionali restano quelle di `controlliDovuti`.
+ */
+export function promemoriaParametri(
+  oggi: string,
+  dati: { ultimaImportazione: string | null; daVerificareAnnoInCorso: number },
+): { dovuto: boolean; motivo: string | null } {
+  const anno = oggi.slice(0, 4);
+  const giorni = dati.ultimaImportazione ? Math.round((giorno(oggi) - giorno(dati.ultimaImportazione.slice(0, 10))) / 86_400_000) : null;
+  if (giorni !== null && giorni <= 7) return { dovuto: false, motivo: null };
+  const md = mmgg(oggi);
+  const importatoQuestAnno = dati.ultimaImportazione?.startsWith(anno) ?? false;
+  if (md <= '03-31' && !importatoQuestAnno)
+    return {
+      dovuto: true,
+      motivo:
+        md <= '01-31'
+          ? `È uscita la Legge di Bilancio: aggiorna i parametri del ${anno}.`
+          : `Escono le istruzioni di CU e Modello Redditi: aggiorna i parametri del ${anno}.`,
+    };
+  if (dati.daVerificareAnnoInCorso > 0 && (giorni === null || giorni > 30))
+    return {
+      dovuto: true,
+      motivo: `${dati.daVerificareAnnoInCorso} ${dati.daVerificareAnnoInCorso === 1 ? 'regola' : 'regole'} del ${anno} ancora da verificare: prepara la richiesta per Claude.`,
+    };
+  if (giorni !== null && giorni > 90) return { dovuto: true, motivo: `Ultimo aggiornamento dei parametri ${giorni} giorni fa.` };
+  return { dovuto: false, motivo: null };
+}

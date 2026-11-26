@@ -23,33 +23,38 @@ export function PreparaRichiesta() {
   const oggi = oggiIso();
   const anno = Number(oggi.slice(0, 4));
   const [anni, setAnni] = useState<Record<number, boolean>>({ [anno]: true, [anno + 1]: oggi.slice(5) >= '10-01' });
-  const [regione, setRegione] = useState('');
-  const [comune, setComune] = useState('');
-  const [siti, setSiti] = useState('');
+  // regione, comune e siti: solo da questo dispositivo (la pagina si mostra nel browser dopo l'accesso)
+  const [ambitoSalvato] = useState(() => (typeof window === 'undefined' ? null : leggiAmbito()));
+  const [regione, setRegione] = useState(ambitoSalvato?.regione ?? '');
+  const [comune, setComune] = useState(ambitoSalvato?.comune ?? '');
+  const [siti, setSiti] = useState(ambitoSalvato?.siti.join(', ') ?? '');
   const [addizionali, setAddizionali] = useState<AddizionaliPerAnno>({});
   const [copiato, setCopiato] = useState(false);
 
   useEffect(() => {
-    const a = leggiAmbito();
-    if (a) {
-      setRegione(a.regione);
-      setComune(a.comune);
-      setSiti(a.siti.join(', '));
-    }
+    let vivo = true;
     leggiAddizionali([anno, anno + 1])
-      .then(setAddizionali)
+      .then((a) => vivo && setAddizionali(a))
       .catch(() => undefined);
+    return () => {
+      vivo = false;
+    };
   }, [anno]);
 
-  const scelti = Object.entries(anni)
+  const chiaveAnni = Object.entries(anni)
     .filter(([, v]) => v)
-    .map(([k]) => Number(k));
-  const ambito = regione.trim() && comune.trim() ? { regione: regione.trim(), comune: comune.trim() } : undefined;
-  const testo = useMemo(
-    () => (scelti.length ? generaRichiesta({ oggi, anni: scelti, ambito, addizionali }) : ''),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [oggi, scelti.join(','), ambito?.regione, ambito?.comune, addizionali],
-  );
+    .map(([k]) => k)
+    .join(',');
+  const scelti = chiaveAnni ? chiaveAnni.split(',').map(Number) : [];
+  const reg = regione.trim();
+  const com = comune.trim();
+  const ambito = reg && com ? { regione: reg, comune: com } : undefined;
+  const testo = useMemo(() => {
+    const anniScelti = chiaveAnni ? chiaveAnni.split(',').map(Number) : [];
+    return anniScelti.length
+      ? generaRichiesta({ oggi, anni: anniScelti, ambito: reg && com ? { regione: reg, comune: com } : undefined, addizionali })
+      : '';
+  }, [oggi, chiaveAnni, reg, com, addizionali]);
 
   function ricordaAmbito() {
     salvaAmbito({
