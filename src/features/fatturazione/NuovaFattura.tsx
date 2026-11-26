@@ -212,6 +212,7 @@ export function NuovaFattura(props: { id: string | null; clienteIniziale: string
       return {
         r: calcolaFattura({
           anno,
+          data: /^\d{4}-\d{2}-\d{2}$/.test(data) ? data : undefined,
           righe: righeLette.map((x) => ({ compenso: x.centesimi!, quantita: x.q!, natura: x.natura })),
           sostitutoImposta: cliente?.sostituto_imposta ?? false,
           bolloACarico: dati.profilo.bollo_a_carico,
@@ -237,7 +238,7 @@ export function NuovaFattura(props: { id: string | null; clienteIniziale: string
   const r = calcolo.r;
   const aliquotaIntegrativo = (() => {
     try {
-      return Math.round(regolePerAnno(anno).aliquotaIntegrativo.valore * 100);
+      return Math.round(regolePerAnno(anno, /^\d{4}-\d{2}-\d{2}$/.test(data) ? data : undefined).aliquotaIntegrativo.valore * 100);
     } catch {
       return null;
     }
@@ -269,7 +270,7 @@ export function NuovaFattura(props: { id: string | null; clienteIniziale: string
         fattura_rif_id: null,
         fotografia: {
           regole: (() => {
-            const rg = regolePerAnno(anno);
+            const rg = regolePerAnno(anno, data);
             return {
               anno: rg.anno,
               aliquota_integrativo: rg.aliquotaIntegrativo.valore,
