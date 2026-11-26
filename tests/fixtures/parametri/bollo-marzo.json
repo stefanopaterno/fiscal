@@ -1,0 +1,9 @@
+{
+  "versione_schema": 1,
+  "data_ricerca": "2027-02-20",
+  "anni": [2027],
+  "voci": [
+    { "chiave": "fattura.importo_bollo", "dal": "2027-03-01", "valore": 2.5, "fonte": { "titolo": "Decreto di prova sul bollo", "url": "https://www.gazzettaufficiale.it/prova-bollo", "data_atto": "2027-02-15" }, "stato_proposto": "verificata", "stato_norma": "in_vigore", "nota": "Bollo a 2,50 € dal 1° marzo (valore di prova)." }
+  ],
+  "modifiche_programma": []
+}

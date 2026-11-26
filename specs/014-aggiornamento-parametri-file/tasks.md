@@ -12,7 +12,7 @@ description: "Elenco dei lavori per la specifica 014 - Aggiornamento dei paramet
 ## Phase 1: Setup
 
 - [X] T001 Emendamento costituzione 2.9.0 (research.md R-12: principio I valori aggiornabili da file, principio III test su catalogo/validatore/risolutore) in `.specify/memory/constitution.md`, con rapporto di sincronizzazione in testa e data
-- [ ] T002 [P] File di prova in `tests/fixtures/parametri/`: `valido.json`, `errori.json`, `malevolo.json`, `anno-chiuso.json`, `programma.json`, `bollo-marzo.json`, `anno-2028.json` conformi (o volutamente non conformi) a `contracts/file-aggiornamento.schema.json`, come descritto in quickstart.md
+- [X] T002 [P] File di prova in `tests/fixtures/parametri/`: `valido.json`, `errori.json`, `malevolo.json`, `anno-chiuso.json`, `programma.json`, `bollo-marzo.json`, `anno-2028.json` conformi (o volutamente non conformi) a `contracts/file-aggiornamento.schema.json`, come descritto in quickstart.md
 
 ---
 
@@ -44,8 +44,8 @@ description: "Elenco dei lavori per la specifica 014 - Aggiornamento dei paramet
 **Obiettivo**: documento Markdown con prompt, priorità «da verificare», catalogo, fonti e schema.
 **Test indipendente**: quickstart.md scenario 1.
 
-- [ ] T017 [P] [US1] Test `tests/unit/parametri-richiesta.test.ts`: struttura come `contracts/richiesta-template.md` (sezioni 1–5), «da verificare» in cima, solo anni scelti, valori nelle unità del file, addizionali solo con regione e comune impostati; controllo automatico che il testo non contenga codici fiscali, nomi, importi di CU/fatture/spese del profilo di prova (FR-006, SC-007)
-- [ ] T018 [US1] Generatore `src/engine/parametri/richiesta.ts` (research.md R-09) fino a far passare T017
+- [X] T017 [P] [US1] Test `tests/unit/parametri-richiesta.test.ts`: struttura come `contracts/richiesta-template.md` (sezioni 1–5), «da verificare» in cima, solo anni scelti, valori nelle unità del file, addizionali solo con regione e comune impostati; controllo automatico che il testo non contenga codici fiscali, nomi, importi di CU/fatture/spese del profilo di prova (FR-006, SC-007)
+- [X] T018 [US1] Generatore `src/engine/parametri/richiesta.ts` (research.md R-09) fino a far passare T017
 - [ ] T019 [US1] Scheda `src/features/parametri/PreparaRichiesta.tsx`: scelta anni (corrente, successivo, entrambi), anteprima, «Copia» e «Scarica .md», avviso se mancano regione/comune; aiuti «?» (011)
 - [ ] T020 [US1] Pagina `app/impostazioni/parametri/page.tsx` con le schede In uso / Prepara richiesta / Importa e voce in `app/impostazioni/` che la apre; collegamento dalla pagina «Novità» (`src/features/novita/Novita.tsx`)
 
@@ -58,12 +58,12 @@ description: "Elenco dei lavori per la specifica 014 - Aggiornamento dei paramet
 **Obiettivo**: lettura tollerante, validazione voce per voce, anteprima con impatto in euro; nessun valore cambia.
 **Test indipendente**: quickstart.md scenari 2, 3, 7 (parte anteprima), 9.
 
-- [ ] T021 [P] [US2] Test `tests/unit/parametri-leggi-file.test.ts`: JSON puro, dentro ```json con testo intorno, più blocchi (prende il primo con `versione_schema`), testo oltre 256 KB rifiutato, versione diversa da 1 rifiutata con messaggio su come chiedere a Claude di correggere
-- [ ] T022 [P] [US2] Test `tests/unit/parametri-valida.test.ts` con `tests/fixtures/parametri/*.json`: chiave sconosciuta, decorrenza incoerente, tipo errato, 0,23 al posto di 23, scaglioni non crescenti, fonte non ufficiale «verificata» → `da_verificare`, `stato_norma` non in vigore → `da_verificare`, dominio come sottodominio accettato e come testo nell'URL rifiutato, anno chiuso → bloccata, doppioni, variazione anomala, file vecchio, ambito addizionali diverso dal profilo → scartata, stringhe oltre i limiti dello schema (research.md R-06; data-model.md `VoceFile.fonte`, `VoceFile.stato_norma`, `EsitoVoce.gruppo`)
-- [ ] T023 [P] [US2] Test `tests/unit/parametri-anteprima.test.ts`: gruppi cambia/conferma/scartata/bloccata/programma; impatto IRPEF uguale alla differenza di `imposteAnno` tra registro attuale e registro + voce (dati d'esempio 2027); impatto di fatturazione su fattura tipo; scadenze senza importo; dopo l'anteprima il registro attivo è quello di prima (research.md R-02)
-- [ ] T024 [US2] Lettura `src/engine/parametri/leggi-file.ts` fino a far passare T021
-- [ ] T025 [US2] Validatore `src/engine/parametri/valida.ts` (domini ufficiali + domini di regione e comune dal profilo; nessun `eval`, testi solo come testo) fino a far passare T022
-- [ ] T026 [US2] Anteprima `src/engine/parametri/anteprima.ts` con `conRegistro` e `calcolaAnno`/`imposteAnno`; input dell'anno da `raccogliAnno` di `src/features/tasse/dati.ts`; fino a far passare T023
+- [X] T021 [P] [US2] Test `tests/unit/parametri-leggi-file.test.ts`: JSON puro, dentro ```json con testo intorno, più blocchi (prende il primo con `versione_schema`), testo oltre 256 KB rifiutato, versione diversa da 1 rifiutata con messaggio su come chiedere a Claude di correggere
+- [X] T022 [P] [US2] Test `tests/unit/parametri-valida.test.ts` con `tests/fixtures/parametri/*.json`: chiave sconosciuta, decorrenza incoerente, tipo errato, 0,23 al posto di 23, scaglioni non crescenti, fonte non ufficiale «verificata» → `da_verificare`, `stato_norma` non in vigore → `da_verificare`, dominio come sottodominio accettato e come testo nell'URL rifiutato, anno chiuso → bloccata, doppioni, variazione anomala, file vecchio, ambito addizionali diverso dal profilo → scartata, stringhe oltre i limiti dello schema (research.md R-06; data-model.md `VoceFile.fonte`, `VoceFile.stato_norma`, `EsitoVoce.gruppo`)
+- [X] T023 [P] [US2] Test `tests/unit/parametri-anteprima.test.ts`: gruppi cambia/conferma/scartata/bloccata/programma; impatto IRPEF uguale alla differenza di `imposteAnno` tra registro attuale e registro + voce (dati d'esempio 2027); impatto di fatturazione su fattura tipo; scadenze senza importo; dopo l'anteprima il registro attivo è quello di prima (research.md R-02)
+- [X] T024 [US2] Lettura `src/engine/parametri/leggi-file.ts` fino a far passare T021
+- [X] T025 [US2] Validatore `src/engine/parametri/valida.ts` (domini ufficiali + domini di regione e comune dal profilo; nessun `eval`, testi solo come testo) fino a far passare T022
+- [X] T026 [US2] Anteprima `src/engine/parametri/anteprima.ts` con `conRegistro` e `calcolaAnno`/`imposteAnno`; input dell'anno da `raccogliAnno` di `src/features/tasse/dati.ts`; fino a far passare T023
 - [ ] T027 [US2] Scheda `src/features/parametri/Importa.tsx`: incolla o carica (.json, .md, .txt), elenco per gruppi con prima → dopo, decorrenza, fonte (link `https:` con `rel="noopener noreferrer"`), stato, motivi, impatto in euro rispettando l'occhio che nasconde gli importi; voci bloccate con la spiegazione sull'anno chiuso
 
 **Checkpoint**: l'anteprima è completa e non modifica nulla.
@@ -75,8 +75,8 @@ description: "Elenco dei lavori per la specifica 014 - Aggiornamento dei paramet
 **Obiettivo**: le voci approvate entrano nel registro e i calcoli le usano dalla decorrenza giusta.
 **Test indipendente**: quickstart.md scenari 4 e 5.
 
-- [ ] T028 [P] [US3] Test `tests/unit/parametri-approva.test.ts`: dall'esito alla riga del registro (unità delle regole, `valore_precedente` = valore in vigore, `stato` finale), conteggi dell'importazione con «rifiutata»; bollo 2,50 € dal 2027-03-01 → fattura del 15/02 invariata, bozza del 02/03 con 2,50 €; scaglioni 2027 → 2026 invariato (data-model.md `aggiornamenti_parametri.valore_precedente`, `aggiornamenti_parametri.fonte`, `aggiornamenti_parametri.importazione_id`, `importazioni_parametri.conteggi`)
-- [ ] T029 [US3] Funzione pura `preparaApprovazione` in `src/engine/parametri/anteprima.ts` fino a far passare T028
+- [X] T028 [P] [US3] Test `tests/unit/parametri-approva.test.ts`: dall'esito alla riga del registro (unità delle regole, `valore_precedente` = valore in vigore, `stato` finale), conteggi dell'importazione con «rifiutata»; bollo 2,50 € dal 2027-03-01 → fattura del 15/02 invariata, bozza del 02/03 con 2,50 €; scaglioni 2027 → 2026 invariato (data-model.md `aggiornamenti_parametri.valore_precedente`, `aggiornamenti_parametri.fonte`, `aggiornamenti_parametri.importazione_id`, `importazioni_parametri.conteggi`)
+- [X] T029 [US3] Funzione pura `preparaApprovazione` in `src/engine/parametri/anteprima.ts` fino a far passare T028
 - [ ] T030 [US3] Salvataggio in `src/features/parametri/dati.ts`: crea l'importazione e le righe approvate in un'unica chiamata (funzione SQL `public.approva_parametri` nella migrazione T015, transazione unica), poi ricarica il registro; per `addizionali.*` aggiorna `aliquote_addizionali` con `verificate` (research.md R-08)
 - [ ] T031 [US3] In `Importa.tsx`: selezione voce per voce, «Approva tutte», conferma in più per le voci anomale, riepilogo finale con link a «In uso»; parametri per data con decorrenza passata: elenco delle bozze che verranno ricalcolate
 - [ ] T032 [US3] Spiegazioni dei calcoli con l'origine del valore (FR-021): il risolutore espone l'origine (`programma` o `aggiornamento` con data e fonte) e le spiegazioni in `src/engine/irpef/anno.ts`, `src/engine/fattura/calcola.ts` e `src/engine/irpef/enpap.ts` la citano; test in `tests/unit/irpef-anno.test.ts` e `tests/unit/fattura-calcolo.test.ts`

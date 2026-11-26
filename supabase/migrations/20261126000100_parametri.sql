@@ -157,7 +157,9 @@ declare
   n int := 0;
   esistente public.aliquote_addizionali;
 begin
-  if jsonb_typeof(p_righe) <> 'array' or jsonb_array_length(p_righe) = 0 or jsonb_array_length(p_righe) > 200 then
+  if jsonb_typeof(p_righe) <> 'array' or jsonb_array_length(p_righe) > 200
+     or (jsonb_array_length(p_righe) = 0
+         and jsonb_array_length(coalesce(p_importazione -> 'modifiche_programma', '[]'::jsonb)) = 0) then
     raise exception 'registro_parametri' using errcode = 'P0001', detail = 'Nessuna voce da approvare.';
   end if;
   insert into public.importazioni_parametri (id, data_ricerca, versione_schema, anni, conteggi, modifiche_programma)
