@@ -87,9 +87,9 @@ data in poi (usa `dal`); «anno solare» = scadenza di quell'anno (usa `anno`).
 
 | Chiave | Unità | Decorrenza | Valore in uso 2027 | Stato |
 |---|---|---|---|---|
-| `spese.categoria.telefonia.percentuale` | percentuale | anno | 80 | verificata |
-| `spese.categoria.vitto_alloggio.percentuale` | percentuale | anno | 75 | verificata |
-| `spese.categoria.vitto_alloggio.tetto_su_compensi` | percentuale | anno | 2 | verificata |
+| `spese.categoria.telefonia.percentuale` | percentuale | anno | 80 | da verificare |
+| `spese.categoria.vitto_alloggio.percentuale` | percentuale | anno | 75 | da verificare |
+| `spese.categoria.vitto_alloggio.tetto_su_compensi` | percentuale | anno | 2 | da verificare |
 | `spese.onere.spese_sanitarie.franchigia` | euro | anno | 129.11 | verificata |
 
 ### Scadenze e codici tributo (estratto)
