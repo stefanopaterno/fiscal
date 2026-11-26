@@ -116,11 +116,11 @@ description: "Elenco dei lavori per la specifica 014 - Aggiornamento dei paramet
 
 ## Phase 9: Polish
 
-- [ ] T041 [P] Aiuti «?» e voci del glossario (catalogo, decorrenza, registro) in `src/engine/regole/glossario/index.ts` e guida in `/app/aiuto/`
-- [ ] T042 [P] Tour: passo sulla pagina Parametri fiscali in `src/features/tour/`
+- [X] T041 [P] Aiuti «?» e voci del glossario (catalogo, decorrenza, registro) in `src/engine/regole/glossario/index.ts` e guida in `/app/aiuto/`
+- [X] T042 [P] Tour: passo sulla pagina Parametri fiscali in `src/features/tour/`
 - [X] T043 e2e completo `tests/e2e/parametri.spec.ts` (scenari 1–5, 9) e `tests/e2e/layout.spec.ts` sulla nuova pagina (360 px, 44 px, nessuno scroll orizzontale)
-- [ ] T044 Verifica di sicurezza: file malevolo (HTML, script, istruzioni nel testo), URL non `https:`, chiave con caratteri strani; nessun contenuto del file finisce in `innerHTML`
-- [ ] T045 Aggiornare `contracts/richiesta-template.md` con l'output reale del generatore e rieseguire quickstart.md per intero
+- [X] T044 Verifica di sicurezza: file malevolo (HTML, script, istruzioni nel testo), URL non `https:`, chiave con caratteri strani; nessun contenuto del file finisce in `innerHTML`
+- [X] T045 Aggiornare `contracts/richiesta-template.md` con l'output reale del generatore e rieseguire quickstart.md per intero
 
 ---
 

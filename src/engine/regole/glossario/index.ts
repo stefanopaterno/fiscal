@@ -299,6 +299,20 @@ export const GLOSSARIO: Voce[] = [
     pagine: [{ href: '/salvadanaio/', nome: 'Salvadanaio' }],
   },
   {
+    id: 'decorrenza',
+    termine: 'decorrenza',
+    sinonimi: ['parametri fiscali'],
+    definizione:
+      "Da quando vale un nuovo valore. Alcuni valgono per tutto l'anno d'imposta (scaglioni, detrazioni, addizionali), altri dalla data della fattura o del versamento in poi (bollo, integrativo, ritenuta, codici F24). Le fatture già emesse e gli anni chiusi non cambiano.",
+    esempio: (anno) => {
+      const f = fatt(anno);
+      return f
+        ? `Se il bollo passasse da ${e(f.importoBollo.valore)} a un nuovo importo dal 1° marzo ${anno}, le fatture di febbraio resterebbero con ${e(f.importoBollo.valore)}.`
+        : 'Un nuovo bollo dal 1° marzo vale solo per le fatture da quel giorno.';
+    },
+    pagine: [{ href: '/impostazioni/parametri/', nome: 'Parametri fiscali' }],
+  },
+  {
     id: 'volume_affari',
     termine: "volume d'affari",
     sinonimi: [],
