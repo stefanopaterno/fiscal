@@ -133,7 +133,7 @@ test('in prova emetto, stampo con filigrana e cancello; poi passo alla produzion
   await page.goto('/app/impostazioni/modalita/');
   const passa = page.getByRole('button', { name: 'Passa alla produzione' });
   await expect(passa).toBeDisabled();
-  await page.getByRole('checkbox', { name: /Ho capito/ }).check();
+  await page.getByRole('checkbox', { name: /Ho capito: le fatture di prova/ }).check();
   await page.getByLabel(/^Scrivi PRODUZIONE/).fill('PRODUZIONE');
   await passa.click(); // codice appena inserito all'accesso: la verifica recente è già valida
   await expect(page.getByRole('heading', { name: 'Sei in produzione' })).toBeVisible();

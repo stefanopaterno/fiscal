@@ -254,7 +254,7 @@ export function spiegaErrore(e: unknown): string {
       oltre_il_netto: "L'importo supera quanto resta da incassare.",
       fattura_immutabile: 'Una fattura emessa non si può modificare: si corregge con una nota di credito.',
       non_in_prova: 'Sei in produzione: le fatture emesse non si cancellano più.',
-      conferma_mancante: 'Scrivi PRODUZIONE in maiuscolo per confermare.',
+      conferma_mancante: 'Scrivi la parola di conferma in maiuscolo, esattamente come indicato.',
       verifica_recente: 'Per sicurezza inserisci di nuovo password e codice, poi riprova.',
       anno_chiuso: "L'anno di questa voce è chiuso: per modificarla riaprilo dalla Dichiarazione.",
       esempio_gia_caricato:
@@ -349,6 +349,32 @@ export async function cancellaDatiProva(
     anagrafiche: number;
   }[];
   return r[0] ?? { fatture: 0, incassi: 0, anagrafiche: 0 };
+}
+
+/**
+ * Azzera i dati di prova tranne CU, anagrafica, attività e aliquote delle addizionali (richiesta del 27/11/2026).
+ * Il database cancella le righe e restituisce i file da togliere; qui si tolgono dallo storage. Un file che non si
+ * riesce a togliere resta solo come copia inaccessibile (nessuna riga lo indica più) e non blocca l'azzeramento.
+ */
+export type EsitoAzzeramento = { conteggi: Record<string, number>; fileTolti: number; fileNonTolti: number };
+
+export async function azzeraDatiProva(conferma: string): Promise<EsitoAzzeramento> {
+  const sb = getSupabase();
+  const r = controlla(await sb.rpc('azzera_dati_prova', { p_conferma: conferma })) as {
+    conteggi: Record<string, number>;
+    file: { documenti: string[]; consensi: string[]; giustificativi: string[] };
+  };
+  let fileTolti = 0;
+  let fileNonTolti = 0;
+  for (const [bucket, percorsi] of Object.entries(r.file) as [string, string[]][]) {
+    for (let i = 0; i < percorsi.length; i += 100) {
+      const blocco = percorsi.slice(i, i + 100);
+      const { error } = await sb.storage.from(bucket).remove(blocco);
+      if (error) fileNonTolti += blocco.length;
+      else fileTolti += blocco.length;
+    }
+  }
+  return { conteggi: r.conteggi, fileTolti, fileNonTolti };
 }
 
 export type EsitoDatiEsempio = { clienti: number; fatture: number; incassi: number; versamenti: number };
