@@ -130,3 +130,29 @@ describe('ricerca (T015)', () => {
     expect(ids('zzz')).toEqual([]);
   });
 });
+
+describe('spunte (T019)', async () => {
+  const { azzeraSpunte, cambiaSpunta, leggiSpunte, CHIAVE_SPUNTE } = await import('@/features/guide-adempimenti/spunte');
+  const memoria = new Map<string, string>();
+  globalThis.localStorage = {
+    getItem: (k: string) => memoria.get(k) ?? null,
+    setItem: (k: string, v: string) => void memoria.set(k, v),
+    removeItem: (k: string) => void memoria.delete(k),
+    clear: () => memoria.clear(),
+    key: () => null,
+    length: 0,
+  } as Storage;
+
+  it('aggiungi, togli, azzera, per guida', () => {
+    cambiaSpunta('f24-tasse', 3, true);
+    cambiaSpunta('f24-tasse', 1, true);
+    cambiaSpunta('redditi-pf', 2, true);
+    expect(leggiSpunte()).toEqual({ 'f24-tasse': [1, 3], 'redditi-pf': [2] });
+    cambiaSpunta('f24-tasse', 3, false);
+    expect(leggiSpunte()['f24-tasse']).toEqual([1]);
+    azzeraSpunte('f24-tasse');
+    expect(leggiSpunte()).toEqual({ 'redditi-pf': [2] });
+    memoria.set(CHIAVE_SPUNTE, 'non json');
+    expect(leggiSpunte()).toEqual({});
+  });
+});

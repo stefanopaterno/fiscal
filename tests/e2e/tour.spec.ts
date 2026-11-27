@@ -17,12 +17,12 @@ test('il pulsante della mappa apre il tour e le spunte restano', async ({ page }
   await page.getByRole('button', { name: 'Tour di Fiscal' }).click();
   await expect(page.getByRole('heading', { name: 'Tour di Fiscal', level: 1 })).toBeVisible();
   await expect(page.getByRole('heading', { name: '3 · Salvadanaio' })).toBeVisible();
-  await expect(page.getByText('0 tappe viste su 12')).toBeVisible();
+  await expect(page.getByText('0 tappe viste su 13')).toBeVisible();
 
   await page.getByRole('region', { name: '1 · Home' }).getByRole('checkbox', { name: 'Vista' }).check();
-  await expect(page.getByText('1 tappa vista su 12')).toBeVisible();
+  await expect(page.getByText('1 tappa vista su 13')).toBeVisible();
   await page.reload();
-  await expect(page.getByText('1 tappa vista su 12')).toBeVisible();
+  await expect(page.getByText('1 tappa vista su 13')).toBeVisible();
 
   await page.getByRole('region', { name: '3 · Salvadanaio' }).getByRole('link', { name: 'Apri il salvadanaio' }).click();
   await expect(page.getByRole('heading', { name: 'Salvadanaio', level: 1 })).toBeVisible();

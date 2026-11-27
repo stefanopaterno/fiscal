@@ -50,9 +50,9 @@ description: "Elenco dei lavori per la specifica 015 - Guide agli adempimenti"
 **Test indipendente**: quickstart.md scenario 1.
 
 - [X] T015 [P] [US1] Test in `tests/unit/guide-adempimenti.test.ts`: `cercaGuide('bollo')` → `f24-bollo`; `'740'` e `'unico'` → `redditi-pf`; `''` → tutte; ricerca senza accenti
-- [ ] T016 [US1] `src/features/guide-adempimenti/GuideAdempimenti.tsx`: pulsante come il calendario («Guide agli adempimenti», sottotitolo) + Dialog con stato indice/guida, «Indietro», «Chiudi»; prop `guidaIniziale`
-- [ ] T017 [US1] `src/features/guide-adempimenti/Indice.tsx`: ricerca, 5 gruppi, titolo, riga, etichetta di frequenza e di pertinenza («solo se emetti fatture con IVA»)
-- [ ] T018 [US1] Home: `<GuideAdempimenti />` sotto `<CalendarioFiscale />` in `src/features/home/Cruscotto.tsx`; apertura automatica con `?guida=<id>` (letto nel browser, id validato con `guida(id)`)
+- [X] T016 [US1] `src/features/guide-adempimenti/GuideAdempimenti.tsx`: pulsante come il calendario («Guide agli adempimenti», sottotitolo) + Dialog con stato indice/guida, «Indietro», «Chiudi»; prop `guidaIniziale`
+- [X] T017 [US1] Indice dentro `src/features/guide-adempimenti/GuideAdempimenti.tsx` (un file solo invece di `Indice.tsx`): ricerca, 5 gruppi, titolo, riga, etichetta di frequenza e di pertinenza («solo se emetti fatture con IVA»)
+- [X] T018 [US1] Home: `<GuideAdempimenti />` sotto `<CalendarioFiscale />` in `src/features/home/Cruscotto.tsx`; apertura automatica con `?guida=<id>` (letto nel browser, id validato con `guida(id)`)
 
 ---
 
@@ -60,9 +60,9 @@ description: "Elenco dei lavori per la specifica 015 - Guide agli adempimenti"
 
 **Test indipendente**: quickstart.md scenari 2, 5, 6.
 
-- [ ] T019 [P] [US2] Test in `tests/unit/guide-adempimenti.test.ts`: spunte per guida (aggiungi, togli, azzera) sullo store di `src/features/guide-adempimenti/spunte.ts` con `localStorage` finto
-- [ ] T020 [US2] `src/features/guide-adempimenti/spunte.ts` (useSyncExternalStore, chiave `fiscal.guide.spunte`, data-model.md «Spunte»)
-- [ ] T021 [US2] `src/features/guide-adempimenti/Guida.tsx`: sezioni nell'ordine di FR-004 (omesse se vuote), passi con spunta, «Cosa scrivere» con «?» (Popover come gli aiuti), errori comuni, quando chiedere un parere, fonte con stato e ultimo controllo, «da verificare» con motivi, «da ricontrollare», Apri in Fiscal che chiude il layer
+- [X] T019 [P] [US2] Test in `tests/unit/guide-adempimenti.test.ts`: spunte per guida (aggiungi, togli, azzera) sullo store di `src/features/guide-adempimenti/spunte.ts` con `localStorage` finto
+- [X] T020 [US2] `src/features/guide-adempimenti/spunte.ts` (useSyncExternalStore, chiave `fiscal.guide.spunte`, data-model.md «Spunte»)
+- [X] T021 [US2] `src/features/guide-adempimenti/Guida.tsx`: sezioni nell'ordine di FR-004 (omesse se vuote), passi con spunta, «Cosa scrivere» con «?» (Popover come gli aiuti), errori comuni, quando chiedere un parere, fonte con stato e ultimo controllo, «da verificare» con motivi, «da ricontrollare», Apri in Fiscal che chiude il layer
 
 ---
 
@@ -70,7 +70,7 @@ description: "Elenco dei lavori per la specifica 015 - Guide agli adempimenti"
 
 **Test indipendente**: quickstart.md scenario 2 (disegno → passo).
 
-- [ ] T022 [US4] `src/features/guide-adempimenti/Disegno.tsx`: schemi di `f24`, `redditi`, `inizio_attivita`, `fattura` con caselle numerate evidenziate; tocco su un numero → scorre al passo; una colonna sotto i 480 px; testo alternativo per lettori di schermo (research.md R-04)
+- [X] T022 [US4] `src/features/guide-adempimenti/Disegno.tsx`: schemi di `f24`, `redditi`, `inizio_attivita`, `fattura` con caselle numerate evidenziate; tocco su un numero → scorre al passo; una colonna sotto i 480 px; testo alternativo per lettori di schermo (research.md R-04)
 
 ---
 
@@ -78,16 +78,16 @@ description: "Elenco dei lavori per la specifica 015 - Guide agli adempimenti"
 
 **Test indipendente**: quickstart.md scenari 3 e 4.
 
-- [ ] T023 [US5] Avviso «Aggiornata il …» quando un valore citato viene da un aggiornamento della 014 (`testoOrigine` di `src/engine/parametri/origine.ts`) e «Da ricontrollare» oltre 12 mesi, in `Guida.tsx`
+- [X] T023 [US5] Avviso «Aggiornata il …» quando un valore citato viene da un aggiornamento della 014 (`testoOrigine` di `src/engine/parametri/origine.ts`) e «Da ricontrollare» oltre 12 mesi, in `Guida.tsx`
 
 ---
 
 ## Phase 8: Polish
 
-- [ ] T024 [P] Collegamenti alle guide: sezione «Guide agli adempimenti» in `app/aiuto/page.tsx`; «?» di Tasse → Versamenti verso `f24-tasse`; scadenzario della Dichiarazione verso `redditi-pf` e `dichiarazione-enpap` (`/home/?guida=…`) (FR-012)
-- [ ] T025 [P] Tour: tappa «Guide agli adempimenti» in `src/features/tour/Tour.tsx` (e conteggio in `tests/e2e/tour.spec.ts`); voce di glossario se serve
-- [ ] T026 e2e `tests/e2e/guide-adempimenti.spec.ts` (scenari 1, 2, 5, 6, 7) e controllo di impaginazione del layer in `tests/e2e/layout.spec.ts`
-- [ ] T027 Suite completa (unit, integrazione, pgTAP, e2e), lint, build, scan segreti; quickstart.md per intero
+- [X] T024 [P] Collegamenti alle guide: sezione «Guide agli adempimenti» in `app/aiuto/page.tsx`; «?» di Tasse → Versamenti verso `f24-tasse`; scadenzario della Dichiarazione verso `redditi-pf` e `dichiarazione-enpap` (`/home/?guida=…`) (FR-012)
+- [X] T025 [P] Tour: tappa «Guide agli adempimenti» in `src/features/tour/Tour.tsx` (e conteggio in `tests/e2e/tour.spec.ts`); voce di glossario se serve
+- [X] T026 e2e `tests/e2e/guide-adempimenti.spec.ts` (scenari 1, 2, 5, 6, 7) e controllo di impaginazione del layer in `tests/e2e/layout.spec.ts`
+- [X] T027 Suite completa (unit, integrazione, pgTAP, e2e), lint, build, scan segreti; quickstart.md per intero
 
 ---
 

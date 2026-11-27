@@ -168,6 +168,16 @@ export const TAPPE: Tappa[] = [
     link: [{ href: '/novita/', testo: 'Apri le novità' }],
   },
   {
+    id: 'guide-adempimenti',
+    titolo: 'Guide agli adempimenti',
+    spec: 'specifica 015',
+    cosa: 'In home, sotto il calendario: come aprire la partita IVA, pagare l\'F24, fare le dichiarazioni e gli altri adempimenti, passo per passo e con il disegno del modulo.',
+    prova: ['Apri la guida dell\'F24 e tocca un numero sul disegno.', 'Cerca «bollo» nell\'indice.'],
+    logica:
+      'Codici tributo, scadenze e aliquote citati vengono dalle regole di Fiscal: se li aggiorni dai parametri fiscali, le guide cambiano da sole.',
+    link: [{ href: '/home/?guida=f24-tasse', testo: 'Apri la guida dell\'F24' }],
+  },
+  {
     id: 'parametri',
     titolo: 'Parametri fiscali',
     spec: 'specifica 014',

@@ -43,6 +43,7 @@ export default function PaginaVersamenti() {
           >
             <Title1 as="h1">Versamenti</Title1>
           </ConAiuto>
+          <Collegamento href="/home/?guida=f24-tasse">Come si compila l&apos;F24 (guida)</Collegamento>
           <Suspense>
             <Versamenti />
           </Suspense>
