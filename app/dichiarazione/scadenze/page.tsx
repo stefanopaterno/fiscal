@@ -43,6 +43,7 @@ export default function PaginaScadenze() {
           >
             <Title1 as="h1">Scadenze</Title1>
           </ConAiuto>
+          <Collegamento href="/home/?guida=redditi-pf">Come si fa la dichiarazione dei redditi (guida)</Collegamento>
           <Suspense>
             <Scadenze />
           </Suspense>

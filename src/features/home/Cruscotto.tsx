@@ -52,6 +52,7 @@ import { PromemoriaConsensi } from '@/features/consensi/AvvisoFattura';
 import { AvvisoNovita } from '@/features/novita/AvvisoNovita';
 import { SuggerimentoGuida } from '@/features/aiuto/SuggerimentoGuida';
 import { CalendarioFiscale } from '@/features/calendario/CalendarioFiscale';
+import { GuideAdempimenti } from '@/features/guide-adempimenti/GuideAdempimenti';
 import { quadroPrevisione, type QuadroPrevisione } from '@/features/previsione/dati';
 import { quadroAccantonamento, type QuadroAccantonamento } from '@/features/accantonamento/dati';
 import { BoxConsigli } from '@/features/spese/BoxConsigli';
@@ -273,6 +274,7 @@ export function Cruscotto() {
       <SuggerimentoGuida />
 
       <CalendarioFiscale />
+      <GuideAdempimenti />
 
       <AvvisoScadenze />
       <PromemoriaConsensi />

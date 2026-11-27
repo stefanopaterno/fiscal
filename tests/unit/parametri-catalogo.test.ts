@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { CATALOGO, NON_AGGIORNABILI, parametriDi, percorsiRegole } from '@/engine/parametri/catalogo';
 import type { Insieme } from '@/engine/parametri/tipi';
 import { baseFatturazione } from '@/engine/regole';
+import { baseAdempimenti } from '@/engine/regole/adempimenti';
 import { baseF24 } from '@/engine/regole/f24';
 import { baseIrpef } from '@/engine/regole/irpef';
 import { regoleScadenze } from '@/engine/regole/scadenze';
@@ -14,6 +15,7 @@ const SET: [Insieme, (anno: number) => unknown][] = [
   ['spese', baseSpese],
   ['scadenze', regoleScadenze],
   ['f24', baseF24],
+  ['adempimenti', baseAdempimenti],
 ];
 
 describe('catalogo dei parametri', () => {
@@ -73,5 +75,15 @@ describe('catalogo dei parametri', () => {
     expect(d('f24.irpef_saldo')).toBe('data');
     expect(d('scadenze.saldo_acconto.data')).toBe('anno_solare');
     expect(d('addizionali.comunale.aliquota')).toBe('anno');
+  });
+});
+
+describe('015: valori delle guide nel catalogo (T003)', () => {
+  it('codici F24 nuovi e set adempimenti, per data', () => {
+    const d = (k: string) => CATALOGO.find((p) => p.chiave === k);
+    for (const k of ['f24.bollo_sanzione', 'f24.bollo_interessi', 'f24.ravv_irpef_sanzione', 'f24.ravv_irpef_interessi', 'f24.ravv_add_regionale_sanzione', 'f24.ravv_add_comunale_interessi', 'adempimenti.codice_ateco', 'adempimenti.natura_esente', 'adempimenti.giorni_iscrizione_enpap', 'adempimenti.soglia_accorpamento_bollo'])
+      expect(d(k)?.decorrenza, k).toBe('data');
+    expect(d('adempimenti.codice_ateco')!.conv.daFile('86.93.00')).toEqual({ ok: true, valore: '86.93.00' });
+    expect(d('adempimenti.codice_ateco')!.conv.daFile('869300').ok).toBe(false);
   });
 });

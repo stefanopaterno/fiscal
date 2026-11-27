@@ -1,0 +1,151 @@
+import type { Guida } from './tipi';
+
+/** Guide del gruppo «Apertura» (specifica 015, contracts/guida.md). Controllo del 27/11/2026. */
+
+const ADE = { nome: 'Agenzia delle Entrate', url: 'https://www.agenziaentrate.gov.it/', ufficiale: true };
+const ENPAP = { nome: 'ENPAP', url: 'https://www.enpap.it/', ufficiale: true };
+const STS = { nome: 'Sistema Tessera Sanitaria', url: 'https://sistemats1.sanita.finanze.it/', ufficiale: true };
+
+export const GUIDE_APERTURA: Guida[] = [
+  {
+    id: 'apertura-piva',
+    gruppo: 'apertura',
+    titolo: 'Aprire la partita IVA',
+    riga: 'La dichiarazione di inizio attività: codice ATECO, regime, domicilio digitale.',
+    frequenza: 'una_volta',
+    paroleChiave: ['partita iva', 'inizio attività', 'AA9', 'AA9/12', 'codice ateco', 'apertura'],
+    pertinenza: 'sempre',
+    inBreve:
+      "Per lavorare da libero professionista serve la partita IVA: la chiedi all'Agenzia delle Entrate con la dichiarazione di inizio attività (modello AA9) ed è gratuita.",
+    quando: 'Prima di emettere la prima fattura, ed entro 30 giorni dal giorno in cui inizi davvero l\'attività.',
+    doveSiFa:
+      'Online con i servizi dell\'Agenzia delle Entrate (SPID o CIE), oppure tramite un intermediario (commercialista o CAF). Per i professionisti non serve la Camera di Commercio.',
+    cosaTiServe: [
+      'SPID o CIE per i servizi online.',
+      'Il codice ATECO della tua attività: {{adempimenti.codice_ateco}}.',
+      'L\'indirizzo dove tieni i documenti (studio o casa) e una PEC da usare come domicilio digitale.',
+      'La scelta del regime: per te contabilità semplificata (regime ordinario), non forfettario.',
+    ],
+    passi: [
+      { testo: 'Entra nei servizi online dell\'Agenzia delle Entrate e cerca la dichiarazione di inizio attività per persone fisiche (modello AA9).', casella: 'quadro_a' },
+      { testo: 'Nei dati dell\'attività scrivi il codice ATECO {{adempimenti.codice_ateco}} e la data di inizio.', casella: 'quadro_b', avvertenza: 'Il codice vale anche per gli psicoterapeuti non medici.' },
+      { testo: 'Indica il luogo dove eserciti e dove conservi le scritture contabili.', casella: 'luogo' },
+      { testo: 'Scegli il regime: contabilità semplificata. Non spuntare il regime forfettario.', casella: 'regime' },
+      { testo: 'Invia e scarica il certificato di attribuzione: c\'è il numero di partita IVA.', casella: 'firma' },
+      { testo: 'Copia in Fiscal partita IVA, data di inizio e indirizzo dello studio.' },
+    ],
+    campi: [
+      { modulo: 'AA9, dati dell\'attività', campo: 'codice attività', valore: '{{adempimenti.codice_ateco}}', aiuto: 'Classificazione ATECO in vigore: «Attività di psicologi e psicoterapeuti, esclusi i medici».' },
+      { modulo: 'AA9, regime', campo: 'regime contabile', valore: 'contabilità semplificata (ordinario)', aiuto: 'Fiscal calcola le tasse in regime ordinario per cassa, insieme alla CU da dipendente.' },
+    ],
+    errori: [
+      'Scegliere per sbaglio il regime forfettario: cambia come si calcolano le tasse.',
+      'Usare il vecchio codice ATECO: con la nuova classificazione è cambiato.',
+      'Dimenticare l\'iscrizione a ENPAP dopo l\'apertura (vedi la guida dedicata).',
+    ],
+    parere: 'Se fai anche attività diverse da quella sanitaria (formazione ad aziende, consulenze), chiedi a un professionista se servono più codici ATECO.',
+    fonti: [ADE, { nome: 'ISTAT: classificazione ATECO', url: 'https://www.istat.it/classificazione/classificazione-delle-attivita-economiche-ateco/', ufficiale: true }],
+    ultimoControllo: '2026-11-27',
+    stato: 'da_verificare',
+    daVerificare: ['Il codice ATECO viene da fonti divulgative: va riscontrato sulla tabella ISTAT.'],
+    apriInFiscal: { href: '/impostazioni/attivita/', testo: 'Partita IVA e attività' },
+    disegno: { modulo: 'inizio_attivita', caselle: { quadro_a: 1, quadro_b: 2, luogo: 3, regime: 4, firma: 5 } },
+  },
+  {
+    id: 'iscrizione-enpap',
+    gruppo: 'apertura',
+    titolo: 'Iscriversi a ENPAP come libero professionista',
+    riga: 'La cassa di previdenza degli psicologi: iscrizione e primi passi.',
+    frequenza: 'una_volta',
+    paroleChiave: ['enpap', 'cassa', 'previdenza', 'iscrizione', 'contributi'],
+    pertinenza: 'sempre',
+    inBreve:
+      'Chi lavora come psicologo libero professionista versa i contributi a ENPAP, non all\'INPS. L\'iscrizione si fa online.',
+    quando: 'Entro {{adempimenti.giorni_iscrizione_enpap}} giorni da quando nasce l\'obbligo: in pratica dall\'inizio dell\'attività o dal primo compenso.',
+    doveSiFa: 'Nell\'area riservata del sito ENPAP.',
+    cosaTiServe: ['Numero e data di iscrizione all\'Albo.', 'Partita IVA e data di inizio attività.', 'Un indirizzo PEC.'],
+    passi: [
+      { testo: 'Registrati nell\'area riservata ENPAP.' },
+      { testo: 'Compila la domanda di iscrizione con i dati dell\'Albo e della partita IVA.' },
+      { testo: 'Conserva la ricevuta e annota la matricola ENPAP in Fiscal.' },
+      { testo: 'Da quel momento in fattura aggiungi il contributo integrativo del {{fattura.aliquota_integrativo}}.' },
+    ],
+    errori: ['Aspettare il primo saldo per iscriversi: l\'iscrizione tardiva ha una sanzione.', 'Confondere ENPAP con la Gestione Separata INPS: per l\'attività di psicologo è ENPAP.'],
+    parere: 'Se hai già versato a un\'altra cassa o fai anche attività non da psicologo, chiedi a ENPAP come comportarti.',
+    fonti: [ENPAP, { nome: 'Regolamento ENPAP per la previdenza', url: 'https://www.enpap.it/wp-content/uploads/2015/01/Regolamento_Previdenza.pdf', ufficiale: true }],
+    ultimoControllo: '2026-11-27',
+    stato: 'da_verificare',
+    daVerificare: ['Le fonti non concordano se i giorni partono dall\'inizio dell\'attività o dal primo compenso: conferma con ENPAP.'],
+    apriInFiscal: { href: '/impostazioni/attivita/', testo: 'Partita IVA e attività' },
+  },
+  {
+    id: 'accesso-sts',
+    gruppo: 'apertura',
+    titolo: 'Accedere al Sistema Tessera Sanitaria',
+    riga: 'Le credenziali per inviare le spese sanitarie dei pazienti.',
+    frequenza: 'una_volta',
+    paroleChiave: ['tessera sanitaria', 'sts', '730 precompilato', 'credenziali', 'spese sanitarie'],
+    pertinenza: 'sts',
+    inBreve:
+      'Le prestazioni sanitarie che fatturi ai pazienti vanno comunicate al Sistema Tessera Sanitaria: servono per il 730 precompilato dei pazienti.',
+    quando: 'Prima del primo invio, cioè entro la fine del mese dopo la prima fattura a un paziente.',
+    doveSiFa: 'Sul portale del Sistema Tessera Sanitaria; le credenziali le rilascia il sistema dopo la richiesta tramite l\'Ordine o con SPID.',
+    passi: [
+      { testo: 'Entra nel portale del Sistema Tessera Sanitaria con SPID o CIE.' },
+      { testo: 'Segui la procedura per gli psicologi iscritti all\'Albo: il sistema riconosce l\'iscrizione tramite l\'Ordine.' },
+      { testo: 'Annota dove trovi la funzione di invio dei documenti di spesa.' },
+      { testo: 'In Fiscal, la pagina Adempimenti ti dice ogni mese quali fatture inviare.' },
+    ],
+    errori: ['Inviare le fatture dei pazienti che si sono opposti all\'invio.'],
+    fonti: [STS],
+    ultimoControllo: '2026-11-27',
+    stato: 'verificata',
+    apriInFiscal: { href: '/adempimenti/', testo: 'Adempimenti' },
+  },
+  {
+    id: 'ricevere-fatture',
+    gruppo: 'apertura',
+    titolo: 'Ricevere le fatture elettroniche',
+    riga: 'Codice destinatario o PEC per avere le fatture dei fornitori.',
+    frequenza: 'una_volta',
+    paroleChiave: ['codice destinatario', 'sdi', 'pec', 'fatture ricevute', 'cassetto fiscale', 'registrazione indirizzo telematico'],
+    pertinenza: 'sempre',
+    inBreve:
+      'Le fatture dei tuoi fornitori (software, affitto, formazione) arrivano dal Sistema di Interscambio. Se registri un indirizzo, le ricevi sempre lì e le trovi anche in Fatture e Corrispettivi.',
+    quando: 'Subito dopo l\'apertura della partita IVA.',
+    doveSiFa: 'Sul portale Fatture e Corrispettivi dell\'Agenzia delle Entrate, funzione di registrazione dell\'indirizzo telematico.',
+    passi: [
+      { testo: 'Entra in Fatture e Corrispettivi con SPID o CIE.' },
+      { testo: 'Cerca la registrazione dell\'indirizzo telematico e indica la PEC o il codice destinatario del tuo servizio.' },
+      { testo: 'Da quel momento scarica i file delle fatture ricevute e caricali in Fiscal (Documenti): diventano spese da classificare.' },
+    ],
+    errori: ['Dare ai fornitori un codice destinatario diverso da quello registrato.'],
+    fonti: [ADE, { nome: 'FatturaPA', url: 'https://www.fatturapa.gov.it/', ufficiale: true }],
+    ultimoControllo: '2026-11-27',
+    stato: 'verificata',
+    apriInFiscal: { href: '/documenti/', testo: 'Documenti' },
+  },
+  {
+    id: 'ordine-pec',
+    gruppo: 'apertura',
+    titolo: 'PEC e dati all\'Ordine',
+    riga: 'Domicilio digitale e comunicazioni all\'Ordine degli psicologi.',
+    frequenza: 'una_volta',
+    paroleChiave: ['ordine', 'albo', 'pec', 'domicilio digitale', 'assicurazione'],
+    pertinenza: 'sempre',
+    inBreve:
+      'I professionisti iscritti a un Albo devono avere un domicilio digitale (PEC) comunicato all\'Ordine. Con la libera professione serve anche l\'assicurazione di responsabilità professionale.',
+    quando: 'All\'apertura della partita IVA e ogni volta che cambi PEC o indirizzo.',
+    doveSiFa: 'Nell\'area riservata del tuo Ordine regionale.',
+    passi: [
+      { testo: 'Verifica che la PEC registrata all\'Ordine sia quella che usi.' },
+      { testo: 'Comunica l\'inizio dell\'attività libero professionale se il tuo Ordine lo chiede.' },
+      { testo: 'Attiva l\'assicurazione di responsabilità professionale e comunica gli estremi della polizza al paziente quando serve.' },
+      { testo: 'Registra in Fiscal il costo dell\'assicurazione come spesa: è deducibile.' },
+    ],
+    fonti: [{ nome: 'Consiglio Nazionale Ordine Psicologi', url: 'https://www.psy.it/', ufficiale: true }],
+    ultimoControllo: '2026-11-27',
+    stato: 'verificata',
+    apriInFiscal: { href: '/spese/', testo: 'Spese' },
+  },
+];

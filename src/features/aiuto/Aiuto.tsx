@@ -7,6 +7,7 @@ import { TAPPE } from '@/features/tour/Tour';
 import { CampoScelta, CampoSiNo, Collegamento, Scheda } from '@/ui/Moduli';
 import { annoCorrente } from '@/lib/oggi';
 import { GUIDE } from './guide';
+import { cercaGuide } from '@/engine/regole/guide-adempimenti';
 import { useAvanzamentoGuide, usePreferenzeAiuto } from './preferenze';
 
 /**
@@ -38,6 +39,8 @@ export function Aiuto() {
   const t = q.trim().toLowerCase();
   const guide = GUIDE.filter((g) => !t || [g.titolo, g.perche, ...g.passi.flatMap((p) => [p.titolo, p.cosa])].some((x) => x.toLowerCase().includes(t)));
   const termini = cercaGlossario(q);
+  // specifica 015: guide agli adempimenti esterni (F24, dichiarazioni…), aperte nel layer della home
+  const adempimenti = cercaGuide(q);
   const tappe = t ? TAPPE.filter((x) => [x.titolo, x.cosa, x.logica].some((y) => y.toLowerCase().includes(t))) : [];
 
   return (
@@ -50,7 +53,7 @@ export function Aiuto() {
         onChange={(_, d) => setQ(d.value)}
         aria-label="Cerca nell'aiuto"
       />
-      {t && guide.length + termini.length + tappe.length === 0 ? <Text>Nessun risultato per «{q}». Prova con un&apos;altra parola.</Text> : null}
+      {t && guide.length + termini.length + tappe.length + adempimenti.length === 0 ? <Text>Nessun risultato per «{q}». Prova con un&apos;altra parola.</Text> : null}
 
       {guide.length ? (
         <Scheda titolo="Guide passo passo" aiuto={{ argomento: 'guide', testo: 'Le operazioni importanti spiegate un passo alla volta. Puoi interrompere e riprendere da dove eri.' }}>
@@ -72,6 +75,27 @@ export function Aiuto() {
                 </li>
               );
             })}
+          </ul>
+        </Scheda>
+      ) : null}
+
+      {adempimenti.length ? (
+        <Scheda
+          titolo="Guide agli adempimenti"
+          aiuto={{
+            argomento: 'guide agli adempimenti',
+            testo: 'Come si fanno le cose fuori da Fiscal: aprire la partita IVA, pagare l\'F24, fare le dichiarazioni. Si aprono in home, sotto il calendario.',
+          }}
+        >
+          <ul className={s.elenco}>
+            {adempimenti.map((g) => (
+              <li key={g.id} className={s.voce}>
+                <Collegamento href={`/home/?guida=${g.id}`}>{g.titolo}</Collegamento>
+                <Text size={200} className={s.nota}>
+                  {g.riga}
+                </Text>
+              </li>
+            ))}
           </ul>
         </Scheda>
       ) : null}

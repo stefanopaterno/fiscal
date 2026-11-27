@@ -4,6 +4,7 @@ import { formattaEuro } from '../importi';
 import { calcolaAnno, type AliquoteAddizionali, type InputAnno } from '../irpef/anno';
 import { contributiEnpap } from '../irpef/enpap';
 import { regolePerAnno } from '../regole';
+import { regoleAdempimenti } from '../regole/adempimenti';
 import { regoleF24 } from '../regole/f24';
 import { regoleIrpefPerAnno } from '../regole/irpef';
 import { regoleScadenze } from '../regole/scadenze';
@@ -48,7 +49,9 @@ export function valoreInUso(
             ? regoleSpesePerAnno(contesto.anno)
             : p.insieme === 'scadenze'
               ? regoleScadenze(contesto.anno)
-              : regoleF24(contesto.anno, contesto.data);
+              : p.insieme === 'adempimenti'
+                ? regoleAdempimenti(contesto.anno, contesto.data)
+                : regoleF24(contesto.anno, contesto.data);
     return p.leggi?.(set);
   } catch {
     return undefined;

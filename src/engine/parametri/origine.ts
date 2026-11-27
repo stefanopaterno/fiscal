@@ -1,4 +1,5 @@
 import { baseFatturazione } from '../regole';
+import { baseAdempimenti } from '../regole/adempimenti/base';
 import { baseF24 } from '../regole/f24/base';
 import { baseIrpef } from '../regole/irpef';
 import { scadenzeBase } from '../regole/scadenze/base';
@@ -18,6 +19,7 @@ const BASI: Partial<Record<Insieme, (anno: number) => unknown>> = {
   spese: baseSpese,
   scadenze: (anno) => ({ anno, scadenze: scadenzeBase() }),
   f24: baseF24,
+  adempimenti: baseAdempimenti,
 };
 
 export function origineParametro(chiave: string, contesto: Contesto): Origine | null {
