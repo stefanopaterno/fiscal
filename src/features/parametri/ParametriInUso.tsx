@@ -60,6 +60,7 @@ const AREE: { area: Area; titolo: string }[] = [
   { area: 'spese', titolo: 'Spese e oneri' },
   { area: 'scadenze', titolo: 'Scadenze' },
   { area: 'f24', titolo: 'Codici tributo F24' },
+  { area: 'adempimenti', titolo: 'Adempimenti (guide)' },
   { area: 'addizionali', titolo: 'Addizionali' },
 ];
 

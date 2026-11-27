@@ -11,7 +11,7 @@ description: "Elenco dei lavori per la specifica 015 - Guide agli adempimenti"
 
 ## Phase 1: Setup
 
-- [ ] T001 Cartelle `src/engine/regole/guide-adempimenti/` e `src/features/guide-adempimenti/`; file vuoti come da plan.md
+- [X] T001 Cartelle `src/engine/regole/guide-adempimenti/` e `src/features/guide-adempimenti/`; file vuoti come da plan.md
 
 ---
 
@@ -19,12 +19,12 @@ description: "Elenco dei lavori per la specifica 015 - Guide agli adempimenti"
 
 **Obiettivo**: tipi, segnaposto e valori nuovi nelle regole (aggiornabili dalla 014).
 
-- [ ] T002 [P] Test `tests/unit/guide-adempimenti.test.ts` (parte segnaposto): `componi` risolve `{{f24.*}}`, `{{scadenza.*}}` (con spostamento al primo giorno lavorativo), `{{fattura.*}}` (percentuali ed euro formattati), `{{adempimenti.*}}`, `{{enpap.*}}`; segnaposto sconosciuto = errore; valore «da verificare» segnalato in `daVerificare`; con un registro della 014 che cambia `f24.irpef_saldo` dal giorno X, `componi` con `oggi = X` mostra il codice nuovo (data-model.md «Testo e segnaposto»)
-- [ ] T003 [P] Test in `tests/unit/parametri-catalogo.test.ts`: le chiavi nuove `f24.bollo_sanzione`, `f24.bollo_interessi`, `f24.ravv_*` e `adempimenti.*` sono nel catalogo, con decorrenza «data» e conversione andata/ritorno (data-model.md «Regole nuove»)
-- [ ] T004 Tipi `src/engine/regole/guide-adempimenti/tipi.ts` (data-model.md `Guida.id`, `Guida.gruppo`, `Guida.titolo` ≤ 60, `Guida.riga` ≤ 120, `Guida.frequenza`, `Guida.pertinenza`, `Guida.passi` ≥ 2, `Guida.fonti` ≥ 1 https, `Guida.ultimoControllo`, `Guida.stato`, `Guida.disegno`; `Passo`, `Campo`, `Disegno`)
-- [ ] T005 Codici F24 nuovi in `src/engine/regole/f24/base.ts` con fonte e stato di research.md R-03 (`bollo_sanzione` 2525, `bollo_interessi` 2526, `ravv_irpef_sanzione` 8901, `ravv_irpef_interessi` 1989, `ravv_add_regionale_sanzione` 8902, `ravv_add_regionale_interessi` 1994, `ravv_add_comunale_sanzione` 8926, `ravv_add_comunale_interessi` 1998)
-- [ ] T006 Set `src/engine/regole/adempimenti/index.ts` (data-model.md «Regole nuove»: `codiceAteco` 86.93.00, `naturaEsente` N4, `giorniIscrizioneEnpap` 90, `sogliaAccorpamentoBollo` 5.000 €) con getter `regoleAdempimenti(anno, data?)` attraverso il risolutore della 014, e insieme `adempimenti` nel catalogo `src/engine/parametri/catalogo.ts` (+ `valoreInUso` in `src/engine/parametri/anteprima.ts`, `origine.ts`); fino a far passare T003
-- [ ] T007 Segnaposto `src/engine/regole/guide-adempimenti/valori.ts` (`componi(testo, { anno, oggi })`) fino a far passare T002
+- [X] T002 [P] Test `tests/unit/guide-adempimenti.test.ts` (parte segnaposto): `componi` risolve `{{f24.*}}`, `{{scadenza.*}}` (con spostamento al primo giorno lavorativo), `{{fattura.*}}` (percentuali ed euro formattati), `{{adempimenti.*}}`, `{{enpap.*}}`; segnaposto sconosciuto = errore; valore «da verificare» segnalato in `daVerificare`; con un registro della 014 che cambia `f24.irpef_saldo` dal giorno X, `componi` con `oggi = X` mostra il codice nuovo (data-model.md «Testo e segnaposto»)
+- [X] T003 [P] Test in `tests/unit/parametri-catalogo.test.ts`: le chiavi nuove `f24.bollo_sanzione`, `f24.bollo_interessi`, `f24.ravv_*` e `adempimenti.*` sono nel catalogo, con decorrenza «data» e conversione andata/ritorno (data-model.md «Regole nuove»)
+- [X] T004 Tipi `src/engine/regole/guide-adempimenti/tipi.ts` (data-model.md `Guida.id`, `Guida.gruppo`, `Guida.titolo` ≤ 60, `Guida.riga` ≤ 120, `Guida.frequenza`, `Guida.pertinenza`, `Guida.passi` ≥ 2, `Guida.fonti` ≥ 1 https, `Guida.ultimoControllo`, `Guida.stato`, `Guida.disegno`; `Passo`, `Campo`, `Disegno`)
+- [X] T005 Codici F24 nuovi in `src/engine/regole/f24/base.ts` con fonte e stato di research.md R-03 (`bollo_sanzione` 2525, `bollo_interessi` 2526, `ravv_irpef_sanzione` 8901, `ravv_irpef_interessi` 1989, `ravv_add_regionale_sanzione` 8902, `ravv_add_regionale_interessi` 1994, `ravv_add_comunale_sanzione` 8926, `ravv_add_comunale_interessi` 1998)
+- [X] T006 Set `src/engine/regole/adempimenti/index.ts` (data-model.md «Regole nuove»: `codiceAteco` 86.93.00, `naturaEsente` N4, `giorniIscrizioneEnpap` 90, `sogliaAccorpamentoBollo` 5.000 €) con getter `regoleAdempimenti(anno, data?)` attraverso il risolutore della 014, e insieme `adempimenti` nel catalogo `src/engine/parametri/catalogo.ts` (+ `valoreInUso` in `src/engine/parametri/anteprima.ts`, `origine.ts`); fino a far passare T003
+- [X] T007 Segnaposto `src/engine/regole/guide-adempimenti/valori.ts` (`componi(testo, { anno, oggi })`) fino a far passare T002
 
 **Checkpoint**: i valori citati si leggono dalle regole e seguono gli aggiornamenti della 014.
 
@@ -35,13 +35,13 @@ description: "Elenco dei lavori per la specifica 015 - Guide agli adempimenti"
 **Obiettivo**: le 22 guide di contracts/guida.md con fonte e stato.
 **Test indipendente**: quickstart.md, test automatici della prima riga.
 
-- [ ] T008 [P] [US3] Test in `tests/unit/guide-adempimenti.test.ts` (parte catalogo): 22 guide con gli id di contracts/guida.md; sezioni obbligatorie presenti; id unici e validi; fonti https; ogni segnaposto di ogni testo si risolve per 2027; **nessun valore scritto a mano** nei testi (regex per codici tributo a 4 cifre, date `gg/mm`, `MM-GG`, percentuali) (FR-005, FR-007, FR-008, SC-003, SC-005)
-- [ ] T009 [P] [US3] Guide di apertura in `src/engine/regole/guide-adempimenti/apertura.ts` (5)
-- [ ] T010 [P] [US3] Guide di fattura in `src/engine/regole/guide-adempimenti/fattura.ts` (4)
-- [ ] T011 [P] [US3] Guide dei versamenti in `src/engine/regole/guide-adempimenti/versamenti.ts` (6; ravvedimento con l'avviso sui codici delle addizionali contraddittori)
-- [ ] T012 [P] [US3] Guide delle dichiarazioni in `src/engine/regole/guide-adempimenti/dichiarazioni.ts` (4; Redditi PF e non 730, quadri RE, RN, RV, RP)
-- [ ] T013 [P] [US3] Guide delle situazioni particolari in `src/engine/regole/guide-adempimenti/particolari.ts` (3)
-- [ ] T014 [US3] Indice `src/engine/regole/guide-adempimenti/index.ts`: `GUIDE_ADEMPIMENTI`, `guida(id)`, `cercaGuide(testo)` (titolo, riga, parole chiave, sinonimi; senza accenti), `daRicontrollare(guida, oggi)` (> 12 mesi); fino a far passare T008
+- [X] T008 [P] [US3] Test in `tests/unit/guide-adempimenti.test.ts` (parte catalogo): 22 guide con gli id di contracts/guida.md; sezioni obbligatorie presenti; id unici e validi; fonti https; ogni segnaposto di ogni testo si risolve per 2027; **nessun valore scritto a mano** nei testi (regex per codici tributo a 4 cifre, date `gg/mm`, `MM-GG`, percentuali) (FR-005, FR-007, FR-008, SC-003, SC-005)
+- [X] T009 [P] [US3] Guide di apertura in `src/engine/regole/guide-adempimenti/apertura.ts` (5)
+- [X] T010 [P] [US3] Guide di fattura in `src/engine/regole/guide-adempimenti/fattura.ts` (4)
+- [X] T011 [P] [US3] Guide dei versamenti in `src/engine/regole/guide-adempimenti/versamenti.ts` (6; ravvedimento con l'avviso sui codici delle addizionali contraddittori)
+- [X] T012 [P] [US3] Guide delle dichiarazioni in `src/engine/regole/guide-adempimenti/dichiarazioni.ts` (4; Redditi PF e non 730, quadri RE, RN, RV, RP)
+- [X] T013 [P] [US3] Guide delle situazioni particolari in `src/engine/regole/guide-adempimenti/particolari.ts` (3)
+- [X] T014 [US3] Indice `src/engine/regole/guide-adempimenti/index.ts`: `GUIDE_ADEMPIMENTI`, `guida(id)`, `cercaGuide(testo)` (titolo, riga, parole chiave, sinonimi; senza accenti), `daRicontrollare(guida, oggi)` (> 12 mesi); fino a far passare T008
 
 ---
 
@@ -49,7 +49,7 @@ description: "Elenco dei lavori per la specifica 015 - Guide agli adempimenti"
 
 **Test indipendente**: quickstart.md scenario 1.
 
-- [ ] T015 [P] [US1] Test in `tests/unit/guide-adempimenti.test.ts`: `cercaGuide('bollo')` → `f24-bollo`; `'740'` e `'unico'` → `redditi-pf`; `''` → tutte; ricerca senza accenti
+- [X] T015 [P] [US1] Test in `tests/unit/guide-adempimenti.test.ts`: `cercaGuide('bollo')` → `f24-bollo`; `'740'` e `'unico'` → `redditi-pf`; `''` → tutte; ricerca senza accenti
 - [ ] T016 [US1] `src/features/guide-adempimenti/GuideAdempimenti.tsx`: pulsante come il calendario («Guide agli adempimenti», sottotitolo) + Dialog con stato indice/guida, «Indietro», «Chiudi»; prop `guidaIniziale`
 - [ ] T017 [US1] `src/features/guide-adempimenti/Indice.tsx`: ricerca, 5 gruppi, titolo, riga, etichetta di frequenza e di pertinenza («solo se emetti fatture con IVA»)
 - [ ] T018 [US1] Home: `<GuideAdempimenti />` sotto `<CalendarioFiscale />` in `src/features/home/Cruscotto.tsx`; apertura automatica con `?guida=<id>` (letto nel browser, id validato con `guida(id)`)

@@ -6,12 +6,12 @@ import type { Regola, StatoVerifica } from '../regole/tipi';
  */
 
 /** Set di regole su cui agisce un parametro. Le addizionali stanno nei dati dell'utente, non nel codice. */
-export type Insieme = 'irpef' | 'fatturazione' | 'spese' | 'scadenze' | 'f24' | 'addizionali';
+export type Insieme = 'irpef' | 'fatturazione' | 'spese' | 'scadenze' | 'f24' | 'adempimenti' | 'addizionali';
 
 /** Come vale un nuovo valore (research.md R-03). */
 export type Decorrenza = 'anno' | 'data' | 'anno_solare';
 
-export type Area = 'irpef' | 'acconti' | 'enpap' | 'fatturazione' | 'spese' | 'scadenze' | 'f24' | 'addizionali';
+export type Area = 'irpef' | 'acconti' | 'enpap' | 'fatturazione' | 'spese' | 'scadenze' | 'f24' | 'adempimenti' | 'addizionali';
 
 export type StatoNorma = 'in_vigore' | 'approvata_non_pubblicata' | 'proposta';
 

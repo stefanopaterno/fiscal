@@ -26,6 +26,7 @@ const TITOLI_AREA: Record<Area, string> = {
   spese: 'Spese e oneri',
   scadenze: 'Scadenze',
   f24: 'Codici tributo F24',
+  adempimenti: 'Adempimenti (guide)',
   addizionali: 'Addizionali',
 };
 

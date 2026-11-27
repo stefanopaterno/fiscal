@@ -505,6 +505,50 @@ const CATALOGO_F24: ParametroCatalogo[] = CHIAVI_F24.map((k) =>
 );
 
 // ---------------------------------------------------------------------------------------------------------
+// Adempimenti (valori citati dalle guide della 015, dalla data)
+// ---------------------------------------------------------------------------------------------------------
+
+const ISTAT: FonteUfficiale = { nome: 'ISTAT: classificazione ATECO', url: 'https://www.istat.it/classificazione/classificazione-delle-attivita-economiche-ateco/' };
+
+const adempimento = (chiave: string, nome: string, spiegazione: string, fonti: FonteUfficiale[], conv: Convertitore<unknown>, percorso: string) =>
+  voce({ chiave, area: 'adempimenti', insieme: 'adempimenti', decorrenza: 'data', nome, spiegazione, fonti }, conv, regolaA(percorso));
+
+const CATALOGO_ADEMPIMENTI: ParametroCatalogo[] = [
+  adempimento(
+    'adempimenti.codice_ateco',
+    'Codice ATECO degli psicologi',
+    'Il codice dell\'attività da indicare quando apri o modifichi la partita IVA.',
+    [ISTAT, ADE],
+    codice(/^\d{2}\.\d{2}\.\d{2}$/, '86.93.00'),
+    'codiceAteco',
+  ),
+  adempimento(
+    'adempimenti.natura_esente',
+    'Natura IVA delle prestazioni sanitarie',
+    'Il codice da scegliere in fattura elettronica per le prestazioni esenti da IVA.',
+    [FATTURAPA, ADE],
+    codice(/^N\d(\.\d)?$/, 'N4'),
+    'naturaEsente',
+  ),
+  adempimento(
+    'adempimenti.giorni_iscrizione_enpap',
+    'Giorni per iscriversi a ENPAP',
+    'Entro quanti giorni ci si iscrive a ENPAP come libero professionista.',
+    [ENPAP],
+    intero(30, 365, 'giorni'),
+    'giorniIscrizioneEnpap',
+  ),
+  adempimento(
+    'adempimenti.soglia_accorpamento_bollo',
+    'Soglia per accorpare il bollo',
+    'Sotto questo importo il bollo di un trimestre si paga insieme a quello del trimestre dopo.',
+    [ADE],
+    euro(0, 100_000),
+    'sogliaAccorpamentoBollo',
+  ),
+];
+
+// ---------------------------------------------------------------------------------------------------------
 // Addizionali (dati dell'utente, per anno d'imposta)
 // ---------------------------------------------------------------------------------------------------------
 
@@ -547,6 +591,7 @@ export const CATALOGO: readonly ParametroCatalogo[] = [
   ...CATALOGO_SPESE,
   ...CATALOGO_SCADENZE,
   ...CATALOGO_F24,
+  ...CATALOGO_ADEMPIMENTI,
   ...CATALOGO_ADDIZIONALI,
 ];
 
