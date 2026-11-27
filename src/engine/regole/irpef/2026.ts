@@ -25,7 +25,8 @@ export const regoleIrpef2026: RegoleIrpef = {
   enpap: {
     aliquotaSoggettivo: {
       valore: 0.11,
-      fonte: 'ENPAP, riforma approvata: 11% applicato con il saldo sui redditi 2026 (scadenza 1/10/2027)',
+      fonte:
+        "ENPAP, riforma approvata il 4/11/2026: «nel 2027 il minimo è pari all'11% … applicata con il saldo sui redditi 2026 con scadenza 1° ottobre 2027» (enpap.it)",
       stato: 'verificata',
     },
     aliquotaIntegrativo: {
@@ -35,17 +36,17 @@ export const regoleIrpef2026: RegoleIrpef = {
     },
     minimoSoggettivo: {
       valore: 856_00,
-      fonte: 'Contributo soggettivo minimo 2026 (fonte divulgativa, da riscontrare su enpap.it)',
+      fonte: 'Contributo soggettivo minimo: 856 € è il valore ufficiale 2025 (istruzioni ENPAP mod. 2026); quello sui redditi 2026 non è ancora pubblicato',
       stato: 'da_verificare',
     },
     minimoIntegrativo: {
       valore: 66_00,
-      fonte: 'Contributo integrativo minimo 2026 (fonte divulgativa, da riscontrare su enpap.it)',
+      fonte: 'Contributo integrativo minimo: 66 € è il valore ufficiale 2025 (istruzioni ENPAP mod. 2026); quello sui redditi 2026 non è ancora pubblicato',
       stato: 'da_verificare',
     },
     maternita: {
       valore: 130_00,
-      fonte: 'Contributo di maternità 2026 circa 130 € (fonte divulgativa, da riscontrare su enpap.it)',
+      fonte: 'Contributo di maternità: 130 € è il valore ufficiale 2025 (istruzioni ENPAP mod. 2026); quello 2026 non è ancora pubblicato',
       stato: 'da_verificare',
     },
     scadenzaSaldo: SCADENZA_SALDO_ENPAP,

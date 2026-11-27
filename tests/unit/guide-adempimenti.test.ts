@@ -44,7 +44,8 @@ describe('segnaposto (T002)', () => {
   });
 
   it('valori «da verificare» segnalati', () => {
-    expect(componi('{{adempimenti.codice_ateco}}', C).daVerificare[0]).toMatch(/^86\.93\.00: .*ISTAT/);
+    expect(componi('{{scadenza.precompilata}}', C).daVerificare[0]).toMatch(/^30 aprile 2027: /);
+    expect(componi('{{adempimenti.codice_ateco}}', C).daVerificare).toEqual([]);
     expect(componi('{{f24.irpef_saldo}}', C).daVerificare).toEqual([]);
   });
 

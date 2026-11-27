@@ -27,7 +27,7 @@ export const GUIDE: Guida[] = [
       { titolo: 'La fattura', cosa: 'Crea la fattura, scegli il cliente e scrivi la prestazione e il compenso.', controlla: 'Guarda il riepilogo: integrativo, bollo e, per gli enti, ritenuta sono calcolati da soli. Nella descrizione niente dati clinici.', href: '/fatture/nuova/', pagina: 'Nuova fattura' },
       { titolo: 'Emetti', cosa: 'Tocca «Emetti»: la fattura prende il numero e non si modifica più.', controlla: 'Per correggerla dopo serve una nota di credito.', href: '/fatture/', pagina: 'Fatture' },
       { titolo: 'L\'incasso', cosa: 'Quando ti pagano, registra l\'incasso dal dettaglio della fattura.', controlla: 'Sotto compare quanto mettere da parte: tocca «Fatto» quando l\'hai spostato.', href: '/fatture/', pagina: 'Fatture' },
-      { titolo: 'Tessera Sanitaria', cosa: 'Invia le fatture sanitarie del mese entro la fine del mese dopo.', controlla: 'In Adempimenti vedi quali sono ancora da inviare.', href: '/adempimenti/', pagina: 'Adempimenti' },
+      { titolo: 'Tessera Sanitaria', cosa: 'Invia le fatture sanitarie ai pazienti: puoi farlo man mano, al più tardi alla scadenza annuale di gennaio (la trovi in Scadenze).', controlla: 'In Adempimenti vedi quali sono ancora da inviare.', href: '/adempimenti/', pagina: 'Adempimenti' },
     ],
   },
   {

@@ -77,8 +77,7 @@ export const GUIDE_DICHIARAZIONI: Guida[] = [
     errori: ['Comunicare il reddito prima della dichiarazione dei redditi definitiva e non correggerlo.'],
     fonti: [ENPAP],
     ultimoControllo: '2026-11-27',
-    stato: 'da_verificare',
-    daVerificare: ['Data e sanzioni per il ritardo vanno controllate ogni anno nelle istruzioni ENPAP.'],
+    stato: 'verificata',
     apriInFiscal: { href: '/dichiarazione/', testo: 'Dichiarazione' },
   },
   {

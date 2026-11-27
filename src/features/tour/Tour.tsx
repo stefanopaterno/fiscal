@@ -104,7 +104,7 @@ export const TAPPE: Tappa[] = [
       'Apri «Come abbassare le tasse» e guarda il risparmio di ogni consiglio.',
     ],
     logica:
-      'Sopra 516,46 € un bene si ammortizza. Vitto e alloggio: 75% entro il 2% dei compensi, solo se pagati in modo tracciabile.',
+      'Sopra 516,40 € un bene si ammortizza (la metà nel primo anno). Vitto e alloggio: 75% entro il 2% dei compensi, solo se pagati in modo tracciabile.',
     link: [{ href: '/spese/', testo: 'Apri le spese' }],
   },
   {

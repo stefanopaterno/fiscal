@@ -66,6 +66,8 @@ export function pertinente(p: Pertinenza, annoRiferimento: number, c: Contesto):
       return attiva && c.conSts;
     case 'primo_anno':
       return attiva;
+    case 'dopo_primo_anno':
+      return attiva && annoRiferimento > c.partitaIvaDal!;
   }
 }
 

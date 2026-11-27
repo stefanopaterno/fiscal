@@ -33,16 +33,16 @@ describe('calendario delle scadenze', () => {
   it('stato, flag «fatta», proroga e scadenza personale', () => {
     const stati = [
       { chiave: 'bollo_t1', anno: 2027, fatta_il: '2027-05-20', data: null, titolo: null, esporta: null },
-      { chiave: 'sts_01', anno: 2027, fatta_il: null, data: '2027-03-10', titolo: null, esporta: null },
+      { chiave: 'bollo_t2', anno: 2027, fatta_il: null, data: '2027-03-10', titolo: null, esporta: null },
       { chiave: 'personale_1', anno: 2027, fatta_il: null, data: '2027-05-10', titolo: 'Documenti al commercialista', esporta: true },
     ];
     const v = calendarioAnno(2027, '2027-05-01', contesto, stati);
     expect(v.find((x) => x.chiave === 'bollo_t1')!.stato).toBe('fatta');
-    expect(v.find((x) => x.chiave === 'sts_01')).toMatchObject({ data: '2027-03-10', prorogata: true, stato: 'scaduta' });
+    expect(v.find((x) => x.chiave === 'bollo_t2')).toMatchObject({ data: '2027-03-10', prorogata: true, stato: 'scaduta' });
     expect(v.find((x) => x.chiave === 'personale_1')).toMatchObject({ personale: true, giorni: 9 });
     const p = promemoria(v, 14).map((x) => x.chiave);
     expect(p).toContain('personale_1');
-    expect(p).toContain('sts_01'); // scaduta e non fatta
+    expect(p).toContain('bollo_t2'); // scaduta e non fatta
     expect(p).not.toContain('bollo_t1');
   });
 

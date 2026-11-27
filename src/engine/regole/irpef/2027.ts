@@ -23,7 +23,7 @@ export const regoleIrpef2027: RegoleIrpef = {
       { finoA: null, aliquota: 0.43 },
     ],
     fonte:
-      'DDL di Bilancio 2027 (Consiglio dei ministri del 28/10/2026, in Parlamento): 33% esteso fino a 55.000 € per il solo 2027. Da confermare sul testo pubblicato in Gazzetta',
+      'DDL di Bilancio 2027 (Consiglio dei ministri del 28/10/2026), al 27/11/2026 ancora all\'esame della Camera: 33% esteso fino a 55.000 € per il solo 2027. Se non passa vale l\'art. 11 del nuovo TUIR (33% fino a 50.000 €)',
     stato: 'da_verificare',
   },
   detrazioneLavoro: DETRAZIONE_LAVORO,
@@ -37,8 +37,8 @@ export const regoleIrpef2027: RegoleIrpef = {
     aliquotaSoggettivo: {
       valore: 0.12,
       fonte:
-        "ENPAP, riforma approvata: +1 punto l'anno dall'11% sui redditi 2026 ⇒ 12% sui redditi 2027 (interpretazione da confermare con ENPAP)",
-      stato: 'da_verificare',
+        "ENPAP, riforma approvata dai Ministeri vigilanti il 4/11/2026: minimo +1 punto l'anno dal 2027 (11% con il saldo sui redditi 2026, scadenza 1/10/2027) ⇒ 12% sui redditi 2027 (enpap.it, notizia del novembre 2026)",
+      stato: 'verificata',
     },
     aliquotaIntegrativo: {
       valore: 0.04,

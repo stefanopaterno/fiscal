@@ -23,7 +23,7 @@ describe('richiesta per Claude', () => {
   it('catalogo con le unità del file (percentuali e euro)', () => {
     expect(testo).toMatch(/`fattura.importo_bollo` \| euro .* \| data \| 2 \| verificata/);
     expect(testo).toMatch(/`fattura.aliquota_iva` \| percentuale .* \| data \| 22 \| verificata/);
-    expect(testo).toMatch(/`enpap.aliquota_soggettivo` \| percentuale .* \| anno \| 12 \| da verificare/);
+    expect(testo).toMatch(/`enpap.aliquota_soggettivo` \| percentuale .* \| anno \| 12 \| verificata/);
     for (const p of CATALOGO.filter((x) => x.insieme !== 'addizionali')) expect(testo).toContain(`\`${p.chiave}\``);
   });
 

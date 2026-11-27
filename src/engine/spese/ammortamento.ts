@@ -2,7 +2,7 @@ import { perAliquota } from '../irpef/aritmetica';
 import { regoleSpesePerAnno } from '../regole/spese';
 
 /**
- * Beni durevoli (specifica 008, research R-02): fino a 516,46 € deduzione intera nell'anno di acquisto,
+ * Beni durevoli (specifica 008, research R-02): fino alla soglia delle regole (516,40 € per i professionisti) deduzione intera nell'anno di acquisto,
  * oltre ammortamento al coefficiente della categoria fino a esaurimento (ultima quota = residuo).
  * Le regole sono quelle dell'anno di acquisto.
  */

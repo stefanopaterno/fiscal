@@ -46,8 +46,7 @@ export const GUIDE_APERTURA: Guida[] = [
     parere: 'Se fai anche attività diverse da quella sanitaria (formazione ad aziende, consulenze), chiedi a un professionista se servono più codici ATECO.',
     fonti: [ADE, { nome: 'ISTAT: classificazione ATECO', url: 'https://www.istat.it/classificazione/classificazione-delle-attivita-economiche-ateco/', ufficiale: true }],
     ultimoControllo: '2026-11-27',
-    stato: 'da_verificare',
-    daVerificare: ['Il codice ATECO viene da fonti divulgative: va riscontrato sulla tabella ISTAT.'],
+    stato: 'verificata',
     apriInFiscal: { href: '/impostazioni/attivita/', testo: 'Partita IVA e attività' },
     disegno: { modulo: 'inizio_attivita', caselle: { quadro_a: 1, quadro_b: 2, luogo: 3, regime: 4, firma: 5 } },
   },
@@ -61,7 +60,7 @@ export const GUIDE_APERTURA: Guida[] = [
     pertinenza: 'sempre',
     inBreve:
       'Chi lavora come psicologo libero professionista versa i contributi a ENPAP, non all\'INPS. L\'iscrizione si fa online.',
-    quando: 'Entro {{adempimenti.giorni_iscrizione_enpap}} giorni da quando nasce l\'obbligo: in pratica dall\'inizio dell\'attività o dal primo compenso.',
+    quando: 'Entro {{adempimenti.giorni_iscrizione_enpap}} giorni da quando nasce l\'obbligo, cioè dal primo reddito da libero professionista. In ritardo c\'è una sanzione, ridotta se ti iscrivi entro la fine di marzo dell\'anno dopo.',
     doveSiFa: 'Nell\'area riservata del sito ENPAP.',
     cosaTiServe: ['Numero e data di iscrizione all\'Albo.', 'Partita IVA e data di inizio attività.', 'Un indirizzo PEC.'],
     passi: [
@@ -74,8 +73,7 @@ export const GUIDE_APERTURA: Guida[] = [
     parere: 'Se hai già versato a un\'altra cassa o fai anche attività non da psicologo, chiedi a ENPAP come comportarti.',
     fonti: [ENPAP, { nome: 'Regolamento ENPAP per la previdenza', url: 'https://www.enpap.it/wp-content/uploads/2015/01/Regolamento_Previdenza.pdf', ufficiale: true }],
     ultimoControllo: '2026-11-27',
-    stato: 'da_verificare',
-    daVerificare: ['Le fonti non concordano se i giorni partono dall\'inizio dell\'attività o dal primo compenso: conferma con ENPAP.'],
+    stato: 'verificata',
     apriInFiscal: { href: '/impostazioni/attivita/', testo: 'Partita IVA e attività' },
   },
   {
@@ -88,13 +86,13 @@ export const GUIDE_APERTURA: Guida[] = [
     pertinenza: 'sts',
     inBreve:
       'Le prestazioni sanitarie che fatturi ai pazienti vanno comunicate al Sistema Tessera Sanitaria: servono per il 730 precompilato dei pazienti.',
-    quando: 'Prima del primo invio, cioè entro la fine del mese dopo la prima fattura a un paziente.',
+    quando: 'Prima del primo invio: le fatture ai pazienti di un anno si inviano entro il {{scadenza.sts}}.',
     doveSiFa: 'Sul portale del Sistema Tessera Sanitaria; le credenziali le rilascia il sistema dopo la richiesta tramite l\'Ordine o con SPID.',
     passi: [
       { testo: 'Entra nel portale del Sistema Tessera Sanitaria con SPID o CIE.' },
       { testo: 'Segui la procedura per gli psicologi iscritti all\'Albo: il sistema riconosce l\'iscrizione tramite l\'Ordine.' },
       { testo: 'Annota dove trovi la funzione di invio dei documenti di spesa.' },
-      { testo: 'In Fiscal, la pagina Adempimenti ti dice ogni mese quali fatture inviare.' },
+      { testo: 'In Fiscal, la pagina Adempimenti ti dice quali fatture sono ancora da inviare.' },
     ],
     errori: ['Inviare le fatture dei pazienti che si sono opposti all\'invio.'],
     fonti: [STS],

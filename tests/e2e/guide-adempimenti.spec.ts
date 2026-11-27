@@ -66,5 +66,6 @@ test('guide agli adempimenti: indice, ricerca, guida F24, spunte e collegamenti'
   await page.getByRole('searchbox', { name: "Cerca nell'aiuto" }).fill('ravvedimento');
   await page.getByRole('link', { name: 'Rimediare a un versamento dimenticato o sbagliato' }).click();
   await expect(page.getByRole('dialog').getByText('Rimediare a un versamento dimenticato o sbagliato').first()).toBeVisible();
-  await expect(page.getByRole('dialog').getByText(/non concordano/).first()).toBeVisible();
+  // codici del ravvedimento confermati sulla ricerca dei codici tributo dell'Agenzia (verifica del 27/11/2026)
+  await expect(page.getByRole('dialog').getByText('8926', { exact: true })).toBeVisible();
 });

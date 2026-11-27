@@ -38,11 +38,11 @@ export type RegoleF24 = { anno: number; codici: Record<ChiaveF24, Regola<VoceF24
 const RIS_IRPEF = 'Risoluzioni Agenzia delle Entrate sui codici tributo IRPEF (es. ris. 12/E/2007)';
 const RIS_ADD = 'Codici tributo addizionali IRPEF (ris. Agenzia delle Entrate 368/E/2007 e 395/E/2007)';
 const RIS_BOLLO = 'Risoluzione Agenzia delle Entrate 42/E del 9/4/2019: codici bollo fatture elettroniche';
-const DIV_BOLLO = 'Codici di sanzione e interessi sul bollo delle fatture elettroniche (fonti divulgative concordi; da riscontrare sulle tabelle F24 dell\'Agenzia delle Entrate)';
-const DIV_RAVV = 'Codici del ravvedimento operoso (fonti divulgative; da riscontrare sulle tabelle F24 dell\'Agenzia delle Entrate)';
+const DIV_BOLLO = 'Agenzia delle Entrate, ricerca codici tributo (ris. 42/E/2019), verifica del 27/11/2026';
+const DIV_RAVV = 'Agenzia delle Entrate, ricerca codici tributo (ravvedimento, art. 13 D.Lgs. 472/1997; ris. 109/E/2007), verifica del 27/11/2026';
 const DIV_RAVV_ADD =
-  'Codici del ravvedimento sulle addizionali: le fonti divulgative non concordano (alcune indicano 8901 anche per le addizionali); controllarli sul sito dell\'Agenzia delle Entrate prima di pagare';
-const RIS_IVA = 'Codici tributo IVA per i contribuenti trimestrali (tabelle F24, Agenzia delle Entrate)';
+  'Agenzia delle Entrate, ricerca codici tributo (addizionali: ris. 109/E/2007 e 368/E/2007), verifica del 27/11/2026';
+const RIS_IVA = 'Agenzia delle Entrate, ricerca codici tributo IVA (art. 74 DPR 633/1972), verifica del 27/11/2026';
 
 const c = (codice: string, descrizione: string, fonte: string, stato: Regola<VoceF24>['stato'] = 'verificata'): Regola<VoceF24> => ({
   valore: { codice, descrizione },
@@ -61,20 +61,20 @@ const CODICI: RegoleF24['codici'] = {
   bollo_t2: c('2522', 'Bollo fatture elettroniche secondo trimestre', RIS_BOLLO),
   bollo_t3: c('2523', 'Bollo fatture elettroniche terzo trimestre', RIS_BOLLO),
   bollo_t4: c('2524', 'Bollo fatture elettroniche quarto trimestre', RIS_BOLLO),
-  iva_t1: c('6031', 'IVA primo trimestre', RIS_IVA, 'da_verificare'),
-  iva_t2: c('6032', 'IVA secondo trimestre', RIS_IVA, 'da_verificare'),
-  iva_t3: c('6033', 'IVA terzo trimestre', RIS_IVA, 'da_verificare'),
-  iva_acconto: c('6035', 'IVA acconto (contribuenti trimestrali)', RIS_IVA, 'da_verificare'),
-  iva_saldo: c('6099', 'IVA saldo annuale', RIS_IVA, 'da_verificare'),
-  interessi_rateizzazione: c('1668', 'Interessi per pagamento dilazionato di imposte erariali', RIS_IRPEF, 'da_verificare'),
-  bollo_sanzione: c('2525', 'Bollo fatture elettroniche: sanzione', DIV_BOLLO, 'da_verificare'),
-  bollo_interessi: c('2526', 'Bollo fatture elettroniche: interessi', DIV_BOLLO, 'da_verificare'),
-  ravv_irpef_sanzione: c('8901', 'IRPEF: sanzione per ravvedimento', DIV_RAVV, 'da_verificare'),
-  ravv_irpef_interessi: c('1989', 'IRPEF: interessi per ravvedimento', DIV_RAVV, 'da_verificare'),
-  ravv_add_regionale_sanzione: c('8902', 'Addizionale regionale: sanzione per ravvedimento', DIV_RAVV_ADD, 'da_verificare'),
-  ravv_add_regionale_interessi: c('1994', 'Addizionale regionale: interessi per ravvedimento', DIV_RAVV_ADD, 'da_verificare'),
-  ravv_add_comunale_sanzione: c('8926', 'Addizionale comunale: sanzione per ravvedimento', DIV_RAVV_ADD, 'da_verificare'),
-  ravv_add_comunale_interessi: c('1998', 'Addizionale comunale: interessi per ravvedimento', DIV_RAVV_ADD, 'da_verificare'),
+  iva_t1: c('6031', 'IVA primo trimestre', RIS_IVA),
+  iva_t2: c('6032', 'IVA secondo trimestre', RIS_IVA),
+  iva_t3: c('6033', 'IVA terzo trimestre', RIS_IVA),
+  iva_acconto: c('6035', 'IVA acconto (contribuenti trimestrali)', RIS_IVA),
+  iva_saldo: c('6099', 'IVA saldo annuale', RIS_IVA),
+  interessi_rateizzazione: c('1668', 'Interessi per pagamento dilazionato di imposte erariali', RIS_IRPEF),
+  bollo_sanzione: c('2525', 'Bollo fatture elettroniche: sanzione', DIV_BOLLO),
+  bollo_interessi: c('2526', 'Bollo fatture elettroniche: interessi', DIV_BOLLO),
+  ravv_irpef_sanzione: c('8901', 'IRPEF: sanzione per ravvedimento', DIV_RAVV),
+  ravv_irpef_interessi: c('1989', 'IRPEF: interessi per ravvedimento', DIV_RAVV),
+  ravv_add_regionale_sanzione: c('8902', 'Addizionale regionale: sanzione per ravvedimento', DIV_RAVV_ADD),
+  ravv_add_regionale_interessi: c('1994', 'Addizionale regionale: interessi per ravvedimento', DIV_RAVV_ADD),
+  ravv_add_comunale_sanzione: c('8926', 'Addizionale comunale: sanzione per ravvedimento', DIV_RAVV_ADD),
+  ravv_add_comunale_interessi: c('1998', 'Addizionale comunale: interessi per ravvedimento', DIV_RAVV_ADD),
 };
 
 export const CHIAVI_F24 = Object.keys(CODICI) as ChiaveF24[];
