@@ -17,8 +17,8 @@ const BASE: Omit<RegoleAdempimenti, 'anno'> = {
   codiceAteco: {
     valore: '86.93.00',
     fonte:
-      'Classificazione ATECO 2025 (in vigore dal 1/4/2025): 86.93.00 «Attività di psicologi e psicoterapeuti, esclusi i medici», prima 86.90.30 (fonti divulgative; da riscontrare sulla tabella ISTAT)',
-    stato: 'da_verificare',
+      'ISTAT, struttura ATECO 2025: 86.93.00 «Attività di psicologi e psicoterapeuti, esclusi i medici» (prima 86.90.30); usata dall\'Agenzia delle Entrate dal 1/4/2025 (ISA DK20U)',
+    stato: 'verificata',
   },
   naturaEsente: {
     valore: 'N4',
@@ -28,13 +28,14 @@ const BASE: Omit<RegoleAdempimenti, 'anno'> = {
   giorniIscrizioneEnpap: {
     valore: 90,
     fonte:
-      'Regolamento ENPAP per le attività di previdenza, art. 2: iscrizione entro 90 giorni dal sorgere dei requisiti (le fonti divergono tra inizio attività e primo compenso)',
-    stato: 'da_verificare',
+      'Regolamento ENPAP per le attività di previdenza: obbligo dal conseguimento di reddito professionale (art. 1 c. 2); iscrizione «entro 90 giorni dalla insorgenza dei requisiti» (art. 2 c. 2); sanzione 100 €, 20 € se entro il 30 marzo dell\'anno dopo',
+    stato: 'verificata',
   },
   sogliaAccorpamentoBollo: {
     valore: 5_000_00,
-    fonte: 'DM 17/6/2014 art. 6 come modificato: bollo del trimestre sotto 5.000 € pagabile con il trimestre successivo (fonti divulgative; da riscontrare)',
-    stato: 'da_verificare',
+    fonte:
+      'Agenzia delle Entrate, guida «L\'imposta di bollo sulle fatture elettroniche»: primo trimestre fino a 5.000 € entro il 30 settembre; primo e secondo insieme fino a 5.000 € entro il 30 novembre',
+    stato: 'verificata',
   },
 };
 

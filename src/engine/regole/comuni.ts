@@ -28,8 +28,8 @@ export const RITENUTA_ACCONTO: Regola<number> = {
 export const INTEGRATIVO_FUORI_RITENUTA: Regola<boolean> = {
   valore: true,
   fonte:
-    'Prassi delle casse professionali sul contributo integrativo (da confermare con ENPAP e commercialista)',
-  stato: 'da_verificare',
+    'Regolamento ENPAP per le attività di previdenza, art. 4 c. 4: «Il contributo integrativo non è soggetto a ritenuta di acconto IRPEF e non concorre alla formazione del reddito imponibile»',
+  stato: 'verificata',
 };
 
 export const DICITURE: RegoleFatturazione['diciture'] = {

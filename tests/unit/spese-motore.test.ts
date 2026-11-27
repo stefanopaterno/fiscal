@@ -86,15 +86,16 @@ describe('spese professionali (casi A, B, E, E2)', () => {
 });
 
 describe('beni durevoli (casi C, D)', () => {
-  it("computer da 1.500 €: 300 € l'anno per 5 anni", () => {
+  it("computer da 1.500 €: metà quota il primo anno, poi 300 € l'anno (art. 60 c. 1 nuovo TUIR)", () => {
     const p = pianoAmmortamento({ costo: 1_500_00, dataAcquisto: '2027-02-01', categoria: 'computer' });
     expect(p.immediata).toBe(false);
     expect(p.quote.map((q) => [q.anno, q.quota])).toEqual([
-      [2027, 300_00],
+      [2027, 150_00],
       [2028, 300_00],
       [2029, 300_00],
       [2030, 300_00],
       [2031, 300_00],
+      [2032, 150_00],
     ]);
     expect(p.quote.at(-1)!.residuo).toBe(0);
   });
@@ -120,7 +121,7 @@ describe('beni durevoli (casi C, D)', () => {
   it('la spesa di un bene durevole non si deduce due volte: conta solo la quota', () => {
     const beni = [{ costo: 1_500_00, dataAcquisto: '2027-02-01', categoria: 'computer' }];
     const r = totaleSpeseAnno([spesa('altro', 1_500_00, { beneDurevole: true })], beni, ctx);
-    expect(r.deducibile).toBe(300_00);
+    expect(r.deducibile).toBe(150_00); // solo la quota del primo anno (metà)
   });
 
   it("quote dell'anno nel totale delle spese", () => {

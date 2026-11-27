@@ -10,7 +10,7 @@ import type { Regola } from '../tipi';
  * operazioni IVA imponibili, solo con bollo sulle fatture, solo con fatture al Sistema Tessera Sanitaria.
  * `importo` dice da quale calcolo prendere l'importo stimato (FR-012).
  */
-export type Pertinenza = 'sempre' | 'partita_iva' | 'iva' | 'bollo' | 'sts' | 'primo_anno';
+export type Pertinenza = 'sempre' | 'partita_iva' | 'iva' | 'bollo' | 'sts' | 'primo_anno' | 'dopo_primo_anno';
 export type FonteImporto = 'giugno' | 'novembre' | 'enpap' | 'bollo_t1' | 'bollo_t2' | 'bollo_t3' | 'bollo_t4' | null;
 
 export type ScadenzaRegola = {
@@ -32,8 +32,6 @@ const v = (valore: ScadenzaRegola, fonte: string, stato: Regola<ScadenzaRegola>[
   stato,
 });
 
-const MESI_STS = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
-const fineMese = (m: number) => ['01-31', '02-28', '03-31', '04-30', '05-31', '06-30', '07-31', '08-31', '09-30', '10-31', '11-30', '12-31'][m - 1]!;
 
 /** Scadenze base (senza aggiornamenti importati): uguali per ogni anno solare. */
 export function scadenzeBase(): Regola<ScadenzaRegola>[] {
@@ -68,23 +66,19 @@ export function scadenzeBase(): Regola<ScadenzaRegola>[] {
     ),
     v(
       { chiave: 'bollo_t4', data: '02-28', titolo: 'Bollo delle fatture del quarto trimestre', descrizione: `Imposta di bollo sulle fatture elettroniche esenti di ottobre–dicembre dell'anno prima (F24 codice ${baseF24(0).codici.bollo_t4.valore.codice}).`, categoria: 'versamento', pertinenza: 'bollo', importo: 'bollo_t4', riferimento: -1 },
-      'Art. 6 DM 17/6/2014 come modificato dal DL 73/2022: bollo virtuale sulle fatture elettroniche, versamento trimestrale',
-      'da_verificare',
+      'Agenzia delle Entrate, guida «L\'imposta di bollo sulle fatture elettroniche» (DM 17/6/2014, art. 6, come modificato): verifica del 27/11/2026',
     ),
     v(
       { chiave: 'bollo_t1', data: '05-31', titolo: 'Bollo delle fatture del primo trimestre', descrizione: 'Se il bollo del trimestre è sotto la soglia di legge si può pagare insieme a quello del secondo, entro il 30 settembre.', categoria: 'versamento', pertinenza: 'bollo', importo: 'bollo_t1', riferimento: 0 },
-      'Art. 6 DM 17/6/2014 come modificato dal DL 73/2022',
-      'da_verificare',
+      'Agenzia delle Entrate, guida «L\'imposta di bollo sulle fatture elettroniche» (DM 17/6/2014, art. 6, come modificato): verifica del 27/11/2026',
     ),
     v(
       { chiave: 'bollo_t2', data: '09-30', titolo: 'Bollo delle fatture del secondo trimestre', descrizione: 'Imposta di bollo sulle fatture elettroniche di aprile–giugno.', categoria: 'versamento', pertinenza: 'bollo', importo: 'bollo_t2', riferimento: 0 },
-      'Art. 6 DM 17/6/2014 come modificato dal DL 73/2022',
-      'da_verificare',
+      'Agenzia delle Entrate, guida «L\'imposta di bollo sulle fatture elettroniche» (DM 17/6/2014, art. 6, come modificato): verifica del 27/11/2026',
     ),
     v(
       { chiave: 'bollo_t3', data: '11-30', titolo: 'Bollo delle fatture del terzo trimestre', descrizione: 'Imposta di bollo sulle fatture elettroniche di luglio–settembre.', categoria: 'versamento', pertinenza: 'bollo', importo: 'bollo_t3', riferimento: 0 },
-      'Art. 6 DM 17/6/2014 come modificato dal DL 73/2022',
-      'da_verificare',
+      'Agenzia delle Entrate, guida «L\'imposta di bollo sulle fatture elettroniche» (DM 17/6/2014, art. 6, come modificato): verifica del 27/11/2026',
     ),
     v(
       { chiave: 'precompilata', data: '04-30', titolo: 'Dichiarazione precompilata disponibile', descrizione: "L'Agenzia delle Entrate rende disponibile la precompilata: utile per controllare oneri e spese sanitarie.", categoria: 'documenti', pertinenza: 'sempre', importo: null, riferimento: -1 },
@@ -97,8 +91,11 @@ export function scadenzeBase(): Regola<ScadenzaRegola>[] {
     ),
     v(
       { chiave: 'enpap', data: '10-01', titolo: 'Contributi ENPAP', descrizione: "Comunicazione dei redditi e saldo dei contributi soggettivo, integrativo e maternità dell'anno prima.", categoria: 'enpap', pertinenza: 'partita_iva', importo: 'enpap', riferimento: -1 },
-      "ENPAP: saldo sui redditi dell'anno prima entro il 1° ottobre (enpap.it); rateizzazioni e acconti da verificare per il primo anno",
-      'da_verificare',
+      "Regolamento ENPAP e guida ai neoiscritti: comunicazione reddituale e saldo sui redditi dell'anno prima entro il 1° ottobre",
+    ),
+    v(
+      { chiave: 'enpap_acconto', data: '03-01', titolo: 'Acconto ENPAP', descrizione: "Acconto dei contributi ENPAP sui redditi dell'anno prima (dal secondo anno: il primo anno non c'è). Si calcola nell'area riservata ENPAP.", categoria: 'enpap', pertinenza: 'dopo_primo_anno', importo: null, riferimento: -1 },
+      "Regolamento ENPAP, art. 7 c. 1 (1° marzo) e guida ai neoiscritti: «per il primo anno non è dovuto il versamento dell'acconto»",
     ),
     v(
       { chiave: 'redditi_invio', data: '10-31', titolo: 'Invio del Modello Redditi', descrizione: "Invio telematico della dichiarazione dei redditi dell'anno prima (di solito lo fa il commercialista).", categoria: 'dichiarazione', pertinenza: 'partita_iva', importo: null, riferimento: -1 },
@@ -113,27 +110,22 @@ export function scadenzeBase(): Regola<ScadenzaRegola>[] {
       'Suggerimento di Fiscal, non è una scadenza di legge',
     ),
   ];
-  // Sistema Tessera Sanitaria: invio delle spese sanitarie entro la fine del mese dopo
-  MESI_STS.forEach((m, i) => {
-    const mese = i + 1;
-    const scad = mese === 12 ? 1 : mese + 1;
-    out.push(
-      v(
-        {
-          chiave: `sts_${m}`,
-          data: fineMese(scad),
-          titolo: `Tessera Sanitaria: fatture di ${['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'][i]}`,
-          descrizione: 'Invio al Sistema Tessera Sanitaria delle fatture sanitarie del mese (Adempimenti in Fiscal).',
-          categoria: 'sts',
-          pertinenza: 'sts',
-          importo: null,
-          riferimento: mese === 12 ? -1 : 0,
-        },
-        'DM MEF 8/2/2024 e successivi: trasmissione mensile entro la fine del mese successivo (cadenza da verificare ogni anno)',
-        'da_verificare',
-      ),
-    );
-  });
+  // Sistema Tessera Sanitaria: dal 2025 invio annuale entro il 31 gennaio dell'anno dopo (DM MEF 29/10/2025)
+  out.push(
+    v(
+      {
+        chiave: 'sts',
+        data: '01-31',
+        titolo: 'Tessera Sanitaria: spese sanitarie dell\'anno prima',
+        descrizione: "Invio al Sistema Tessera Sanitaria delle fatture sanitarie ai pazienti dell'anno prima (Adempimenti in Fiscal).",
+        categoria: 'sts',
+        pertinenza: 'sts',
+        importo: null,
+        riferimento: -1,
+      },
+      'DM MEF 29/10/2025 (Gazzetta Ufficiale n. 261 del 10/11/2025), che modifica l\'art. 7 del DM 19/10/2020: invio annuale entro il 31 gennaio dell\'anno successivo',
+    ),
+  );
   return out;
 }
 

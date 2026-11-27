@@ -17,7 +17,7 @@ export const CATEGORIE: CategoriaSpesa[] = [
     attivaDiDefault: true,
     natura: 'comunque',
     esempio: 'corso di specializzazione, congresso con viaggio e albergo',
-    regola: d("Art. 54-ter TUIR (D.Lgs. 192/2024): deducibili fino a 10.000 € l'anno"),
+    regola: v("Art. 62 c. 3 TUIR: master, corsi di formazione e convegni integralmente deducibili entro 10.000 € l'anno (nuovo TUIR D.Lgs. 117/2026, dal 2027; prima artt. 54-quinquies e 54-septies DPR 917/1986 come riformati dal D.Lgs. 192/2024). Verifica del 27/11/2026"),
   },
   {
     codice: 'supervisione',
@@ -97,7 +97,7 @@ export const CATEGORIE: CategoriaSpesa[] = [
     attivaDiDefault: true,
     natura: 'comunque',
     esempio: 'abbonamento del cellulare',
-    regola: d("Art. 54 TUIR: spese telefoniche deducibili all'80%"),
+    regola: v("Art. 60 c. 4 TUIR: apparecchiature e spese di comunicazione elettronica deducibili all'80% (nuovo TUIR D.Lgs. 117/2026, dal 2027; prima artt. 54-quinquies e 54-septies DPR 917/1986 come riformati dal D.Lgs. 192/2024). Verifica del 27/11/2026"),
   },
   {
     codice: 'vitto_alloggio',
@@ -108,8 +108,8 @@ export const CATEGORIE: CategoriaSpesa[] = [
     attivaDiDefault: true,
     natura: 'comunque',
     esempio: 'pranzo o albergo durante una trasferta di lavoro',
-    regola: d(
-      'Art. 54 TUIR: 75% entro il 2% dei compensi; pagamento tracciabile obbligatorio dal 2025 (L. 207/2024)',
+    regola: v(
+      "Art. 62 c. 1 TUIR: 75% e comunque non oltre il 2% dei compensi percepiti; pagamento tracciabile dal 2025 (L. 207/2024, art. 1 c. 81) (nuovo TUIR D.Lgs. 117/2026, dal 2027; prima artt. 54-quinquies e 54-septies DPR 917/1986 come riformati dal D.Lgs. 192/2024). Verifica del 27/11/2026",
     ),
   },
   {
@@ -121,17 +121,17 @@ export const CATEGORIE: CategoriaSpesa[] = [
     attivaDiDefault: true,
     natura: 'comunque',
     esempio: 'omaggi a colleghi o enti',
-    regola: d("Art. 54 TUIR: entro l'1% dei compensi"),
+    regola: v("Art. 62 c. 2 TUIR: spese di rappresentanza entro l'1% dei compensi percepiti (nuovo TUIR D.Lgs. 117/2026, dal 2027; prima artt. 54-quinquies e 54-septies DPR 917/1986 come riformati dal D.Lgs. 192/2024). Verifica del 27/11/2026"),
   },
   {
     codice: 'beni_piccoli',
-    nome: 'Piccoli strumenti (fino a 516,46 €)',
+    nome: 'Piccoli strumenti (sotto la soglia dei beni)',
     percentuale: 1,
     richiedeTracciabilita: false,
     attivaDiDefault: true,
     natura: 'comunque',
     esempio: 'cuffie, webcam, sedia (per i beni più cari usa il registro dei beni)',
-    regola: d("Art. 54 TUIR: beni di costo unitario fino a 516,46 € deducibili nell'anno"),
+    regola: v("Art. 60 c. 1 TUIR: beni strumentali di costo unitario fino a 516,40 € deducibili per intero nell'anno (nuovo TUIR D.Lgs. 117/2026, dal 2027; prima artt. 54-quinquies e 54-septies DPR 917/1986 come riformati dal D.Lgs. 192/2024). Verifica del 27/11/2026"),
   },
   {
     codice: 'affitto_studio',
@@ -161,7 +161,7 @@ export const CATEGORIE: CategoriaSpesa[] = [
     attivaDiDefault: false,
     natura: 'comunque',
     esempio: 'affitto e utenze di casa se ricevi in casa e non hai altro studio',
-    regola: d('Art. 54 TUIR: 50% se nello stesso comune non hai un altro studio'),
+    regola: v("Art. 60 c. 3 TUIR: 50% della rendita o del canone e delle spese dei servizi, se nello stesso comune non hai un altro studio (nuovo TUIR D.Lgs. 117/2026, dal 2027; prima artt. 54-quinquies e 54-septies DPR 917/1986 come riformati dal D.Lgs. 192/2024). Verifica del 27/11/2026"),
   },
   {
     codice: 'altro',
@@ -198,14 +198,14 @@ export const CATEGORIE_BENI: CategoriaBene[] = [
 
 export const BENI: RegoleSpese['beni'] = {
   sogliaImmediata: {
-    valore: 516_46,
-    fonte: "Art. 54 TUIR: deduzione nell'anno per costo unitario fino a 516,46 €",
+    valore: 516_40,
+    fonte: "Art. 60 c. 1 TUIR per il lavoro autonomo: deduzione integrale nell'anno per costo unitario fino a 516,40 € (516,46 € vale per le imprese) (nuovo TUIR D.Lgs. 117/2026, dal 2027; prima artt. 54-quinquies e 54-septies DPR 917/1986 come riformati dal D.Lgs. 192/2024). Verifica del 27/11/2026",
     stato: 'verificata',
   },
   primoAnnoMeta: {
-    valore: false,
-    fonte: 'Riduzione a metà nel primo anno: per i professionisti le fonti non concordano',
-    stato: 'da_verificare',
+    valore: true,
+    fonte: "Art. 60 c. 1 TUIR: coefficienti di ammortamento «ridotti alla metà per il primo periodo d'imposta» (nuovo TUIR D.Lgs. 117/2026, dal 2027; prima artt. 54-quinquies e 54-septies DPR 917/1986 come riformati dal D.Lgs. 192/2024). Verifica del 27/11/2026",
+    stato: 'verificata',
   },
   categorie: CATEGORIE_BENI,
 };

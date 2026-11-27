@@ -23,7 +23,7 @@ import { benePerMotore, elimina, leggiBeni, nuovoId, salva, spiegaErrore, type B
 import { annoCorrente, oggiIso } from '@/lib/oggi';
 
 /**
- * Registro dei beni durevoli (US1, FR-003; data-model.md beni.*): sotto 516,46 € si deducono subito,
+ * Registro dei beni durevoli (US1, FR-003; data-model.md beni.*): sotto la soglia delle regole si deducono subito,
  * sopra con l'ammortamento al coefficiente della categoria. Per ogni bene il piano anno per anno.
  */
 const useStili = makeStyles({
@@ -122,8 +122,8 @@ export function RegistroBeni() {
       {beni.length === 0 ? (
         <MessageBar intent="info">
           <MessageBarBody>
-            Nessun bene registrato. Qui vanno computer, tablet, arredi e attrezzature: sopra 516,46 € si
-            deducono in più anni.
+            Nessun bene registrato. Qui vanno computer, tablet, arredi e attrezzature: sopra{' '}
+            {formattaEuro(regole.beni.sogliaImmediata.valore)} si deducono in più anni.
           </MessageBarBody>
         </MessageBar>
       ) : null}
@@ -137,8 +137,8 @@ export function RegistroBeni() {
             aiuto={{
               argomento: b.descrizione,
               testo: piano.immediata
-                ? `Costo fino a 516,46 €: si deduce tutto nell'anno dell'acquisto.`
-                : `Costo oltre 516,46 €: si deduce un po' ogni anno (${percento(piano.coefficiente)} del costo), finché non arrivi al totale.`,
+                ? `Costo fino a ${formattaEuro(regole.beni.sogliaImmediata.valore)}: si deduce tutto nell'anno dell'acquisto.`
+                : `Costo oltre ${formattaEuro(regole.beni.sogliaImmediata.valore)}: si deduce un po' ogni anno (${percento(piano.coefficiente)} del costo, la metà nel primo anno), finché non arrivi al totale.`,
               daDove: regole.beni.categorie.find((c) => c.codice === b.categoria)?.regola.fonte,
             }}
           >

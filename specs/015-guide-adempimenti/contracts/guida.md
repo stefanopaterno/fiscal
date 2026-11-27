@@ -11,7 +11,7 @@
 | `ordine-pec` | apertura | PEC e dati all'Ordine | una volta | sempre | — | — | — |
 | `emettere-fattura` | fattura | Emettere la fattura elettronica esente | ogni fattura | sempre | `adempimenti.natura_esente`, `fattura.soglia_bollo`, `fattura.importo_bollo`, `fattura.aliquota_integrativo`, `fattura.aliquota_ritenuta` | Fatture → Nuova | fattura |
 | `opposizione-sts` | fattura | Opposizione del paziente all'invio al Sistema TS | se serve | sts | — | Clienti | — |
-| `invio-sts` | fattura | Inviare le spese al Sistema TS | ogni mese | sts | `scadenza.sts_01`… | Adempimenti | — |
+| `invio-sts` | fattura | Inviare le spese al Sistema TS | ogni anno | sts | `scadenza.sts` | Adempimenti | — |
 | `nota-credito` | fattura | Nota di credito (storno o rimborso) | se serve | sempre | — | Fatture | — |
 | `f24-tasse` | versamenti | Pagare le tasse con l'F24 | ogni anno | sempre | `f24.irpef_saldo`, `f24.irpef_primo_acconto`, `f24.irpef_secondo_acconto`, `f24.addizionale_regionale`, `f24.addizionale_comunale_acconto`, `f24.addizionale_comunale_saldo`, `scadenza.saldo_acconto`, `scadenza.secondo_acconto` | Tasse → Versamenti | f24 |
 | `f24-bollo` | versamenti | Pagare il bollo delle fatture elettroniche | ogni trimestre | bollo | `f24.bollo_t1..t4`, `scadenza.bollo_t1..t4`, `adempimenti.soglia_accorpamento_bollo` | Adempimenti | f24 |

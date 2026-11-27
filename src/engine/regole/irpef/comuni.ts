@@ -16,8 +16,9 @@ export const SCAGLIONI_2026: Regola<Scaglione[]> = {
     { finoA: 50_000_00, aliquota: 0.33 },
     { finoA: null, aliquota: 0.43 },
   ],
-  fonte: 'Art. 11 TUIR come modificato dalla L. 199/2025 (Legge di Bilancio 2026): 23%, 33%, 43%',
-  stato: 'da_verificare',
+  fonte:
+    'Art. 11 TUIR come modificato dalla L. 199/2025 (Legge di Bilancio 2026), art. 1 c. 3: 23% fino a 28.000 €, 33% fino a 50.000 €, 43% oltre; confermato dall\'art. 11 del nuovo TUIR (D.Lgs. 117/2026). Verifica del 27/11/2026',
+  stato: 'verificata',
 };
 
 export const DETRAZIONE_LAVORO: Regola<ParametriDetrazioneLavoro> = {
@@ -30,14 +31,16 @@ export const DETRAZIONE_LAVORO: Regola<ParametriDetrazioneLavoro> = {
     terzaSoglia: 50_000_00,
     maggiorazione: { importo: 65_00, oltre: 25_000_00, finoA: 35_000_00 },
   },
-  fonte: 'Art. 13 c. 1 e 1.1 TUIR (D.Lgs. 216/2023, resa stabile dalla L. 207/2024)',
-  stato: 'da_verificare',
+  fonte:
+    'Art. 13 c. 1 e 1.1 TUIR (importo di 1.955 € dalla L. 207/2024, art. 1 c. 2); stessi valori nell\'art. 13 c. 1 del nuovo TUIR (D.Lgs. 117/2026, dal 2027). Verifica del 27/11/2026 su Normattiva e Gazzetta',
+  stato: 'verificata',
 };
 
 export const ULTERIORE_DETRAZIONE: Regola<ParametriUlterioreDetrazione> = {
   valore: { importo: 1_000_00, oltre: 20_000_00, pienaFinoA: 32_000_00, azzeraA: 40_000_00 },
-  fonte: 'Art. 1 c. 6 L. 207/2024 (Legge di Bilancio 2025), misura strutturale',
-  stato: 'da_verificare',
+  fonte:
+    'Art. 1 c. 6 L. 207/2024 (fino al 2026); dal 2027 art. 13 c. 10 del nuovo TUIR (D.Lgs. 117/2026): 1.000 € tra 20.000 e 32.000 €, poi a scalare fino a 40.000 €, rapportata al periodo di lavoro. Verifica del 27/11/2026',
+  stato: 'verificata',
 };
 
 export const ULTERIORE_RAGGUAGLIATA: Regola<boolean> = {
