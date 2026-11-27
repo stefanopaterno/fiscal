@@ -22,6 +22,7 @@ import {
 import { useEffect, useState } from 'react';
 import { useVerificaRecente } from '@/features/auth/useVerificaRecente';
 import {
+  azzeraDatiProva,
   cancellaDatiProva,
   caricaDatiEsempio,
   passaAProduzione,
@@ -59,6 +60,8 @@ export function GestioneModalita() {
   const [capito, setCapito] = useState(false);
   const [inCorso, setInCorso] = useState(false);
   const [chiediEsempio, setChiediEsempio] = useState(false);
+  const [parolaAzzera, setParolaAzzera] = useState('');
+  const [capitoAzzera, setCapitoAzzera] = useState(false);
   const [messaggio, setMessaggio] = useState<{ tipo: 'ok' | 'errore'; testo: string } | null>(null);
 
   if (!modalita) return <Spinner label="Un momento…" />;
@@ -92,6 +95,29 @@ export function GestioneModalita() {
         // clienti e attività d'esempio si cancellano sempre: il conteggio compare anche senza spunta
         testo: `Cancellati: ${r.fatture} documenti, ${r.incassi} incassi${anagraficheProva || r.anagrafiche > 0 ? `, ${r.anagrafiche} tra clienti e attività` : ''}.`,
       });
+    } catch (e) {
+      setMessaggio({ tipo: 'errore', testo: spiegaErrore(e) });
+    } finally {
+      setInCorso(false);
+    }
+  }
+
+  async function azzera() {
+    setMessaggio(null);
+    if (!(await chiedi())) return;
+    setInCorso(true);
+    try {
+      const r = await azzeraDatiProva(parolaAzzera.trim());
+      const c = r.conteggi;
+      setMessaggio({
+        tipo: 'ok',
+        testo:
+          `Azzerato: ${c.fatture ?? 0} documenti di fattura, ${c.incassi ?? 0} incassi, ${c.clienti ?? 0} clienti, ${c.spese ?? 0} spese, ` +
+          `${c.documenti ?? 0} documenti in archivio, ${c.consensi ?? 0} consensi. Restano CU, anagrafica, attività e aliquote delle addizionali.` +
+          (r.fileNonTolti ? ` ${r.fileNonTolti} file non sono stati tolti dall'archivio: riprova più tardi.` : ''),
+      });
+      setParolaAzzera('');
+      setCapitoAzzera(false);
     } catch (e) {
       setMessaggio({ tipo: 'errore', testo: spiegaErrore(e) });
     } finally {
@@ -221,6 +247,42 @@ export function GestioneModalita() {
           </DialogBody>
         </DialogSurface>
       </Dialog>
+
+      <Scheda
+        titolo="Azzera tutto tranne CU e anagrafica"
+        aiuto={{
+          argomento: 'azzerare i dati',
+          testo:
+            'Per ripartire pulito prima di aprire la partita IVA. Cancello fatture, incassi, clienti e pazienti, consensi, spese, beni, versamenti, dichiarazioni, scadenze personali, salvadanaio, previsioni, documenti e parametri importati. Restano la CU, i tuoi dati anagrafici, le attività e le aliquote delle addizionali.',
+          perche: 'Funziona solo in prova: in produzione le fatture emesse non si cancellano per legge.',
+        }}
+      >
+        <ul className={s.elenco}>
+          <li>
+            <Text>Restano: CU e documenti CU in archivio, anagrafica, attività, aliquote delle addizionali, impostazioni e sicurezza.</Text>
+          </li>
+          <li>
+            <Text>Si cancella tutto il resto, anche gli anni chiusi. Non si può annullare.</Text>
+          </li>
+        </ul>
+        <Field label="Per confermare scrivi AZZERA">
+          <Input value={parolaAzzera} onChange={(_, d) => setParolaAzzera(d.value)} autoComplete="off" />
+        </Field>
+        <Checkbox
+          checked={capitoAzzera}
+          onChange={(_, d) => setCapitoAzzera(!!d.checked)}
+          label="Ho capito che i dati cancellati non si recuperano"
+        />
+        <Button
+          appearance="primary"
+          className={s.pulsante}
+          disabled={inCorso || parolaAzzera.trim() !== 'AZZERA' || !capitoAzzera}
+          onClick={() => void azzera()}
+        >
+          Azzera i dati
+        </Button>
+        <Text size={200}>Ti chiederò di nuovo password e codice.</Text>
+      </Scheda>
 
       <Scheda
         titolo="Passa alla produzione"
