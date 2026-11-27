@@ -208,7 +208,14 @@ const useStiliCollegamento = makeStyles({
     ':focus-visible': { textDecorationLine: 'underline' },
   },
   // dentro una frase: area toccabile di 44 px senza allargare la riga di testo
-  inLinea: { marginTop: '-12px', marginBottom: '-12px', verticalAlign: 'middle' },
+  // in linea: stessa linea di base del testo; l'imbottitura verticale dà l'area toccabile senza spostare la riga
+  inLinea: {
+    display: 'inline',
+    minHeight: 'auto',
+    verticalAlign: 'baseline',
+    paddingTop: '15px',
+    paddingBottom: '15px',
+  },
 });
 
 /** basePath di next.config: le pagine dell'app stanno sotto /app. */
