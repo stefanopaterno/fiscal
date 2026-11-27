@@ -57,6 +57,11 @@ const VOCI = [
       "Studio fisico, figli a carico per i limiti delle detrazioni e regole per l'affitto di un ufficio.",
   },
   {
+    href: '/impostazioni/parametri/',
+    titolo: 'Parametri fiscali',
+    testo: 'Aliquote, soglie, scadenze e codici F24 in uso; aggiornali con la richiesta per Claude.',
+  },
+  {
     href: '/impostazioni/modalita/',
     titolo: 'Prova e produzione',
     testo: 'Fai prove e cancellale; quando sei pronto passi alle fatture vere (senza ritorno).',

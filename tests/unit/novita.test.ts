@@ -74,3 +74,34 @@ describe('impatto di una novità sui conti (T006)', () => {
     expect(impattoNovita(bilancio, { ...input(55_000_00), anno: 2026 })).toBeNull();
   });
 });
+
+// Specifica 014: T037 (modifiche al programma) e T039 (promemoria dei parametri).
+describe('014 — modifiche al programma e promemoria', async () => {
+  const { modificheProgramma } = await import('@/engine/novita/modifiche');
+  const { promemoriaParametri } = await import('@/engine/novita/controlli');
+  const fonte = { titolo: 'L', url: 'https://www.gazzettaufficiale.it/x', data_atto: '2026-12-30' };
+  const m = (impronta: string, stato: 'aperta' | 'fatta' | 'non_riguarda' = 'aperta') => ({ titolo: impronta, descrizione: 'd', fonte, impronta, stato });
+
+  it('una voce per impronta tra più importazioni; chiusa se segnata in una qualsiasi', () => {
+    const r = modificheProgramma([
+      { id: 'i1', creato_il: '2027-01-10T10:00:00Z', modifiche_programma: [m('a', 'fatta'), m('b')] },
+      { id: 'i2', creato_il: '2027-02-10T10:00:00Z', modifiche_programma: [m('a'), m('c', 'non_riguarda')] },
+    ]);
+    expect(r.map((x) => [x.impronta, x.stato])).toEqual([
+      ['a', 'fatta'],
+      ['c', 'non_riguarda'],
+      ['b', 'aperta'],
+    ]);
+    expect(r.find((x) => x.impronta === 'a')!.importazioni).toEqual(['i1', 'i2']);
+  });
+
+  it('promemoria: inizio anno, da verificare, 90 giorni, mai dopo un\'importazione recente', () => {
+    expect(promemoriaParametri('2027-01-10', { ultimaImportazione: null, daVerificareAnnoInCorso: 3 })).toMatchObject({ dovuto: true, motivo: expect.stringMatching(/Legge di Bilancio/) });
+    expect(promemoriaParametri('2027-02-10', { ultimaImportazione: '2026-12-01T10:00:00Z', daVerificareAnnoInCorso: 0 })).toMatchObject({ dovuto: true, motivo: expect.stringMatching(/istruzioni/) });
+    expect(promemoriaParametri('2027-01-10', { ultimaImportazione: '2027-01-05T10:00:00Z', daVerificareAnnoInCorso: 3 }).dovuto).toBe(false);
+    expect(promemoriaParametri('2027-06-10', { ultimaImportazione: '2027-04-01T10:00:00Z', daVerificareAnnoInCorso: 2 })).toMatchObject({ dovuto: true, motivo: expect.stringMatching(/2 regole del 2027/) });
+    expect(promemoriaParametri('2027-06-10', { ultimaImportazione: '2027-05-25T10:00:00Z', daVerificareAnnoInCorso: 2 }).dovuto).toBe(false);
+    expect(promemoriaParametri('2027-09-10', { ultimaImportazione: '2027-05-25T10:00:00Z', daVerificareAnnoInCorso: 0 })).toMatchObject({ dovuto: true, motivo: expect.stringMatching(/giorni fa/) });
+    expect(promemoriaParametri('2027-06-10', { ultimaImportazione: '2027-04-01T10:00:00Z', daVerificareAnnoInCorso: 0 }).dovuto).toBe(false);
+  });
+});

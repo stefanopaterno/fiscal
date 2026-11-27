@@ -9,6 +9,11 @@ utente, con un set di regole distinto per ciascun anno d'imposta (es. `taxRules2
 Nessun valore normativo MUST essere scritto "a mano" nella UI o nei componenti. Il passaggio
 all'anno successivo MUST richiedere solo l'aggiunta di un nuovo set di regole, non la modifica
 del motore.
+I valori del catalogo dei parametri (specifica 014) possono essere aggiornati dall'utente con un
+file di aggiornamento: ogni variazione MUST essere datata (per anno d'imposta o dalla data
+dell'operazione), con fonte e stato di verifica, approvata esplicitamente e registrata in un
+registro a sola aggiunta. I set per anno nel codice restano la base, il motore non cambia, le
+fatture emesse e gli anni chiusi non si ricalcolano.
 *Motivazione*: le norme cambiano ogni anno; i calcoli storici devono restare riproducibili.
 
 ### II. Calcoli Spiegabili e Fedeli alla Normativa
@@ -28,7 +33,9 @@ professionale, scaglioni IRPEF, ritenuta d'acconto 20%, bollo da 2 € oltre 77,
 integrativo/rivalsa, IVA, saldo e acconti (metodo storico e previsionale). Una modifica alle
 regole fiscali MUST essere accompagnata dall'aggiornamento dei test. Gli importi MUST essere
 gestiti senza errori di arrotondamento da virgola mobile (interi in centesimi o tipo decimale)
-con regole di arrotondamento esplicite.
+con regole di arrotondamento esplicite. I valori importati da file (principio I) non richiedono
+test propri: MUST superare i limiti di plausibilità del catalogo e il ricalcolo in anteprima prima
+dell'approvazione; catalogo, conversioni, validatore e risolutore MUST avere test scritti prima.
 *Motivazione*: un errore di calcolo ha conseguenze economiche dirette.
 
 ### IV. Architettura e Modello Dati Prima del Codice
@@ -271,4 +278,4 @@ principi o sezioni, PATCH per chiarimenti. Ogni piano e ogni revisione MUST veri
 conformità ai principi; le deroghe MUST essere giustificate per iscritto nel piano. Il file
 `CLAUDE.md` resta la guida di ruolo e contesto per lo sviluppo quotidiano.
 
-**Version**: 2.8.0 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-24
+**Version**: 2.9.0 | **Ratified**: 2026-11-19 | **Last Amended**: 2026-11-26

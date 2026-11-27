@@ -1,0 +1,9 @@
+{
+  "versione_schema": 1,
+  "data_ricerca": "2027-01-10",
+  "anni": [2027],
+  "voci": [],
+  "modifiche_programma": [
+    { "titolo": "Nuova detrazione per i professionisti sanitari", "descrizione": "Detrazione forfettaria sulle spese di formazione (esempio di prova).", "dal": "2027-01-01", "fonte": { "titolo": "Legge di Bilancio 2027 (file di prova)", "url": "https://www.gazzettaufficiale.it/prova", "data_atto": "2026-12-30" } }
+  ]
+}

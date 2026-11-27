@@ -31,6 +31,17 @@ export const GUIDE: Guida[] = [
     ],
   },
   {
+    id: 'parametri',
+    titolo: 'Aggiornare aliquote e scadenze con Claude',
+    perche: 'Le regole cambiano durante l\'anno (Legge di Bilancio, ENPAP, proroghe): così Fiscal resta aggiornato senza toccare il passato.',
+    passi: [
+      { titolo: 'Prepara la richiesta', cosa: 'In Parametri fiscali → «Prepara richiesta» scegli gli anni e, se vuoi le addizionali, regione e comune.', controlla: 'Il testo non contiene importi, nomi né codice fiscale.', href: '/impostazioni/parametri/', pagina: 'Parametri fiscali' },
+      { titolo: 'Chiedi a Claude', cosa: 'Copia la richiesta e incollala a Claude con la ricerca sul web attiva.', controlla: 'Claude risponde con un file JSON e una fonte ufficiale per ogni valore.', href: '/impostazioni/parametri/', pagina: 'Parametri fiscali' },
+      { titolo: 'Importa e controlla', cosa: 'In «Importa» incolla la risposta e tocca «Controlla»: vedi prima → dopo e quanto cambiano le tue tasse.', controlla: 'Le voci senza fonte ufficiale restano «da verificare»; quelle sbagliate sono scartate con il motivo.', href: '/impostazioni/parametri/', pagina: 'Parametri fiscali' },
+      { titolo: 'Approva', cosa: 'Scegli le voci e approva: da quel momento i calcoli usano i nuovi valori, dall\'anno o dalla data giusta.', controlla: 'Fatture emesse e anni chiusi non cambiano. Se sbagli, «Annulla» in «In uso».', href: '/impostazioni/parametri/', pagina: 'Parametri fiscali' },
+    ],
+  },
+  {
     id: 'cu',
     titolo: 'Inserire la CU',
     perche: 'La CU dice quanto guadagni da dipendente: senza, l\'app non può calcolare le tasse della partita IVA.',

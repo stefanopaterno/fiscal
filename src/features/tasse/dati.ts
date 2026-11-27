@@ -264,7 +264,8 @@ function contributiPrevisti(
   return Math.max(0, dovuti - versati);
 }
 
-export async function raccogliAnno(anno: number): Promise<DatiRaccolti> {
+/** Letture dal database per l'anno (specifica 014: separate dal calcolo, così l'anteprima ricalcola con altre regole). */
+export async function leggiGrezziAnno(anno: number) {
   const [
     cu,
     dati,
@@ -296,6 +297,18 @@ export async function raccogliAnno(anno: number): Promise<DatiRaccolti> {
     leggiImpostazioniSpese(),
     leggiDichiarazione(anno - 1).catch(() => null),
   ]);
+  return { cu, dati, aliquote, versPrev, versImp, fatture, incassi, profilo, datiPrima, speseR, beniR, oneriR, impSpese, partenza };
+}
+
+export type GrezziAnno = Awaited<ReturnType<typeof leggiGrezziAnno>>;
+
+export async function raccogliAnno(anno: number): Promise<DatiRaccolti> {
+  return componiAnno(anno, await leggiGrezziAnno(anno));
+}
+
+/** Calcolo puro dei dati dell'anno dalle letture: usa le regole in vigore nel registro attivo. */
+export function componiAnno(anno: number, g: GrezziAnno): DatiRaccolti {
+  const { cu, dati, aliquote, versPrev, versImp, fatture, incassi, profilo, datiPrima, speseR, beniR, oneriR, impSpese, partenza } = g;
   const cassa = redditoDiCassa(anno, fatture, incassi);
   const manuale = dati?.reddito_professionale_manuale != null;
 

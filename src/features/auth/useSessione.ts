@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { getCoda } from '@/features/offline-queue/istanza';
+import { dimenticaRegistro } from '@/features/parametri/ProviderParametri';
 import { getSupabase } from '@/lib/supabase/client';
 
 /**
@@ -13,6 +14,7 @@ export function useEsci() {
   const router = useRouter();
   return useCallback(async () => {
     await getCoda().pulisci(); // FR-022: la coda e la sua chiave non restano sul dispositivo
+    dimenticaRegistro(); // specifica 014: niente copia del registro dei parametri dopo l'uscita
     await getSupabase().auth.signOut({ scope: 'local' });
     router.replace('/accesso/');
   }, [router]);

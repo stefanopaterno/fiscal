@@ -168,6 +168,19 @@ export const TAPPE: Tappa[] = [
     link: [{ href: '/novita/', testo: 'Apri le novità' }],
   },
   {
+    id: 'parametri',
+    titolo: 'Parametri fiscali',
+    spec: 'specifica 014',
+    cosa: 'Aliquote, soglie, scadenze e codici F24 in uso, con fonte e stato. Quando cambiano: richiesta per Claude, importazione della risposta, anteprima con l\'impatto e approvazione voce per voce.',
+    prova: [
+      'Apri «Prepara richiesta» e guarda la sezione «Da controllare per primi».',
+      'In «In uso» apri IRPEF: ogni valore ha la sua fonte e lo stato.',
+    ],
+    logica:
+      'Il programma resta la base; gli aggiornamenti approvati si aggiungono in un registro che non si cancella. Valgono per anno d\'imposta o dalla data dell\'operazione: fatture emesse e anni chiusi non cambiano.',
+    link: [{ href: '/impostazioni/parametri/', testo: 'Apri i parametri fiscali' }],
+  },
+  {
     id: 'impostazioni',
     titolo: 'Impostazioni e sicurezza',
     spec: 'specifiche 002 e 003',

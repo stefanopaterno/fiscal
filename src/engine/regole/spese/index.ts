@@ -1,3 +1,5 @@
+import { memo, registroAttivo } from '../../parametri/attivi';
+import { anniNelRegistro, basePerAnno, risolviSet } from '../../parametri/risolvi';
 import { ErroreIrpef } from '../irpef';
 import { BENI, CATEGORIE, ONERI, SCADENZA, TETTO_16TER } from './comuni';
 import type { RegoleSpese } from './tipi';
@@ -24,16 +26,26 @@ const PER_ANNO: Record<number, RegoleSpese> = {
   },
 };
 
+/** Set del programma per l'anno, senza aggiornamenti importati (specifica 014). */
+export const baseSpese = (anno: number): RegoleSpese | undefined => PER_ANNO[anno];
+
+/** Regole delle spese dell'anno con gli aggiornamenti approvati (specifica 014). */
 export function regoleSpesePerAnno(anno: number): RegoleSpese {
-  const r = PER_ANNO[anno];
-  if (!r) throw new ErroreIrpef(`Non ci sono ancora le regole delle spese per il ${anno}.`);
-  return r;
+  const registro = registroAttivo();
+  if (!registro.length) {
+    const r = PER_ANNO[anno];
+    if (!r) throw new ErroreIrpef(`Non ci sono ancora le regole delle spese per il ${anno}.`);
+    return r;
+  }
+  return memo(`spese|${anno}`, () => {
+    const b = basePerAnno(PER_ANNO, anno, 'spese', registro);
+    if (!b) throw new ErroreIrpef(`Non ci sono ancora le regole delle spese per il ${anno}.`);
+    return risolviSet('spese', { anno }, b.base, registro, baseSpese).set;
+  });
 }
 
 export const categoria = (r: RegoleSpese, codice: string) => r.categorie.find((c) => c.codice === codice);
 export const voceOnere = (r: RegoleSpese, codice: string) => r.oneri.find((o) => o.codice === codice);
 
 export const anniConRegoleSpese = (): number[] =>
-  Object.keys(PER_ANNO)
-    .map(Number)
-    .sort((a, b) => a - b);
+  [...new Set([...Object.keys(PER_ANNO).map(Number), ...anniNelRegistro('spese', registroAttivo())])].sort((a, b) => a - b);

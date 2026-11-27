@@ -11,6 +11,8 @@ export type RigaInput = { compenso: number; quantita?: number; natura: Natura };
 
 export type InputFattura = {
   anno: number;
+  /** Data della fattura (AAAA-MM-GG): sceglie i parametri in vigore quel giorno (specifica 014). */
+  data?: string;
   righe: RigaInput[];
   sostitutoImposta: boolean;
   bolloACarico: 'paziente' | 'professionista';
@@ -86,7 +88,7 @@ function regoleNonVerificate(r: RegoleFatturazione): string[] {
 }
 
 export function calcolaFattura(input: InputFattura): RisultatoFattura {
-  const regole = regolePerAnno(input.anno);
+  const regole = regolePerAnno(input.anno, input.data);
   if (input.righe.length === 0) throw new Error('La fattura deve avere almeno una riga.');
 
   const aliquotaIntegrativo = regole.aliquotaIntegrativo.valore;
